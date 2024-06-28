@@ -4,11 +4,11 @@
   
   
   <entry>
-    <title></title>
+    <title>hexo_github遇到的问题</title>
     <link href="/2024/06/28/hexo_github%E9%85%8D%E7%BD%AE/"/>
     <url>/2024/06/28/hexo_github%E9%85%8D%E7%BD%AE/</url>
     
-    <content type="html"><![CDATA[<h1 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a>遇到的问题</h1><h3 id="冒号后面要加空格"><a href="#冒号后面要加空格" class="headerlink" title="冒号后面要加空格"></a>冒号后面要加空格</h3><h3 id="repo写以下格式"><a href="#repo写以下格式" class="headerlink" title="repo写以下格式"></a>repo写以下格式</h3><p><img src="/../images/1719557282413.png"></p><h3 id="master分支设置"><a href="#master分支设置" class="headerlink" title="master分支设置"></a>master分支设置</h3><p><img src="/../images/1719557364439.png"></p><p><img src="/../images/1719557376929.png"></p>]]></content>
+    <content type="html"><![CDATA[<h3 id="冒号后面要加空格"><a href="#冒号后面要加空格" class="headerlink" title="冒号后面要加空格"></a>冒号后面要加空格</h3><h3 id="repo写以下格式"><a href="#repo写以下格式" class="headerlink" title="repo写以下格式"></a>repo写以下格式</h3><p><img src="/../images/1719557282413.png"></p><h3 id="master分支设置"><a href="#master分支设置" class="headerlink" title="master分支设置"></a>master分支设置</h3><p><img src="/../images/1719557364439.png"></p><p><img src="/../images/1719557376929.png"></p>]]></content>
     
     
     
@@ -17,11 +17,11 @@
   
   
   <entry>
-    <title></title>
+    <title>加载图片，研究一下</title>
     <link href="/2024/06/28/%E5%8A%A0%E8%BD%BD%E5%9B%BE%E7%89%87/"/>
     <url>/2024/06/28/%E5%8A%A0%E8%BD%BD%E5%9B%BE%E7%89%87/</url>
     
-    <content type="html"><![CDATA[<h3 id="2024-6-28"><a href="#2024-6-28" class="headerlink" title="2024&#x2F;6&#x2F;28"></a>2024&#x2F;6&#x2F;28</h3><p>加载图片，研究一下</p><p><img src="/../images/a.jpeg" alt="车"></p>]]></content>
+    <content type="html"><![CDATA[<p><img src="/../images/a.jpeg" alt="车"></p>]]></content>
     
     
     
