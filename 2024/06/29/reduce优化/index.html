@@ -16,22 +16,22 @@
   <meta name="author" content="hzbing">
   <meta name="keywords" content="">
   
-    <meta name="description" content="搭建了我的博客github 文章永生 明天加油吧！！！">
+    <meta name="description" content="参考材料深入浅出GPU优化系列：reduce优化 - 知乎 (zhihu.com) reduce baseline 算法（基础规约算法）我们让Num_per_block与Thread_per_block一致，即一个线程处理一个数据，每个block设定为256个线程，一个block负责256个数据的reduce工作。 假设要处理32M（32*1024）个数据，那么需要的block数为 32M&amp;#x2">
 <meta property="og:type" content="article">
-<meta property="og:title" content="天气晴，明天有雨">
-<meta property="og:url" content="http://example.com/2024/06/28/%E9%9A%8F%E7%AC%941/index.html">
+<meta property="og:title" content="reduce逐步优化">
+<meta property="og:url" content="http://example.com/2024/06/29/reduce%E4%BC%98%E5%8C%96/index.html">
 <meta property="og:site_name" content="一拳超人">
-<meta property="og:description" content="搭建了我的博客github 文章永生 明天加油吧！！！">
+<meta property="og:description" content="参考材料深入浅出GPU优化系列：reduce优化 - 知乎 (zhihu.com) reduce baseline 算法（基础规约算法）我们让Num_per_block与Thread_per_block一致，即一个线程处理一个数据，每个block设定为256个线程，一个block负责256个数据的reduce工作。 假设要处理32M（32*1024）个数据，那么需要的block数为 32M&amp;#x2">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2024-06-28T13:00:42.618Z">
-<meta property="article:modified_time" content="2024-06-28T13:02:44.482Z">
+<meta property="article:published_time" content="2024-06-29T06:33:30.898Z">
+<meta property="article:modified_time" content="2024-06-29T08:58:54.539Z">
 <meta property="article:author" content="hzbing">
-<meta property="article:tag" content="日记">
+<meta property="article:tag" content="hpc">
 <meta name="twitter:card" content="summary_large_image">
   
   
   
-  <title>天气晴，明天有雨 - 一拳超人</title>
+  <title>reduce逐步优化 - 一拳超人</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -197,7 +197,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="天气晴，明天有雨"></span>
+            <span id="subtitle" data-typed-text="reduce逐步优化"></span>
           
         </div>
 
@@ -208,8 +208,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2024-06-28 21:00" pubdate>
-          2024年6月28日 晚上
+        <time datetime="2024-06-29 14:33" pubdate>
+          2024年6月29日 下午
         </time>
       </span>
     
@@ -220,7 +220,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          17 字
+          324 字
         
       </span>
     
@@ -231,7 +231,7 @@
         
         
         
-          1 分钟
+          3 分钟
         
       </span>
     
@@ -268,13 +268,18 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">天气晴，明天有雨</h1>
+            <h1 id="seo-header">reduce逐步优化</h1>
             
             
               <div class="markdown-body">
                 
-                <h4 id="搭建了我的博客"><a href="#搭建了我的博客" class="headerlink" title="搭建了我的博客"></a>搭建了我的博客</h4><p>github 文章永生</p>
-<p>明天加油吧！！！</p>
+                <h3 id="参考材料"><a href="#参考材料" class="headerlink" title="参考材料"></a>参考材料</h3><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/426978026">深入浅出GPU优化系列：reduce优化 - 知乎 (zhihu.com)</a></p>
+<h3 id="reduce-baseline-算法（基础规约算法）"><a href="#reduce-baseline-算法（基础规约算法）" class="headerlink" title="reduce baseline 算法（基础规约算法）"></a>reduce baseline 算法（基础规约算法）</h3><p>我们让Num_per_block与Thread_per_block一致，即一个线程处理一个数据，每个block设定为256个线程，一个block负责256个数据的reduce工作。</p>
+<p>假设要处理32M（32*1024）个数据，那么需要的block数为 32M&#x2F;256 &#x3D; 128 个线程。</p>
+<p>tid代表每个block里面的线程号，i代表原数组的索引号，将原数组的值分配到每个shared memory 中</p>
+<p>sdata[tid] &#x3D; d_in[i]</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdlib.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;hip/hip_runtime.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;hip/hip_runtime_api.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> N 32768</span><br><span class="hljs-type">const</span> <span class="hljs-type">int</span> threadsPerBlock = <span class="hljs-number">256</span>;<br><span class="hljs-type">const</span> <span class="hljs-type">int</span> blocksPerGrid = <span class="hljs-number">128</span>;<br><br><span class="hljs-function">__global__ <span class="hljs-type">void</span> <span class="hljs-title">reduce0</span><span class="hljs-params">(<span class="hljs-type">int</span> *d_in,<span class="hljs-type">int</span> *d_out)</span></span>&#123;<br>	__shared__ <span class="hljs-type">int</span> sdata[threadsPerBlock];<br><br>	<span class="hljs-comment">//each thread loads one element form global memory to shared memory</span><br>	<span class="hljs-type">int</span> i = threadIdx.x + blockIdx.x * blockDim.x;<br>	<span class="hljs-type">int</span> tid = threadIdx.x;<br>	sdata[tid] = d_in[i];<br>	__syncthreads();<br><br>	<span class="hljs-comment">//do reduction in shared memory</span><br>	<span class="hljs-type">int</span> j = blockDim.x / <span class="hljs-number">2</span>;<br>	<span class="hljs-keyword">while</span>(j&gt;<span class="hljs-number">0</span>)&#123;<br>		<span class="hljs-keyword">if</span>(tid&lt;j)&#123;<br>			sdata[tid] += sdata[tid+j];<br>		&#125;<br>		__syncthreads();<br>		j /= <span class="hljs-number">2</span>;<br>	&#125;<br><br>	<span class="hljs-comment">//wirte result for this block to global memory</span><br>	<span class="hljs-keyword">if</span>(tid ==<span class="hljs-number">0</span>)&#123;<br>		d_out[blockIdx.x] = sdata[<span class="hljs-number">0</span>];<br>	&#125;<br><br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span></span>&#123;<br><br>	<span class="hljs-type">int</span> a[N],partial_c[blocksPerGrid];<br>	<span class="hljs-type">long</span> c;<br>	<span class="hljs-type">int</span> *d_a,*d_partial_c;<br>	<span class="hljs-built_in">hipMalloc</span>((<span class="hljs-type">void</span> **)&amp;d_a,N*<span class="hljs-built_in">sizeof</span>(<span class="hljs-type">int</span>));<br>	<span class="hljs-built_in">hipMalloc</span>((<span class="hljs-type">void</span> **)&amp;d_partial_c,blocksPerGrid*<span class="hljs-built_in">sizeof</span>(<span class="hljs-type">int</span>));<br>	<span class="hljs-comment">//initial</span><br>	<span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>;i&lt;N;i++)&#123;<br>		a[i] = i;<br>	&#125;<br>	<span class="hljs-built_in">hipMemcpy</span>(d_a,a,N*<span class="hljs-built_in">sizeof</span>(<span class="hljs-type">int</span>),hipMemcpyHostToDevice);<br>	reduce0&lt;&lt;&lt;blocksPerGrid,threadsPerBlock&gt;&gt;&gt;(d_a,d_partial_c);<br>	<span class="hljs-built_in">hipMemcpy</span>(partial_c,d_partial_c,blocksPerGrid*<span class="hljs-built_in">sizeof</span>(<span class="hljs-type">int</span>),hipMemcpyDeviceToHost);<br>	<br>	c = <span class="hljs-number">0</span>;<br>	<span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>;i&lt;blocksPerGrid;i++)&#123;<br>		c += partial_c[i];<br>	&#125;<br><br>	<span class="hljs-built_in">hipFree</span>(d_a);<br>	<span class="hljs-built_in">hipFree</span>(d_partial_c);<br><br>	<span class="hljs-comment">//check the result</span><br>	<span class="hljs-keyword">if</span>(c==<span class="hljs-number">32767</span>*<span class="hljs-number">32768</span>/<span class="hljs-number">2</span>)&#123;<br>		<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;success\n&quot;</span>);<br>	&#125;<span class="hljs-keyword">else</span>&#123;<br>		<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;fail\n&quot;</span>);<br>		<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;c=%ld&quot;</span>,c);<br>	&#125;<br><br><br>	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br><br>&#125;<br><br><br></code></pre></td></tr></table></figure>
+
 
                 
               </div>
@@ -293,7 +298,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/%E9%9A%8F%E7%AC%94/" class="category-chain-item">随笔</a>
+  <a href="/categories/hpc/" class="category-chain-item">hpc</a>
   
   
 
@@ -308,7 +313,7 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/%E6%97%A5%E8%AE%B0/" class="print-no-link">#日记</a>
+        <a href="/tags/hpc/" class="print-no-link">#hpc</a>
       
     </div>
   
@@ -320,8 +325,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>天气晴，明天有雨</div>
-      <div>http://example.com/2024/06/28/随笔1/</div>
+      <div>reduce逐步优化</div>
+      <div>http://example.com/2024/06/29/reduce优化/</div>
     </div>
     <div class="license-meta">
       
@@ -333,7 +338,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2024年6月28日</div>
+          <div>2024年6月29日</div>
         </div>
       
       
@@ -365,18 +370,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2024/06/29/reduce%E4%BC%98%E5%8C%96/" title="reduce逐步优化">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">reduce逐步优化</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2024/06/28/%E6%B5%81%E4%BD%93%E5%8A%9B%E5%AD%A6/" title="流体力学">
-                        <span class="hidden-mobile">流体力学</span>
+                      <a href="/2024/06/28/%E9%9A%8F%E7%AC%941/" title="天气晴，明天有雨">
+                        <span class="hidden-mobile">天气晴，明天有雨</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
