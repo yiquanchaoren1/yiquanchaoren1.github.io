@@ -16,22 +16,22 @@
   <meta name="author" content="hzbing">
   <meta name="keywords" content="">
   
-    <meta name="description" content="优化6：调整Block大小保持每个block的线程数不变，一个线程处理一个数据，两个数据，四个数据。处理多少个数据比较合适呢，这个就需要试了，获得最优的NumPerThread取值。每个线程处理数据增大一倍，同时blockPerGrid 就要减少一倍。 1234567891011121314151617181920212223242526272829303132333435363738__glob">
+    <meta name="description" content="cublas库what is cublas？CUDA Basic Linear Algebra Subprograms（BLAS）提供了高效计算线性代数的方法。 有三级API和cuBLAS 扩展、辅助API： 最基础操作，例如加、减、最大值、复制、转置矩阵的一般操作，例如特殊类型矩阵的乘法、rank更复杂一些的例子，例如“使用一般矩阵计算批量的矩阵-矩阵乘积”，‘使用高斯复杂度降低算法计算一般矩阵">
 <meta property="og:type" content="article">
-<meta property="og:title" content="reduce优化(补充)">
-<meta property="og:url" content="http://example.com/2024/06/30/reduce%E4%BC%98%E5%8C%96(%E8%A1%A5%E5%85%85)/index.html">
+<meta property="og:title" content="cublas库 学习">
+<meta property="og:url" content="http://example.com/2024/06/30/cublas%E5%BA%93/index.html">
 <meta property="og:site_name" content="一拳超人">
-<meta property="og:description" content="优化6：调整Block大小保持每个block的线程数不变，一个线程处理一个数据，两个数据，四个数据。处理多少个数据比较合适呢，这个就需要试了，获得最优的NumPerThread取值。每个线程处理数据增大一倍，同时blockPerGrid 就要减少一倍。 1234567891011121314151617181920212223242526272829303132333435363738__glob">
+<meta property="og:description" content="cublas库what is cublas？CUDA Basic Linear Algebra Subprograms（BLAS）提供了高效计算线性代数的方法。 有三级API和cuBLAS 扩展、辅助API： 最基础操作，例如加、减、最大值、复制、转置矩阵的一般操作，例如特殊类型矩阵的乘法、rank更复杂一些的例子，例如“使用一般矩阵计算批量的矩阵-矩阵乘积”，‘使用高斯复杂度降低算法计算一般矩阵">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2024-06-30T04:53:30.383Z">
-<meta property="article:modified_time" content="2024-06-30T06:36:23.458Z">
+<meta property="article:published_time" content="2024-06-30T08:42:35.607Z">
+<meta property="article:modified_time" content="2024-07-01T07:33:57.967Z">
 <meta property="article:author" content="hzbing">
 <meta property="article:tag" content="hpc">
 <meta name="twitter:card" content="summary_large_image">
   
   
   
-  <title>reduce优化(补充) - 一拳超人</title>
+  <title>cublas库 学习 - 一拳超人</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -197,7 +197,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="reduce优化(补充)"></span>
+            <span id="subtitle" data-typed-text="cublas库 学习"></span>
           
         </div>
 
@@ -208,7 +208,7 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2024-06-30 12:53" pubdate>
+        <time datetime="2024-06-30 16:42" pubdate>
           2024年6月30日 下午
         </time>
       </span>
@@ -220,7 +220,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          510 字
+          630 字
         
       </span>
     
@@ -231,7 +231,7 @@
         
         
         
-          5 分钟
+          6 分钟
         
       </span>
     
@@ -268,19 +268,31 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">reduce优化(补充)</h1>
+            <h1 id="seo-header">cublas库 学习</h1>
             
             
               <div class="markdown-body">
                 
-                <h3 id="优化6：调整Block大小"><a href="#优化6：调整Block大小" class="headerlink" title="优化6：调整Block大小"></a>优化6：调整Block大小</h3><p>保持每个block的线程数不变，一个线程处理一个数据，两个数据，四个数据。处理多少个数据比较合适呢，这个就需要试了，获得最优的NumPerThread取值。每个线程处理数据增大一倍，同时blockPerGrid 就要减少一倍。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-function">__global__ <span class="hljs-type">void</span> <span class="hljs-title">reduce6</span><span class="hljs-params">(<span class="hljs-type">int</span> *d_in,<span class="hljs-type">int</span> *d_out)</span></span>&#123;<br>        __shared__ <span class="hljs-type">int</span> sdata[threadsPerBlock];<br>        <span class="hljs-comment">// 数组的全局索引也要变</span><br>        <span class="hljs-type">int</span> i = threadIdx.x + blockIdx.x * (blockDim.x * NumPerThread);<br>        <span class="hljs-type">int</span> tid = threadIdx.x;<br>        <span class="hljs-comment">// 累加一个线程处理的数据</span><br>        <span class="hljs-comment">// 一定要加上这句,确保在开始累加数据之前，它的值是 0</span><br>        sdata[tid] = <span class="hljs-number">0</span>;<br>        <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> j = <span class="hljs-number">0</span>;j&lt;NumPerThread;j++)&#123;<br>                sdata[tid] += d_in[i + blockDim.x * j];<br>        &#125;<br>        __syncthreads();<br><br>        <span class="hljs-keyword">if</span>(blockDim.x &gt;= <span class="hljs-number">1024</span> &amp;&amp; tid &lt; <span class="hljs-number">512</span>)&#123;<br>                sdata[tid] += sdata[tid + <span class="hljs-number">512</span>];<br>                __syncthreads();<br>        &#125;<br>        <span class="hljs-keyword">if</span>(blockDim.x &gt;= <span class="hljs-number">512</span> &amp;&amp; tid &lt; <span class="hljs-number">256</span>)&#123;<br>                sdata[tid] += sdata[tid + <span class="hljs-number">256</span>];<br>                __syncthreads();<br>        &#125;<br>        <span class="hljs-keyword">if</span>(blockDim.x &gt;= <span class="hljs-number">256</span> &amp;&amp; tid &lt; <span class="hljs-number">128</span>)&#123;<br>                sdata[tid] += sdata[tid + <span class="hljs-number">128</span>];<br>                __syncthreads();<br>        &#125;<br>        <span class="hljs-keyword">if</span>(blockDim.x &gt;= <span class="hljs-number">128</span> &amp;&amp; tid &lt; <span class="hljs-number">64</span>)&#123;<br>                sdata[tid] += sdata[tid + <span class="hljs-number">64</span>];<br>                __syncthreads();<br>        &#125;<br>        <span class="hljs-keyword">if</span>(tid &lt; <span class="hljs-number">32</span>)&#123;<br>                <span class="hljs-built_in">warpReduce</span>(sdata,tid);<br>        &#125;<br>        <span class="hljs-keyword">if</span>(tid == <span class="hljs-number">0</span>)&#123;<br>                d_out[blockIdx.x] = sdata[<span class="hljs-number">0</span>];<br>        &#125;<br>&#125;<br><br>reduce6&lt;&lt;&lt;blocksPerGrid/NumPerThread,threadsPerBlock&gt;&gt;&gt;(d_a,d_partial_c);<br></code></pre></td></tr></table></figure>
+                <h2 id="cublas库"><a href="#cublas库" class="headerlink" title="cublas库"></a>cublas库</h2><h3 id="what-is-cublas？"><a href="#what-is-cublas？" class="headerlink" title="what is cublas？"></a>what is cublas？</h3><p>CUDA Basic Linear Algebra Subprograms（BLAS）提供了高效计算线性代数的方法。</p>
+<p>有三级API和cuBLAS 扩展、辅助API：</p>
+<p>最基础操作，例如加、减、最大值、复制、转置<br>矩阵的一般操作，例如特殊类型矩阵的乘法、rank<br>更复杂一些的例子，例如“使用一般矩阵计算批量的矩阵-矩阵乘积”，‘使用高斯复杂度降低算法计算一般矩阵的矩阵-矩阵乘积’<br>API介绍：<a target="_blank" rel="noopener" href="https://docs.nvidia.com/cuda/cublas/index.html">https://docs.nvidia.com/cuda/cublas/index.html</a></p>
+<p>样例代码：<a target="_blank" rel="noopener" href="https://github.com/NVIDIA/CUDALibrarySamples/tree/master/cuBLAS">https://github.com/NVIDIA/CUDALibrarySamples/tree/master/cuBLAS</a></p>
+<p>功能：</p>
+<p>向量和矩阵操作：包括向量加法、向量-标量乘法、向量点积等。<br>矩阵乘法：支持各种形式的矩阵乘法，包括方阵乘法、矩阵-向量乘法等。<br>分解和求逆：例如LU分解、Cholesky分解和矩阵求逆等。<br>求解线性系统：使用不同的方法解决线性方程组。</p>
+<h3 id="实例程序："><a href="#实例程序：" class="headerlink" title="实例程序："></a>实例程序：</h3><p>计算三角带状矩阵向量乘法</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/prinTao/article/details/135634551">【cuda】六、基础库：cuBLAS入门-CSDN博客</a></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;cstdio&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;cstdlib&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;vector&gt;</span></span><br><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;hipblas.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;hip/hip_runtime.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;hip/hip_runtime_api.h&gt;</span></span><br><br><span class="hljs-comment">//#include &lt;hipblas_utils.h&gt;</span><br><br><span class="hljs-keyword">using</span> data_type = <span class="hljs-type">double</span>; <span class="hljs-comment">//数据类型为double</span><br><br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-type">int</span> argc,<span class="hljs-type">char</span> *argv[])</span></span>&#123;<br>	<span class="hljs-comment">//声明一个hipBLAS句柄</span><br>	hipblasHandle_t hipblasH = <span class="hljs-literal">NULL</span>;<br>	<span class="hljs-comment">//声明一个HIP 流</span><br>	hipStream_t stream = <span class="hljs-literal">NULL</span>;<br><br>	<span class="hljs-type">const</span> <span class="hljs-type">int</span> m = <span class="hljs-number">2</span>;<span class="hljs-comment">//矩阵A的行数</span><br>	<span class="hljs-type">const</span> <span class="hljs-type">int</span> n = <span class="hljs-number">2</span>;<span class="hljs-comment">//矩阵A的列数</span><br>	<span class="hljs-type">const</span> <span class="hljs-type">int</span> k = <span class="hljs-number">1</span>;<span class="hljs-comment">//定义超对角线元素的个数（用于三角矩阵的函数）</span><br>	<span class="hljs-type">const</span> <span class="hljs-type">int</span> lda = m;<span class="hljs-comment">//定义矩阵A的领先维度（leading dimension）</span><br><br>	<span class="hljs-comment">//初始化矩阵A和向量x</span><br>	<span class="hljs-comment">//std::vector 是c++标准库中的动态数组类，可以存储动态变化数量的元素</span><br>	<span class="hljs-type">const</span> std::vector&lt;data_type&gt; A = &#123;<span class="hljs-number">1.0</span>,<span class="hljs-number">3.0</span>,<span class="hljs-number">2.0</span>,<span class="hljs-number">4.0</span>&#125;;<br>	std::vector&lt;data_type&gt; x = &#123;<span class="hljs-number">5.0</span>,<span class="hljs-number">6.0</span>&#125;;<br>	<span class="hljs-type">const</span> <span class="hljs-type">int</span> incx = <span class="hljs-number">1</span>;<span class="hljs-comment">//x的步长</span><br>	<br>	data_type *d_A = <span class="hljs-literal">nullptr</span>;<span class="hljs-comment">//设备端的矩阵A</span><br>	data_type *d_x = <span class="hljs-literal">nullptr</span>;<span class="hljs-comment">//设备端的向量x</span><br>	<br>	<span class="hljs-comment">//hipBLAS的相关设置</span><br>	hipblasFillMode_t uplo = HIPBLAS_FILL_MODE_UPPER;<span class="hljs-comment">//使用上三角形式</span><br>	hipblasOperation_t transa = HIPBLAS_OP_N;<span class="hljs-comment">//矩阵A不进行转置</span><br>	hipblasDiagType_t diag = HIPBLAS_DIAG_NON_UNIT;<span class="hljs-comment">//矩阵A的对角线元素不被视为1</span><br><br>	<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;A\n&quot;</span>);<br><span class="hljs-comment">//	print_matrix(m,n,A.data(),lda);</span><br>	<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;======\n&quot;</span>);<br>	<br>	<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;x\n&quot;</span>);<br><span class="hljs-comment">//	print_vector(x.size(),x.data());</span><br>	<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;=====\n&quot;</span>);<br><br>	<span class="hljs-comment">//step1</span><br><span class="hljs-comment">//	hipblasCreate(&amp;hipblasH);	</span><br><br><br>	<br><br><br><br><br>	<span class="hljs-keyword">return</span> EXIT_SUCCESS;<br><br>&#125;<br><br></code></pre></td></tr></table></figure>
 
-
-
-<h3 id="优化7：shuffle指令"><a href="#优化7：shuffle指令" class="headerlink" title="优化7：shuffle指令"></a>优化7：shuffle指令</h3><h4 id="shuffle指令"><a href="#shuffle指令" class="headerlink" title="shuffle指令"></a>shuffle指令</h4><p>NV提出了Shuffle指令，对于reduce优化有着非常好的效果。目前绝大多数访存类算子，像是softmax，batch_norm，reduce等，都是用Shuffle实现。所以，在这里谈一下这么把shuffle指令用在reduce优化上。</p>
-<p>Shuffle指令是一组针对warp的指令。Shuffle指令最重要的特性就是<strong>warp内的寄存器可以相互访问</strong>。在没有shuffle指令的时候，各个线程在进行通信时只能通过shared memory来访问彼此的寄存器。而采用了shuffle指令之后，<strong>warp内的线程可以直接对其他线程的寄存器进行访存</strong>。通过这种方式可以减少访存的延时。除此之外，带来的最大好处就是可编程性提高了，在某些场景下，<strong>就不用shared memory</strong>了。毕竟，开发者要自己去控制 shared memory还是挺麻烦的一个事。</p>
-<p>以后有时间再研究</p>
+<h3 id="卡住了，hip和cuda-blas-库不同"><a href="#卡住了，hip和cuda-blas-库不同" class="headerlink" title="卡住了，hip和cuda  blas 库不同"></a>卡住了，hip和cuda  blas 库不同</h3><p>cuda的库#include &lt;cublas_utils.h&gt;在hip中#include &lt;hipblas_utils.h&gt;，不能调用</p>
+<p>所以后面的一些库函数也无法调用。</p>
+<p>cublas:</p>
+<p>API介绍：<a target="_blank" rel="noopener" href="https://docs.nvidia.com/cuda/cublas/index.html">https://docs.nvidia.com/cuda/cublas/index.html</a></p>
+<p>样例代码：<a target="_blank" rel="noopener" href="https://github.com/NVIDIA/CUDALibrarySamples/tree/master/cuBLAS">https://github.com/NVIDIA/CUDALibrarySamples/tree/master/cuBLAS</a></p>
+<p>hipblas:</p>
+<p><a target="_blank" rel="noopener" href="https://rocmdocs.amd.com/projects/hipBLAS/en/latest/index.html">hipBLAS documentation — hipBLAS 2.1.0 Documentation (amd.com)</a></p>
+<p>有时间再研究吧。。。。。</p>
+<p>先用cuda试试</p>
+<p>因为比赛是用的dcu卡，要用hip，这个方法以后再研究。</p>
 
                 
               </div>
@@ -326,8 +338,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>reduce优化(补充)</div>
-      <div>http://example.com/2024/06/30/reduce优化(补充)/</div>
+      <div>cublas库 学习</div>
+      <div>http://example.com/2024/06/30/cublas库/</div>
     </div>
     <div class="license-meta">
       
@@ -371,18 +383,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2024/06/30/gemm%E4%BC%98%E5%8C%96/" title="">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile"></span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2024/06/29/reduce%E4%BC%98%E5%8C%96/" title="reduce逐步优化">
-                        <span class="hidden-mobile">reduce逐步优化</span>
+                      <a href="/2024/06/30/gemm%E4%BC%98%E5%8C%96/" title="">
+                        <span class="hidden-mobile"></span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
