@@ -16,22 +16,27 @@
   <meta name="author" content="hzbing">
   <meta name="keywords" content="">
   
-    <meta name="description" content="gemm">
+    <meta name="description" content="gemm+im2col参考资料高性能卷积计算：img2col 原理详解-CSDN博客 使用 C++ 实现 im2col 操作 - Fenrier Lab (seanwangjs.github.io) im2colimg2col 是一种实现卷积操作的加速计算策略。它能将卷积操作转化为 GEMM，从而最大化地缩短卷积计算的时间。 为什么要将卷积操作转化为 GEMM 呢？1.因为线性代数领域已经有非常成">
 <meta property="og:type" content="article">
-<meta property="og:title" content="gemm">
-<meta property="og:url" content="http://example.com/2024/07/01/gemm%E4%BC%98%E5%8C%96/index.html">
+<meta property="og:title" content="gemm+im2col">
+<meta property="og:url" content="http://example.com/2024/07/01/gemm_im2col/index.html">
 <meta property="og:site_name" content="一拳超人">
-<meta property="og:description" content="gemm">
+<meta property="og:description" content="gemm+im2col参考资料高性能卷积计算：img2col 原理详解-CSDN博客 使用 C++ 实现 im2col 操作 - Fenrier Lab (seanwangjs.github.io) im2colimg2col 是一种实现卷积操作的加速计算策略。它能将卷积操作转化为 GEMM，从而最大化地缩短卷积计算的时间。 为什么要将卷积操作转化为 GEMM 呢？1.因为线性代数领域已经有非常成">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/1719824785939.png">
+<meta property="og:image" content="http://example.com/images/1719824926813.png">
+<meta property="og:image" content="http://example.com/images/1719825159189.png">
+<meta property="og:image" content="http://example.com/images/1719825458677.png">
 <meta property="article:published_time" content="2024-07-01T08:00:00.000Z">
-<meta property="article:modified_time" content="2024-07-01T07:45:25.238Z">
+<meta property="article:modified_time" content="2024-07-01T12:48:13.699Z">
 <meta property="article:author" content="hzbing">
 <meta property="article:tag" content="hpc">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/images/1719824785939.png">
   
   
   
-  <title>gemm - 一拳超人</title>
+  <title>gemm+im2col - 一拳超人</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -197,7 +202,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="gemm"></span>
+            <span id="subtitle" data-typed-text="gemm+im2col"></span>
           
         </div>
 
@@ -220,7 +225,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1 字
+          541 字
         
       </span>
     
@@ -231,7 +236,7 @@
         
         
         
-          1 分钟
+          5 分钟
         
       </span>
     
@@ -268,12 +273,29 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">gemm</h1>
+            <h1 id="seo-header">gemm+im2col</h1>
             
             
               <div class="markdown-body">
                 
-                <h2 id="gemm"><a href="#gemm" class="headerlink" title="gemm"></a>gemm</h2>
+                <h2 id="gemm-im2col"><a href="#gemm-im2col" class="headerlink" title="gemm+im2col"></a>gemm+im2col</h2><h4 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h4><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/taoqick/article/details/129051936">高性能卷积计算：img2col 原理详解-CSDN博客</a></p>
+<p><a target="_blank" rel="noopener" href="https://seanwangjs.github.io/2022/04/28/im2col-programming.html">使用 C++ 实现 im2col 操作 - Fenrier Lab (seanwangjs.github.io)</a></p>
+<h3 id="im2col"><a href="#im2col" class="headerlink" title="im2col"></a>im2col</h3><p>img2col 是一种实现卷积操作的加速计算策略。它能将卷积操作转化为 GEMM，从而最大化地缩短卷积计算的时间。</p>
+<h4 id="为什么要将卷积操作转化为-GEMM-呢？"><a href="#为什么要将卷积操作转化为-GEMM-呢？" class="headerlink" title="为什么要将卷积操作转化为 GEMM 呢？"></a><strong>为什么要将卷积操作转化为 GEMM 呢？</strong></h4><p>1.因为线性代数领域已经有非常成熟的计算接口（BLAS，Fortran 语言实现）来高效地实现大型的矩阵乘法，几乎可以做到极限优化。</p>
+<p>2.将卷积过程中用到的所有特征子矩阵整合成一个大型矩阵存放在连续的内存中，虽然增加了存储成本，但是减少了内存访问的次数，从而缩短了计算时间。</p>
+<h4 id="img2col将卷积操作转化为GEMM过程"><a href="#img2col将卷积操作转化为GEMM过程" class="headerlink" title="img2col将卷积操作转化为GEMM过程"></a>img2col将卷积操作转化为GEMM过程</h4><p><img src="/../images/1719824785939.png" srcset="/img/loading.gif" lazyload alt="1719824785939"></p>
+<h5 id="1-Input-Features-Input-Matrix"><a href="#1-Input-Features-Input-Matrix" class="headerlink" title="1.Input Features &gt; Input Matrix"></a>1.Input Features &gt; Input Matrix</h5><p><img src="/../images/1719824926813.png" srcset="/img/loading.gif" lazyload alt="1719824926813"></p>
+<p>输入特征图有三个通道，用三个不同的颜色来表示</p>
+<p>因为卷积核的大小为2乘2，当卷积核的滑动步长为1的时候，那么传统的直接卷积计算一共需要进行 4 次卷积核与对应特征子矩阵之间的点积运算。</p>
+<p>现在把每一个子矩阵都排列成一个行向量，就得到了三个通道的特征图对应的三个矩阵（Input Matrix）</p>
+<h5 id="2-Convolution-Kernel-Kernel-Matrix"><a href="#2-Convolution-Kernel-Kernel-Matrix" class="headerlink" title="2.Convolution Kernel &gt; Kernel Matrix"></a>2.Convolution Kernel &gt; Kernel Matrix</h5><p><img src="/../images/1719825159189.png" srcset="/img/loading.gif" lazyload alt="1719825159189"></p>
+<p>卷积核有两个，每一个也是三通道的，我们研究其中一个卷积核</p>
+<p>将卷积核转换为列向量，然后再把每一个通道对应的 Kernel Matrix 堆叠成一个完整的 Kernel Matrix。</p>
+<h5 id="3-Input-Matrix-Kernel-Matrix-Output-Matrix"><a href="#3-Input-Matrix-Kernel-Matrix-Output-Matrix" class="headerlink" title="3.Input Matrix * Kernel Matrix &#x3D; Output Matrix"></a>3.Input Matrix * Kernel Matrix &#x3D; Output Matrix</h5><p>调用GEMM接口，将两个矩阵进行乘积。然后将输出矩阵通过 col2img 函数就可以得到和卷积运算一样的输出特征图。</p>
+<p><img src="/../images/1719825458677.png" srcset="/img/loading.gif" lazyload alt="1719825458677"></p>
+<h4 id="c-代码实现im2col"><a href="#c-代码实现im2col" class="headerlink" title="c++代码实现im2col"></a>c++代码实现im2col</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">im2col</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">float</span>* data_im, </span></span><br><span class="hljs-params"><span class="hljs-function">    <span class="hljs-type">const</span> <span class="hljs-type">int</span> im_c, </span></span><br><span class="hljs-params"><span class="hljs-function">    <span class="hljs-type">const</span> <span class="hljs-type">int</span> im_w, </span></span><br><span class="hljs-params"><span class="hljs-function">    <span class="hljs-type">const</span> <span class="hljs-type">int</span> im_h, </span></span><br><span class="hljs-params"><span class="hljs-function">    <span class="hljs-type">const</span> <span class="hljs-type">int</span> kw, </span></span><br><span class="hljs-params"><span class="hljs-function">    <span class="hljs-type">const</span> <span class="hljs-type">int</span> kh, </span></span><br><span class="hljs-params"><span class="hljs-function">    <span class="hljs-type">const</span> <span class="hljs-type">int</span> ph, </span></span><br><span class="hljs-params"><span class="hljs-function">    <span class="hljs-type">const</span> <span class="hljs-type">int</span> pw, </span></span><br><span class="hljs-params"><span class="hljs-function">    <span class="hljs-type">const</span> <span class="hljs-type">int</span> sh,</span></span><br><span class="hljs-params"><span class="hljs-function">    <span class="hljs-type">const</span> <span class="hljs-type">int</span> sw,</span></span><br><span class="hljs-params"><span class="hljs-function">    <span class="hljs-type">float</span>* data_col, </span></span><br><span class="hljs-params"><span class="hljs-function">    <span class="hljs-type">const</span> <span class="hljs-type">int</span> col_w, </span></span><br><span class="hljs-params"><span class="hljs-function">    <span class="hljs-type">const</span> <span class="hljs-type">int</span> col_h)</span> </span>&#123;<br><br>        <span class="hljs-comment">// win_w and win_h are the stop times of the kernel in the image.</span><br>        <span class="hljs-type">int</span> win_w = (im_w + <span class="hljs-number">2</span> * pw - kw + <span class="hljs-number">1</span>) / sw;<br>        <span class="hljs-type">int</span> win_h = (im_h + <span class="hljs-number">2</span> * ph - kh + <span class="hljs-number">1</span>) / sh;<br><br>        <br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i&lt; col_h; i++) &#123;<br><br>            x = i % win_w;<br>            y = i / win_w;<br>            <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> j = <span class="hljs-number">0</span>; j &lt; col_w; j++) &#123;<br>                <span class="hljs-type">int</span> c = j / (kw * kh);<br>                <span class="hljs-type">int</span> kj = j % kw;<br>                <span class="hljs-type">int</span> ki = j / kw;<br><br>                <span class="hljs-type">int</span> row = y * sh + ki;<br>                <span class="hljs-type">int</span> col = x * sw + kj;<br><br>                data_col[i * col_w + j] = <span class="hljs-built_in">get_data</span>(data_im, c, im_w, im_h, row, col, ph, pw);<br>            &#125;<br>        &#125;<br><br>    &#125;<br></code></pre></td></tr></table></figure>
+
+
                 
               </div>
             
@@ -318,8 +340,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>gemm</div>
-      <div>http://example.com/2024/07/01/gemm优化/</div>
+      <div>gemm+im2col</div>
+      <div>http://example.com/2024/07/01/gemm_im2col/</div>
     </div>
     <div class="license-meta">
       
