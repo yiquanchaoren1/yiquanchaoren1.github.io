@@ -4,6 +4,31 @@
   
   
   <entry>
+    <title>gemm优化</title>
+    <link href="/2024/07/02/gemm%E4%BC%98%E5%8C%96/"/>
+    <url>/2024/07/02/gemm%E4%BC%98%E5%8C%96/</url>
+    
+    <content type="html"><![CDATA[<h1 id="Gemm-优化"><a href="#Gemm-优化" class="headerlink" title="Gemm 优化"></a>Gemm 优化</h1><p><strong>参考资料</strong></p><p><a href="https://zhuanlan.zhihu.com/p/435908830">深入浅出GPU优化系列：GEMM优化（一） - 知乎 (zhihu.com)</a></p><h2 id="整体思路"><a href="#整体思路" class="headerlink" title="整体思路"></a>整体思路</h2><h3 id="分块"><a href="#分块" class="headerlink" title="分块"></a>分块</h3><p><strong>分块是针对整个问题，先成条，即每个block，再分成block的每一次大迭代，再分成大迭代中的每次小迭代。</strong></p><p><strong>先分成条（block），再分成更小的条（大迭代），再分。</strong></p><p>取bm&#x3D;128,bn&#x3D;128,bk&#x3D;8,rm&#x3D;8,rn&#x3D;8</p><p>A，B，C，其维度都是2048×2048</p><p>要求解C&#x3D;A×B。那么我们需要开启（2048&#x2F;128）×（2048&#x2F;128）&#x3D;<strong>256个block</strong>，</p><p>每个block里面有（128&#x2F;8）×（128&#x2F;8）&#x3D;<strong>256个线程</strong>，</p><p>每个线程需要负责计算C矩阵中8×8&#x3D;64个元素的结果，每个block负责256×64&#x3D;16384个元素的结果。</p><p><img src="/../images/1719926905491.png" alt="1719926905491"></p><p>一个block算的是，128 × 2048 ，2048 × 128 ，大长条（block）。</p><p><img src="/../images/1719927479717.png" alt="1719927479717"></p><p><img src="/../images/1719927489368.png" alt="1719927489368"></p><p>block中有K次大迭代，K&#x3D; k&#x2F;bk&#x3D;2048&#x2F;8 &#x3D; 256，一次大迭代算的是128 × 8     8 × 128</p><p>小条（大迭代）</p><p><img src="/../images/1719927530708.png" alt="1719927530708"></p><p><img src="/../images/1719927534500.png" alt="1719927534500"></p><p>bk &#x3D; 8 有8次小迭代，一次小迭代算的是 8 × 1   1 × 8</p><p>更小的条（小迭代），把上面的图放大</p><p><img src="/../images/1719927620368.png" alt="1719927620368"></p><h3 id="迭代"><a href="#迭代" class="headerlink" title="迭代"></a>迭代</h3><p><strong>迭代是针对一个block进行的，每一个block都要进行256次大迭代，每个大迭代里面又有8个小迭代</strong></p><p><strong>即：写代码的逻辑</strong></p><p>明确了上面的参数之后，我们来仔细地观察其中<strong>一个block</strong>的计算逻辑。对于这个block而言，它需要进行2048&#x2F;8&#x3D;256次迭代，我们先把这个迭代称为<strong>大迭代</strong>，每一次大迭代都需要把A里面128×8&#x3D;1024个元素和B里面8×128&#x3D;1024个元素先放到shared memory中。然后这个block中的256个线程把结果计算出来。计算完之后，再进入下一次大迭代。不断重复该过程，直至这个block负责的16384个元素的结果被求解出。大迭代示意图如下：</p><p><img src="/../images/1719926415038.png" alt="1719926415038"></p><p>随后再具体看看每一个大迭代中，block中的线程的计算逻辑。在进行一个大迭代时，shared memory中有128×8&#x3D;1024个A矩阵元素和8×128&#x3D;1024个B矩阵元素。随后，每个线程需要进行8次迭代，我们把这个迭代成为<strong>小迭代</strong>。bk&#x3D;8，所以有8次小迭代。每一次小迭代中，每个线程需要从shared memory中拿到A矩阵的一小列和B矩阵的一小行，即8个A的元素和8个B的元素。线程将这8+8&#x3D;16个元素放置在寄存器中。每个线程需要负责8×8&#x3D;64个元素的计算，一共会产生64条FFMA指令。小迭代示意图如下：</p><p><img src="/../images/1719926427313.png" alt="1719926427313"></p><p>总的来说，<strong>对于一个block而言，有256个大迭代，每个大迭代中又有8个小迭代</strong></p><p>总之很绕，看了好久，脑子里有个模糊的概念了。然后看代码的实现吧，明天开组会讲点啥呢？</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>hpc</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>hpc</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>gemm+im2col</title>
     <link href="/2024/07/01/gemm_im2col/"/>
     <url>/2024/07/01/gemm_im2col/</url>
