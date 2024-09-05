@@ -4,9 +4,34 @@
   
   
   <entry>
+    <title>project02(加入US核函数)</title>
+    <link href="/2024/09/05/project02/"/>
+    <url>/2024/09/05/project02/</url>
+    
+    <content type="html"><![CDATA[<p><img src="/../images/1725510566478.png" alt="1725510566478"></p><p>invflux函数不是US特有的，把US转成hip的时候，子函数怎么处理呢？因为其他函数还要用。</p><p>编译两个函数，cpu and dcu. invflux.o  and invflux1.o</p><p><img src="/../images/1725518462734.png" alt="1725518462734"></p><p>这个问题是，传入的是数组的指针，而函数原型期望的是一个具体的数组，具有明确的维度。这种情况下，C++ 编译器会抱怨类型不匹配，因为指针和数组并不完全等价，特别是当数组是多维数组时。</p><p>这个应该是c++的问题。.c 没有问题。</p><p>但是如果不把equation改成.cpp，就不能用hip</p><p>挺麻烦的。</p><p>把所有的数组都改成一维的吧。不然太容易出事了。</p><p>步骤：</p><p>不考虑hip，逐个函数改成一维数组。改完验证。</p><p><img src="/../images/1725528962350.png" alt="1725528962350"></p><p>把Flux_FVM_xyz 转为一维后error</p><p>找到具体的函数。</p><p>先把xyz全加上，都用之前的。</p><p>感觉还是多维数组转一维的时候计算出了问题，偏移量？for循环？</p><p>只改Flux_FVM_x，</p><p><img src="/../images/1725539404148.png" alt="1725539404148"></p><p>说明是Flux_FVM_x里面的问题。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>项目</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>项目</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>project01</title>
-    <link href="/2024/09/04/%E9%A1%B9%E7%9B%AE%E6%97%A5%E5%BF%97/"/>
-    <url>/2024/09/04/%E9%A1%B9%E7%9B%AE%E6%97%A5%E5%BF%97/</url>
+    <link href="/2024/09/04/project01/"/>
+    <url>/2024/09/04/project01/</url>
     
     <content type="html"><![CDATA[<p>把所有的全局变量通过参数的形式传入函数。</p><p><img src="/../images/1725455051738.png" alt="1725455051738"></p><p>这些值，改完后运行没有问题。</p><p>后面试一下混编，c和c++一起，生成一个动态链接库。</p><p>c不行的话，后缀都改成cpp</p><p>先在<code>euler_equation_fvm_c_</code>里面加上extern “C”，混编要注意编译选项的问题。</p><p>一个函数一个函数测试，先从US开始。</p><p>找到具体的dcu bug在哪个地方。</p><p>tip： 研究生能不能取消导师制度，学生不是老师压榨的工具。</p>]]></content>
     
