@@ -16,27 +16,24 @@
   <meta name="author" content="hzbing">
   <meta name="keywords" content="">
   
-    <meta name="description" content="invflux函数不是US特有的，把US转成hip的时候，子函数怎么处理呢？因为其他函数还要用。 编译两个函数，cpu and dcu. invflux.o  and invflux1.o  这个问题是，传入的是数组的指针，而函数原型期望的是一个具体的数组，具有明确的维度。这种情况下，C++ 编译器会抱怨类型不匹配，因为指针和数组并不完全等价，特别是当数组是多维数组时。 这个应该是c++的问题。">
+    <meta name="description" content="对比两个代码Flux_x_FVM1.c    Flux_x_FVM.c没有发现任何问题。 计算机内部发生了什么。  对应c，k,j,i  &#x3D; 27 ,22 ,27 根据下标找不太现实。 在指定的位置输出，比较两个文件的数据，每一行一个数据，检查偏移量是不是计算有错误。 只改x和y，输出的内容是一样的，说明这个错误在两个函数里面都有。 输出了x里面fluid &#x3D; 1 的值，没有问">
 <meta property="og:type" content="article">
-<meta property="og:title" content="project02">
-<meta property="og:url" content="http://example.com/2024/09/05/project02/index.html">
+<meta property="og:title" content="project03">
+<meta property="og:url" content="http://example.com/2024/09/07/project03/index.html">
 <meta property="og:site_name" content="一拳超人">
-<meta property="og:description" content="invflux函数不是US特有的，把US转成hip的时候，子函数怎么处理呢？因为其他函数还要用。 编译两个函数，cpu and dcu. invflux.o  and invflux1.o  这个问题是，传入的是数组的指针，而函数原型期望的是一个具体的数组，具有明确的维度。这种情况下，C++ 编译器会抱怨类型不匹配，因为指针和数组并不完全等价，特别是当数组是多维数组时。 这个应该是c++的问题。">
+<meta property="og:description" content="对比两个代码Flux_x_FVM1.c    Flux_x_FVM.c没有发现任何问题。 计算机内部发生了什么。  对应c，k,j,i  &#x3D; 27 ,22 ,27 根据下标找不太现实。 在指定的位置输出，比较两个文件的数据，每一行一个数据，检查偏移量是不是计算有错误。 只改x和y，输出的内容是一样的，说明这个错误在两个函数里面都有。 输出了x里面fluid &#x3D; 1 的值，没有问">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/images/1725510566478.png">
-<meta property="og:image" content="http://example.com/images/1725518462734.png">
-<meta property="og:image" content="http://example.com/images/1725528962350.png">
-<meta property="og:image" content="http://example.com/images/1725539404148.png">
-<meta property="article:published_time" content="2024-09-05T02:30:00.000Z">
-<meta property="article:modified_time" content="2024-09-05T12:44:08.878Z">
+<meta property="og:image" content="http://example.com/images/1725601244759.png">
+<meta property="article:published_time" content="2024-09-07T12:30:00.000Z">
+<meta property="article:modified_time" content="2024-09-07T12:41:50.884Z">
 <meta property="article:author" content="hzbing">
 <meta property="article:tag" content="项目">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://example.com/images/1725510566478.png">
+<meta name="twitter:image" content="http://example.com/images/1725601244759.png">
   
   
   
-  <title>project02 - 一拳超人</title>
+  <title>project03 - 一拳超人</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -202,7 +199,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="project02"></span>
+            <span id="subtitle" data-typed-text="project03"></span>
           
         </div>
 
@@ -213,8 +210,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2024-09-05 10:30" pubdate>
-          2024年9月5日 上午
+        <time datetime="2024-09-07 20:30" pubdate>
+          2024年9月7日 晚上
         </time>
       </span>
     
@@ -225,7 +222,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          258 字
+          199 字
         
       </span>
     
@@ -236,7 +233,7 @@
         
         
         
-          3 分钟
+          2 分钟
         
       </span>
     
@@ -273,30 +270,42 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">project02</h1>
+            <h1 id="seo-header">project03</h1>
             
             
               <div class="markdown-body">
                 
-                <p><img src="/../images/1725510566478.png" srcset="/img/loading.gif" lazyload alt="1725510566478"></p>
-<p>invflux函数不是US特有的，把US转成hip的时候，子函数怎么处理呢？因为其他函数还要用。</p>
-<p>编译两个函数，cpu and dcu. invflux.o  and invflux1.o</p>
-<p><img src="/../images/1725518462734.png" srcset="/img/loading.gif" lazyload alt="1725518462734"></p>
-<p>这个问题是，传入的是数组的指针，而函数原型期望的是一个具体的数组，具有明确的维度。这种情况下，C++ 编译器会抱怨类型不匹配，因为指针和数组并不完全等价，特别是当数组是多维数组时。</p>
-<p>这个应该是c++的问题。.c 没有问题。</p>
-<p>但是如果不把equation改成.cpp，就不能用hip</p>
-<p>挺麻烦的。</p>
-<p>把所有的数组都改成一维的吧。不然太容易出事了。</p>
-<p>步骤：</p>
-<p>不考虑hip，逐个函数改成一维数组。改完验证。</p>
-<p><img src="/../images/1725528962350.png" srcset="/img/loading.gif" lazyload alt="1725528962350"></p>
-<p>把Flux_FVM_xyz 转为一维后error</p>
-<p>找到具体的函数。</p>
-<p>先把xyz全加上，都用之前的。</p>
-<p>感觉还是多维数组转一维的时候计算出了问题，偏移量？for循环？</p>
-<p>只改Flux_FVM_x，</p>
-<p><img src="/../images/1725539404148.png" srcset="/img/loading.gif" lazyload alt="1725539404148"></p>
-<p>说明是Flux_FVM_x里面的问题。</p>
+                <p>对比两个代码<code>Flux_x_FVM1.c    Flux_x_FVM.c</code>没有发现任何问题。</p>
+<p>计算机内部发生了什么。</p>
+<p><img src="/../images/1725601244759.png" srcset="/img/loading.gif" lazyload alt="1725601244759"></p>
+<p>对应c，k,j,i  &#x3D; 27 ,22 ,27</p>
+<p>根据下标找不太现实。</p>
+<p>在指定的位置输出，比较两个文件的数据，每一行一个数据，检查偏移量是不是计算有错误。</p>
+<p>只改x和y，输出的内容是一样的，说明这个错误在两个函数里面都有。</p>
+<p>输出了x里面fluid &#x3D; 1 的值，没有问题。</p>
+<p>输出下 fluid &#x3D; 2;</p>
+<p>在特定的地方输出了一些数据，和原始数组作对比</p>
+<p>do istep</p>
+<p>do RK</p>
+<p>RK &#x3D; 1</p>
+<p>flux  Y</p>
+<p>fluid 1 flux1 </p>
+<p>fluid 1 flux2 </p>
+<p>fluid 1 Lcon </p>
+<p>flux  Y</p>
+<p>Y fluid 2 flux1</p>
+<p>fluid 2 flux2</p>
+<p>fluid 2 Lcon </p>
+<p>RK  &#x3D;2 </p>
+<p>flux </p>
+<p>fluid 1 flux1  Y</p>
+<p>fluid 1 flux2 Y</p>
+<p>fluid 1 Lcon  Y</p>
+<p>dL算完是对</p>
+<p>Y flux N 这里，前后不一致，只能是其他的参数传入错误，或者函数本身有错误（函数本身没变，几率小）</p>
+<p>N fluid 2 flux1</p>
+<p>fluid 2 flux2</p>
+<p>Y fluid 2 Lcon N</p>
 
                 
               </div>
@@ -342,8 +351,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>project02</div>
-      <div>http://example.com/2024/09/05/project02/</div>
+      <div>project03</div>
+      <div>http://example.com/2024/09/07/project03/</div>
     </div>
     <div class="license-meta">
       
@@ -355,7 +364,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2024年9月5日</div>
+          <div>2024年9月7日</div>
         </div>
       
       
@@ -387,18 +396,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2024/09/07/project03/" title="project03">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">project03</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2024/09/04/project01/" title="project01">
-                        <span class="hidden-mobile">project01</span>
+                      <a href="/2024/09/05/project02/" title="project02">
+                        <span class="hidden-mobile">project02</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
