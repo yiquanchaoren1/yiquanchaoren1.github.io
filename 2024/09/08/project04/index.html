@@ -16,24 +16,24 @@
   <meta name="author" content="hzbing">
   <meta name="keywords" content="">
   
-    <meta name="description" content="对比两个代码Flux_x_FVM1.c    Flux_x_FVM.c没有发现任何问题。 计算机内部发生了什么。  对应c，k,j,i  &#x3D; 27 ,22 ,27 根据下标找不太现实。 在指定的位置输出，比较两个文件的数据，每一行一个数据，检查偏移量是不是计算有错误。 只改x和y，输出的内容是一样的，说明这个错误在两个函数里面都有。 输出了x里面fluid &#x3D; 1 的值，没有问">
+    <meta name="description" content="找到了，真的不好发现吧。  Flux_xyz_FVM这里是FLuidtwo ，为什么我写了两个FLuidone 在验证一下US和RK，都没问题了，就再写成hip，然后再将两个equation写成一个，减少数据传输。有些值不用传回来。 US没问题 RK没问题 跑一步要十五分钟？ 更改的数组有哪些？ Flux_FVM_US：den 等数组赋值给flux_US Flux_xyz:den 等数组和flux">
 <meta property="og:type" content="article">
-<meta property="og:title" content="project03">
-<meta property="og:url" content="http://example.com/2024/09/07/project03/index.html">
+<meta property="og:title" content="project04">
+<meta property="og:url" content="http://example.com/2024/09/08/project04/index.html">
 <meta property="og:site_name" content="一拳超人">
-<meta property="og:description" content="对比两个代码Flux_x_FVM1.c    Flux_x_FVM.c没有发现任何问题。 计算机内部发生了什么。  对应c，k,j,i  &#x3D; 27 ,22 ,27 根据下标找不太现实。 在指定的位置输出，比较两个文件的数据，每一行一个数据，检查偏移量是不是计算有错误。 只改x和y，输出的内容是一样的，说明这个错误在两个函数里面都有。 输出了x里面fluid &#x3D; 1 的值，没有问">
+<meta property="og:description" content="找到了，真的不好发现吧。  Flux_xyz_FVM这里是FLuidtwo ，为什么我写了两个FLuidone 在验证一下US和RK，都没问题了，就再写成hip，然后再将两个equation写成一个，减少数据传输。有些值不用传回来。 US没问题 RK没问题 跑一步要十五分钟？ 更改的数组有哪些？ Flux_FVM_US：den 等数组赋值给flux_US Flux_xyz:den 等数组和flux">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/images/1725601244759.png">
-<meta property="article:published_time" content="2024-09-07T12:30:00.000Z">
-<meta property="article:modified_time" content="2024-09-07T12:41:50.884Z">
+<meta property="og:image" content="http://example.com/images/1725778438293.png">
+<meta property="article:published_time" content="2024-09-08T06:30:00.000Z">
+<meta property="article:modified_time" content="2024-09-08T12:37:39.850Z">
 <meta property="article:author" content="hzbing">
 <meta property="article:tag" content="项目">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://example.com/images/1725601244759.png">
+<meta name="twitter:image" content="http://example.com/images/1725778438293.png">
   
   
   
-  <title>project03 - 一拳超人</title>
+  <title>project04 - 一拳超人</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -199,7 +199,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="project03"></span>
+            <span id="subtitle" data-typed-text="project04"></span>
           
         </div>
 
@@ -210,8 +210,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2024-09-07 20:30" pubdate>
-          2024年9月7日 晚上
+        <time datetime="2024-09-08 14:30" pubdate>
+          2024年9月8日 下午
         </time>
       </span>
     
@@ -222,7 +222,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          199 字
+          187 字
         
       </span>
     
@@ -270,42 +270,29 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">project03</h1>
+            <h1 id="seo-header">project04</h1>
             
             
               <div class="markdown-body">
                 
-                <p>对比两个代码<code>Flux_x_FVM1.c    Flux_x_FVM.c</code>没有发现任何问题。</p>
-<p>计算机内部发生了什么。</p>
-<p><img src="/../images/1725601244759.png" srcset="/img/loading.gif" lazyload alt="1725601244759"></p>
-<p>对应c，k,j,i  &#x3D; 27 ,22 ,27</p>
-<p>根据下标找不太现实。</p>
-<p>在指定的位置输出，比较两个文件的数据，每一行一个数据，检查偏移量是不是计算有错误。</p>
-<p>只改x和y，输出的内容是一样的，说明这个错误在两个函数里面都有。</p>
-<p>输出了x里面fluid &#x3D; 1 的值，没有问题。</p>
-<p>输出下 fluid &#x3D; 2;</p>
-<p>在特定的地方输出了一些数据，和原始数组作对比</p>
-<p>do istep</p>
-<p>do RK</p>
-<p>RK &#x3D; 1</p>
-<p>flux  Y</p>
-<p>fluid 1 flux1 </p>
-<p>fluid 1 flux2 </p>
-<p>fluid 1 Lcon </p>
-<p>flux  Y</p>
-<p>Y fluid 2 flux1</p>
-<p>fluid 2 flux2</p>
-<p>fluid 2 Lcon </p>
-<p>RK  &#x3D;2 </p>
-<p>flux </p>
-<p>fluid 1 flux1  Y</p>
-<p>fluid 1 flux2 Y</p>
-<p>fluid 1 Lcon  Y</p>
-<p>dL算完是对</p>
-<p>Y flux N 这里，前后不一致，只能是其他的参数传入错误，或者函数本身有错误（函数本身没变，几率小）</p>
-<p>N fluid 2 flux1</p>
-<p>fluid 2 flux2</p>
-<p>Y fluid 2 Lcon N</p>
+                <p>找到了，真的不好发现吧。</p>
+<p><img src="/../images/1725778438293.png" srcset="/img/loading.gif" lazyload alt="1725778438293"></p>
+<p>Flux_xyz_FVM这里是<code>FLuidtwo </code>，为什么我写了两个<code>FLuidone</code></p>
+<p>在验证一下US和RK，都没问题了，就再写成hip，然后再将两个equation写成一个，减少数据传输。有些值不用传回来。</p>
+<p>US没问题</p>
+<p>RK没问题</p>
+<p>跑一步要十五分钟？</p>
+<p>更改的数组有哪些？</p>
+<p>Flux_FVM_US：<br>den 等数组赋值给flux_US</p>
+<p>Flux_xyz:<br>den 等数组和flux_US赋值给flux<br>flux赋值给Lcon</p>
+<p>Euler_equ_RK:<br>flux_US等数组赋值给con</p>
+<p>只有这几个</p>
+<p>flux_US，flux，Lcon，con</p>
+<p>所以说其他的数组和值没变，不用传回来。</p>
+<p>全部传回来：15min</p>
+<p>只传改过的数组：快一点，没快多少。说明传输占用的时间不多。</p>
+<p>两个eqation是eq2文件中的代码</p>
+<p>改为一个equation，写成3D_Cut-Cell_hip_p</p>
 
                 
               </div>
@@ -351,8 +338,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>project03</div>
-      <div>http://example.com/2024/09/07/project03/</div>
+      <div>project04</div>
+      <div>http://example.com/2024/09/08/project04/</div>
     </div>
     <div class="license-meta">
       
@@ -364,7 +351,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2024年9月7日</div>
+          <div>2024年9月8日</div>
         </div>
       
       
@@ -396,18 +383,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2024/09/08/project04/" title="project04">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">project04</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2024/09/05/project02/" title="project02">
-                        <span class="hidden-mobile">project02</span>
+                      <a href="/2024/09/07/project03/" title="project03">
+                        <span class="hidden-mobile">project03</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

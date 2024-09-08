@@ -4,6 +4,31 @@
   
   
   <entry>
+    <title>project04</title>
+    <link href="/2024/09/08/project04/"/>
+    <url>/2024/09/08/project04/</url>
+    
+    <content type="html"><![CDATA[<p>找到了，真的不好发现吧。</p><p><img src="/../images/1725778438293.png" alt="1725778438293"></p><p>Flux_xyz_FVM这里是<code>FLuidtwo </code>，为什么我写了两个<code>FLuidone</code></p><p>在验证一下US和RK，都没问题了，就再写成hip，然后再将两个equation写成一个，减少数据传输。有些值不用传回来。</p><p>US没问题</p><p>RK没问题</p><p>跑一步要十五分钟？</p><p>更改的数组有哪些？</p><p>Flux_FVM_US：<br>den 等数组赋值给flux_US</p><p>Flux_xyz:<br>den 等数组和flux_US赋值给flux<br>flux赋值给Lcon</p><p>Euler_equ_RK:<br>flux_US等数组赋值给con</p><p>只有这几个</p><p>flux_US，flux，Lcon，con</p><p>所以说其他的数组和值没变，不用传回来。</p><p>全部传回来：15min</p><p>只传改过的数组：快一点，没快多少。说明传输占用的时间不多。</p><p>两个eqation是eq2文件中的代码</p><p>改为一个equation，写成3D_Cut-Cell_hip_p</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>项目</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>项目</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>project03</title>
     <link href="/2024/09/07/project03/"/>
     <url>/2024/09/07/project03/</url>
