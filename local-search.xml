@@ -4,6 +4,31 @@
   
   
   <entry>
+    <title>project05</title>
+    <link href="/2024/09/09/project05/"/>
+    <url>/2024/09/09/project05/</url>
+    
+    <content type="html"><![CDATA[<h3 id="find-the-error"><a href="#find-the-error" class="headerlink" title="find the error"></a>find the error</h3><p>程序运行慢的原因：申请的block数太多了，可能线程等待什么的需要时间。</p><p>改完后要比c快很多。</p><p>计算误差</p><p>225轮测试基本没有误差。</p><p><img src="/../images/1725885874956.png" alt="1725885874956"></p><p>时间：225 轮</p><p>hip : 16min      f 走了94轮</p><p>快一倍不止</p><p>时间：5025轮</p><p>差不多三倍</p><h3 id="前期优化已经完成，后期优化方向"><a href="#前期优化已经完成，后期优化方向" class="headerlink" title="前期优化已经完成，后期优化方向"></a>前期优化已经完成，后期优化方向</h3><p>设置合适的block和thread</p><p>合并内存访问</p><p>bank冲突</p><p>shared memory</p><p>寄存器</p><p>多dcu</p><p>多节点</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>项目</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>项目</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>project04</title>
     <link href="/2024/09/08/project04/"/>
     <url>/2024/09/08/project04/</url>

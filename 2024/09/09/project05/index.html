@@ -16,24 +16,24 @@
   <meta name="author" content="hzbing">
   <meta name="keywords" content="">
   
-    <meta name="description" content="找到了，真的不好发现吧。  Flux_xyz_FVM这里是FLuidtwo ，为什么我写了两个FLuidone 在验证一下US和RK，都没问题了，就再写成hip，然后再将两个equation写成一个，减少数据传输。有些值不用传回来。 US没问题 RK没问题 跑一步要十五分钟？ 更改的数组有哪些？ Flux_FVM_US：den 等数组赋值给flux_US Flux_xyz:den 等数组和flux">
+    <meta name="description" content="find the error程序运行慢的原因：申请的block数太多了，可能线程等待什么的需要时间。 改完后要比c快很多。 计算误差 225轮测试基本没有误差。  时间：225 轮 hip : 16min      f 走了94轮 快一倍不止 时间：5025轮 差不多三倍 前期优化已经完成，后期优化方向设置合适的block和thread 合并内存访问 bank冲突 shared memory 寄存">
 <meta property="og:type" content="article">
-<meta property="og:title" content="project04">
-<meta property="og:url" content="http://example.com/2024/09/08/project04/index.html">
+<meta property="og:title" content="project05">
+<meta property="og:url" content="http://example.com/2024/09/09/project05/index.html">
 <meta property="og:site_name" content="一拳超人">
-<meta property="og:description" content="找到了，真的不好发现吧。  Flux_xyz_FVM这里是FLuidtwo ，为什么我写了两个FLuidone 在验证一下US和RK，都没问题了，就再写成hip，然后再将两个equation写成一个，减少数据传输。有些值不用传回来。 US没问题 RK没问题 跑一步要十五分钟？ 更改的数组有哪些？ Flux_FVM_US：den 等数组赋值给flux_US Flux_xyz:den 等数组和flux">
+<meta property="og:description" content="find the error程序运行慢的原因：申请的block数太多了，可能线程等待什么的需要时间。 改完后要比c快很多。 计算误差 225轮测试基本没有误差。  时间：225 轮 hip : 16min      f 走了94轮 快一倍不止 时间：5025轮 差不多三倍 前期优化已经完成，后期优化方向设置合适的block和thread 合并内存访问 bank冲突 shared memory 寄存">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/images/1725778438293.png">
-<meta property="article:published_time" content="2024-09-08T06:30:00.000Z">
-<meta property="article:modified_time" content="2024-09-08T12:37:39.850Z">
+<meta property="og:image" content="http://example.com/images/1725885874956.png">
+<meta property="article:published_time" content="2024-09-09T06:30:00.000Z">
+<meta property="article:modified_time" content="2024-09-09T12:44:38.138Z">
 <meta property="article:author" content="hzbing">
 <meta property="article:tag" content="项目">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://example.com/images/1725778438293.png">
+<meta name="twitter:image" content="http://example.com/images/1725885874956.png">
   
   
   
-  <title>project04 - 一拳超人</title>
+  <title>project05 - 一拳超人</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -199,7 +199,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="project04"></span>
+            <span id="subtitle" data-typed-text="project05"></span>
           
         </div>
 
@@ -210,8 +210,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2024-09-08 14:30" pubdate>
-          2024年9月8日 下午
+        <time datetime="2024-09-09 14:30" pubdate>
+          2024年9月9日 下午
         </time>
       </span>
     
@@ -222,7 +222,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          187 字
+          111 字
         
       </span>
     
@@ -233,7 +233,7 @@
         
         
         
-          2 分钟
+          1 分钟
         
       </span>
     
@@ -270,29 +270,28 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">project04</h1>
+            <h1 id="seo-header">project05</h1>
             
             
               <div class="markdown-body">
                 
-                <p>找到了，真的不好发现吧。</p>
-<p><img src="/../images/1725778438293.png" srcset="/img/loading.gif" lazyload alt="1725778438293"></p>
-<p>Flux_xyz_FVM这里是<code>FLuidtwo </code>，为什么我写了两个<code>FLuidone</code></p>
-<p>在验证一下US和RK，都没问题了，就再写成hip，然后再将两个equation写成一个，减少数据传输。有些值不用传回来。</p>
-<p>US没问题</p>
-<p>RK没问题</p>
-<p>跑一步要十五分钟？</p>
-<p>更改的数组有哪些？</p>
-<p>Flux_FVM_US：<br>den 等数组赋值给flux_US</p>
-<p>Flux_xyz:<br>den 等数组和flux_US赋值给flux<br>flux赋值给Lcon</p>
-<p>Euler_equ_RK:<br>flux_US等数组赋值给con</p>
-<p>只有这几个</p>
-<p>flux_US，flux，Lcon，con</p>
-<p>所以说其他的数组和值没变，不用传回来。</p>
-<p>全部传回来：15min</p>
-<p>只传改过的数组：快一点，没快多少。说明传输占用的时间不多。</p>
-<p>两个eqation是eq2文件中的代码</p>
-<p>改为一个equation，写成3D_Cut-Cell_hip_p</p>
+                <h3 id="find-the-error"><a href="#find-the-error" class="headerlink" title="find the error"></a>find the error</h3><p>程序运行慢的原因：申请的block数太多了，可能线程等待什么的需要时间。</p>
+<p>改完后要比c快很多。</p>
+<p>计算误差</p>
+<p>225轮测试基本没有误差。</p>
+<p><img src="/../images/1725885874956.png" srcset="/img/loading.gif" lazyload alt="1725885874956"></p>
+<p>时间：225 轮</p>
+<p>hip : 16min      f 走了94轮</p>
+<p>快一倍不止</p>
+<p>时间：5025轮</p>
+<p>差不多三倍</p>
+<h3 id="前期优化已经完成，后期优化方向"><a href="#前期优化已经完成，后期优化方向" class="headerlink" title="前期优化已经完成，后期优化方向"></a>前期优化已经完成，后期优化方向</h3><p>设置合适的block和thread</p>
+<p>合并内存访问</p>
+<p>bank冲突</p>
+<p>shared memory</p>
+<p>寄存器</p>
+<p>多dcu</p>
+<p>多节点</p>
 
                 
               </div>
@@ -338,8 +337,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>project04</div>
-      <div>http://example.com/2024/09/08/project04/</div>
+      <div>project05</div>
+      <div>http://example.com/2024/09/09/project05/</div>
     </div>
     <div class="license-meta">
       
@@ -351,7 +350,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2024年9月8日</div>
+          <div>2024年9月9日</div>
         </div>
       
       
@@ -383,18 +382,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2024/09/09/project05/" title="project05">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">project05</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2024/09/07/project03/" title="project03">
-                        <span class="hidden-mobile">project03</span>
+                      <a href="/2024/09/08/project04/" title="project04">
+                        <span class="hidden-mobile">project04</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
