@@ -4,6 +4,31 @@
   
   
   <entry>
+    <title>project06</title>
+    <link href="/2024/09/11/project06/"/>
+    <url>/2024/09/11/project06/</url>
+    
+    <content type="html"><![CDATA[<h3 id="设置合适的threadsPerBlock-and-blocksPerGrid"><a href="#设置合适的threadsPerBlock-and-blocksPerGrid" class="headerlink" title="设置合适的threadsPerBlock and blocksPerGrid"></a>设置合适的threadsPerBlock and blocksPerGrid</h3><h4 id="dim3-blockPerGrid-256-256-256"><a href="#dim3-blockPerGrid-256-256-256" class="headerlink" title="dim3 blockPerGrid(256,256,256)"></a>dim3 blockPerGrid(256,256,256)</h4><p><img src="/../images/1726033156029.png" alt="1726033156029"></p><p><img src="/../images/1726033161793.png" alt="1726033161793"></p><p><img src="/../images/1726033167619.png" alt="1726033167619"></p><p><img src="/../images/1726033169640.png" alt="1726033169640"></p><h4 id="dim3-blockPerGrid-32-32-32"><a href="#dim3-blockPerGrid-32-32-32" class="headerlink" title="dim3 blockPerGrid(32,32,32)"></a>dim3 blockPerGrid(32,32,32)</h4><p>比数组下标大啊，为什么有错误。</p><p>256 也有错误？慢了，改什么了吗？</p><p>为什么之前没输出要打印的东西？</p><p>512？更慢</p><p>用256，5025 跑一个小时看看，不可能啊，什么都没动啊。</p><p>重新开个窗口跑。没用还是一样</p><p>blockPerGrid 50 设置同步，跑了两次的结果</p><p><img src="/../images/1726056863947.png" alt="1726056863947"></p><p><img src="/../images/1726056866342.png" alt="1726056866342"></p><p>blockPerGrid 50 设置同步，</p><p><img src="/../images/1726057060736.png" alt="1726057060736"></p><p>blockPerGrid 256  threadPerBlock 4设置同步 </p><p><img src="/../images/1726059275201.png" alt="1726059275201"></p><p>疑问？</p><p><img src="/../images/1726057910020.png" alt="1726057910020"></p><p>这里的k,j,i是从0开始取的吗，是连续的吗？</p><p>折磨的一天，不想写了。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>项目</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>项目</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>java多线程01</title>
     <link href="/2024/09/10/java%E5%A4%9A%E7%BA%BF%E7%A8%8B01/"/>
     <url>/2024/09/10/java%E5%A4%9A%E7%BA%BF%E7%A8%8B01/</url>
