@@ -4,6 +4,31 @@
   
   
   <entry>
+    <title>project07</title>
+    <link href="/2024/09/14/project07/"/>
+    <url>/2024/09/14/project07/</url>
+    
+    <content type="html"><![CDATA[<p>fortran跑的时间也和之前不一样了，好抽象。快了不少。时间为之前的40%。线程数的问题。</p><p> <strong>FORTRAN:</strong></p><p>max_tstep &#x3D; 101   pg 12 threads  15h </p><p>max_tstep &#x3D; 101   pg  1 threads    7h</p><p>单线程比多线程要快</p><p>max_tstep &#x3D; 101   pg  12 threads   15h正常了</p><p>max_tstep &#x3D; 11   pg  12 threads  15h</p><p>和max_tstep多大没关系，这个是输出文件的次数</p><p> no pg 1 threads  5h大约</p><p>没有pg后变快了 </p><p> no pg 12 threads  12h大约 9s</p><p> no pg 48 threads  24大约</p><p>线程数越多越慢。。。</p><p><strong>hipc</strong>：</p><p><img src="/../images/1726194188049.png" alt="1726194188049"></p><p>之前跑通的时候用的这个卡</p><p>可以指定哪一个节点跑吗？怀疑是节点的问题，但可能性不大。</p><p>我可能改过输出语句，所以跑不了了？</p><p>用之前成功的节点跑也不行，所以和节点没关系。</p><p><img src="/../images/1726207940044.png" alt="1726207940044"></p><p>查看是否是同步的问题，也就是dcu完全算完之后再传给cpu，cpu完成后再执行dcu。</p><p>多加点同步</p><p>验证25次的输出是否和f一致</p><p>256 去掉不必要的注释后 第一轮输出算错,a.txt</p><p>128 也算错了</p><p>256 能加的地方全部加上同步<code>hipDeviceSynchronize()</code> 还是发散了。</p><h4 id="find-the-bug"><a href="#find-the-bug" class="headerlink" title="find the bug"></a>find the bug</h4><p>不知道哪个环节出了问题。</p><p>跑一步，然后输出，比较fortran and hipc</p><p>用diff找差别。</p><p>保证第一步是对的就可以</p><p>设置RK1，只循环一次。用128足够了</p><p>验证了一维c程序，25轮还有误差。一维程序就不对。。。</p><p>但之前是怎么跑通的，是错觉吗？</p><h4 id="验证一维c的正确性"><a href="#验证一维c的正确性" class="headerlink" title="验证一维c的正确性"></a>验证一维c的正确性</h4><p>再测一遍，不对</p><p>用多维的c测一遍。</p><p>多维的没问题。duo.txt</p><p>慢慢往里面加。</p><p>Flux_x 没问题</p><p>Flux_y 有问题</p><p>Flux_z 也有问题</p><p>看代码看不出什么问题</p><p>check一下</p><p>先从y开始，设置RK&#x3D;1 ,Fluid &#x3D; 1.</p><p>check Lcon</p><p>多维和一维</p><p>fluid &#x3D; 1 Lcon 相同</p><p>flux1 也相同，所以flux2也相同</p><p>fluid &#x3D; 1 时没问题。</p><p>fluid &#x3D; 2 </p><p>Lcon diff后不同。</p><p>flux1 相同</p><p>flux2也相同</p><p><img src="/../images/1726302824553.png" alt="1726302824553"></p><p>那这样只能是dy 的问题了。</p><p>dy也没问题</p><p><img src="/../images/1726303204587.png" alt="1726303204587"></p><p><img src="/../images/1726303207829.png" alt="1726303207829"></p><p>？？</p><p>这个咋弄的</p><p>+&#x3D; 和&#x3D; 眼瞎了</p><p>改完后f2_Lcon没问题了。</p><p>修改y后25轮后没问题</p><p>修改z后25轮后没问题</p><p>但是hip版本修改后还是有问题。</p><p>接下来检查US和RK的一维版本有无问题。</p><p>US： OK</p><p>RK：OK</p><p>全部转为一维的了。</p><p>为什么hip还有错误。</p><p>去掉同步试试，没用</p><h4 id="一个核函数一个核函数试。"><a href="#一个核函数一个核函数试。" class="headerlink" title="一个核函数一个核函数试。"></a>一个核函数一个核函数试。</h4><p>从us开始</p><p>在hip_1的基础上hip_2上面改</p><p>想一下怎么改，cpu和dcu的函数不一样，要编译两个子函数。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>项目</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>项目</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>project06</title>
     <link href="/2024/09/11/project06/"/>
     <url>/2024/09/11/project06/</url>
