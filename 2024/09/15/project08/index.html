@@ -16,28 +16,25 @@
   <meta name="author" content="hzbing">
   <meta name="keywords" content="">
   
-    <meta name="description" content="fortran跑的时间也和之前不一样了，好抽象。快了不少。时间为之前的40%。线程数的问题。  FORTRAN: max_tstep &#x3D; 101   pg 12 threads  15h  max_tstep &#x3D; 101   pg  1 threads    7h 单线程比多线程要快 max_tstep &#x3D; 101   pg  12 threads   15h正常了">
+    <meta name="description" content="逐个函数测试hipus没问题。 Flux_x  没问题 Flux_yz 没问题 RK 也没问题 成功了？ 跑5025步试试 真没问题了 具体问题不知道，改为fluidone 和 fluidtwo 分开释放gpu变量就可以了。 thread 和 block 数目 环境 5025轮后的误差测时间225轮fortran单线程：971 seconds fortran多线程： 开了移植代码部分的openmp">
 <meta property="og:type" content="article">
-<meta property="og:title" content="project07">
-<meta property="og:url" content="http://example.com/2024/09/14/project07/index.html">
+<meta property="og:title" content="project08">
+<meta property="og:url" content="http://example.com/2024/09/15/project08/index.html">
 <meta property="og:site_name" content="一拳超人">
-<meta property="og:description" content="fortran跑的时间也和之前不一样了，好抽象。快了不少。时间为之前的40%。线程数的问题。  FORTRAN: max_tstep &#x3D; 101   pg 12 threads  15h  max_tstep &#x3D; 101   pg  1 threads    7h 单线程比多线程要快 max_tstep &#x3D; 101   pg  12 threads   15h正常了">
+<meta property="og:description" content="逐个函数测试hipus没问题。 Flux_x  没问题 Flux_yz 没问题 RK 也没问题 成功了？ 跑5025步试试 真没问题了 具体问题不知道，改为fluidone 和 fluidtwo 分开释放gpu变量就可以了。 thread 和 block 数目 环境 5025轮后的误差测时间225轮fortran单线程：971 seconds fortran多线程： 开了移植代码部分的openmp">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/images/1726194188049.png">
-<meta property="og:image" content="http://example.com/images/1726207940044.png">
-<meta property="og:image" content="http://example.com/images/1726302824553.png">
-<meta property="og:image" content="http://example.com/images/1726303204587.png">
-<meta property="og:image" content="http://example.com/images/1726303207829.png">
-<meta property="article:published_time" content="2024-09-14T12:30:00.000Z">
-<meta property="article:modified_time" content="2024-09-14T13:07:46.415Z">
+<meta property="og:image" content="http://example.com/images/1726390505156.png">
+<meta property="og:image" content="http://example.com/images/1726390536881.png">
+<meta property="article:published_time" content="2024-09-15T08:30:00.000Z">
+<meta property="article:modified_time" content="2024-09-15T12:47:26.915Z">
 <meta property="article:author" content="hzbing">
 <meta property="article:tag" content="项目">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://example.com/images/1726194188049.png">
+<meta name="twitter:image" content="http://example.com/images/1726390505156.png">
   
   
   
-  <title>project07 - 一拳超人</title>
+  <title>project08 - 一拳超人</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -203,7 +200,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="project07"></span>
+            <span id="subtitle" data-typed-text="project08"></span>
           
         </div>
 
@@ -214,8 +211,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2024-09-14 20:30" pubdate>
-          2024年9月14日 晚上
+        <time datetime="2024-09-15 16:30" pubdate>
+          2024年9月15日 下午
         </time>
       </span>
     
@@ -226,7 +223,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          592 字
+          118 字
         
       </span>
     
@@ -237,7 +234,7 @@
         
         
         
-          5 分钟
+          1 分钟
         
       </span>
     
@@ -274,84 +271,35 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">project07</h1>
+            <h1 id="seo-header">project08</h1>
             
             
               <div class="markdown-body">
                 
-                <p>fortran跑的时间也和之前不一样了，好抽象。快了不少。时间为之前的40%。线程数的问题。</p>
-<p> <strong>FORTRAN:</strong></p>
-<p>max_tstep &#x3D; 101   pg 12 threads  15h </p>
-<p>max_tstep &#x3D; 101   pg  1 threads    7h</p>
-<p>单线程比多线程要快</p>
-<p>max_tstep &#x3D; 101   pg  12 threads   15h正常了</p>
-<p>max_tstep &#x3D; 11   pg  12 threads  15h</p>
-<p>和max_tstep多大没关系，这个是输出文件的次数</p>
-<p> no pg 1 threads  5h大约</p>
-<p>没有pg后变快了 </p>
-<p> no pg 12 threads  12h大约 9s</p>
-<p> no pg 48 threads  24大约</p>
-<p>线程数越多越慢。。。</p>
-<p><strong>hipc</strong>：</p>
-<p><img src="/../images/1726194188049.png" srcset="/img/loading.gif" lazyload alt="1726194188049"></p>
-<p>之前跑通的时候用的这个卡</p>
-<p>可以指定哪一个节点跑吗？怀疑是节点的问题，但可能性不大。</p>
-<p>我可能改过输出语句，所以跑不了了？</p>
-<p>用之前成功的节点跑也不行，所以和节点没关系。</p>
-<p><img src="/../images/1726207940044.png" srcset="/img/loading.gif" lazyload alt="1726207940044"></p>
-<p>查看是否是同步的问题，也就是dcu完全算完之后再传给cpu，cpu完成后再执行dcu。</p>
-<p>多加点同步</p>
-<p>验证25次的输出是否和f一致</p>
-<p>256 去掉不必要的注释后 第一轮输出算错,a.txt</p>
-<p>128 也算错了</p>
-<p>256 能加的地方全部加上同步<code>hipDeviceSynchronize()</code> 还是发散了。</p>
-<h4 id="find-the-bug"><a href="#find-the-bug" class="headerlink" title="find the bug"></a>find the bug</h4><p>不知道哪个环节出了问题。</p>
-<p>跑一步，然后输出，比较fortran and hipc</p>
-<p>用diff找差别。</p>
-<p>保证第一步是对的就可以</p>
-<p>设置RK1，只循环一次。用128足够了</p>
-<p>验证了一维c程序，25轮还有误差。一维程序就不对。。。</p>
-<p>但之前是怎么跑通的，是错觉吗？</p>
-<h4 id="验证一维c的正确性"><a href="#验证一维c的正确性" class="headerlink" title="验证一维c的正确性"></a>验证一维c的正确性</h4><p>再测一遍，不对</p>
-<p>用多维的c测一遍。</p>
-<p>多维的没问题。duo.txt</p>
-<p>慢慢往里面加。</p>
-<p>Flux_x 没问题</p>
-<p>Flux_y 有问题</p>
-<p>Flux_z 也有问题</p>
-<p>看代码看不出什么问题</p>
-<p>check一下</p>
-<p>先从y开始，设置RK&#x3D;1 ,Fluid &#x3D; 1.</p>
-<p>check Lcon</p>
-<p>多维和一维</p>
-<p>fluid &#x3D; 1 Lcon 相同</p>
-<p>flux1 也相同，所以flux2也相同</p>
-<p>fluid &#x3D; 1 时没问题。</p>
-<p>fluid &#x3D; 2 </p>
-<p>Lcon diff后不同。</p>
-<p>flux1 相同</p>
-<p>flux2也相同</p>
-<p><img src="/../images/1726302824553.png" srcset="/img/loading.gif" lazyload alt="1726302824553"></p>
-<p>那这样只能是dy 的问题了。</p>
-<p>dy也没问题</p>
-<p><img src="/../images/1726303204587.png" srcset="/img/loading.gif" lazyload alt="1726303204587"></p>
-<p><img src="/../images/1726303207829.png" srcset="/img/loading.gif" lazyload alt="1726303207829"></p>
-<p>？？</p>
-<p>这个咋弄的</p>
-<p>+&#x3D; 和&#x3D; 眼瞎了</p>
-<p>改完后f2_Lcon没问题了。</p>
-<p>修改y后25轮后没问题</p>
-<p>修改z后25轮后没问题</p>
-<p>但是hip版本修改后还是有问题。</p>
-<p>接下来检查US和RK的一维版本有无问题。</p>
-<p>US： OK</p>
-<p>RK：OK</p>
-<p>全部转为一维的了。</p>
-<p>为什么hip还有错误。</p>
-<p>去掉同步试试，没用</p>
-<h4 id="一个核函数一个核函数试。"><a href="#一个核函数一个核函数试。" class="headerlink" title="一个核函数一个核函数试。"></a>一个核函数一个核函数试。</h4><p>从us开始</p>
-<p>在hip_1的基础上hip_2上面改</p>
-<p>想一下怎么改，cpu和dcu的函数不一样，要编译两个子函数。</p>
+                <h3 id="逐个函数测试"><a href="#逐个函数测试" class="headerlink" title="逐个函数测试"></a>逐个函数测试</h3><p>hipus没问题。</p>
+<p>Flux_x  没问题</p>
+<p>Flux_yz 没问题</p>
+<p>RK 也没问题</p>
+<p>成功了？</p>
+<p>跑5025步试试</p>
+<p>真没问题了</p>
+<p>具体问题不知道，改为fluidone 和 fluidtwo 分开释放gpu变量就可以了。</p>
+<h4 id="thread-和-block-数目"><a href="#thread-和-block-数目" class="headerlink" title="thread 和 block 数目"></a>thread 和 block 数目</h4><p><img src="/../images/1726390505156.png" srcset="/img/loading.gif" lazyload alt="1726390505156"></p>
+<h4 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h4><p><img src="/../images/1726390536881.png" srcset="/img/loading.gif" lazyload alt="1726390536881"></p>
+<h4 id="5025轮后的误差"><a href="#5025轮后的误差" class="headerlink" title="5025轮后的误差"></a>5025轮后的误差</h4><h3 id="测时间"><a href="#测时间" class="headerlink" title="测时间"></a>测时间</h3><h4 id="225轮"><a href="#225轮" class="headerlink" title="225轮"></a>225轮</h4><p>fortran单线程：971 seconds</p>
+<p>fortran多线程：</p>
+<p>开了移植代码部分的openmp</p>
+<p>16线程：</p>
+<p>32线程：</p>
+<p>48线程：</p>
+<p>多维c：875 seconds</p>
+<p>一维c：</p>
+<p>hipcc：</p>
+<h4 id="5025轮"><a href="#5025轮" class="headerlink" title="5025轮"></a>5025轮</h4><p>fortran单线程：</p>
+<p>fortran多线程：</p>
+<p>多维c：</p>
+<p>一维c：</p>
+<p>hipcc：</p>
 
                 
               </div>
@@ -397,8 +345,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>project07</div>
-      <div>http://example.com/2024/09/14/project07/</div>
+      <div>project08</div>
+      <div>http://example.com/2024/09/15/project08/</div>
     </div>
     <div class="license-meta">
       
@@ -410,7 +358,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2024年9月14日</div>
+          <div>2024年9月15日</div>
         </div>
       
       
@@ -442,9 +390,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2024/09/15/project08/" title="project08">
+                      <a href="/2024/09/16/java%E5%A4%9A%E7%BA%BF%E7%A8%8B02/" title="java多线程02">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">project08</span>
+                        <span class="hidden-mobile">java多线程02</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -452,8 +400,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2024/09/11/project06/" title="project06">
-                        <span class="hidden-mobile">project06</span>
+                      <a href="/2024/09/14/project07/" title="project07">
+                        <span class="hidden-mobile">project07</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

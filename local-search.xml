@@ -4,6 +4,56 @@
   
   
   <entry>
+    <title>java多线程02</title>
+    <link href="/2024/09/16/java%E5%A4%9A%E7%BA%BF%E7%A8%8B02/"/>
+    <url>/2024/09/16/java%E5%A4%9A%E7%BA%BF%E7%A8%8B02/</url>
+    
+    <content type="html"><![CDATA[<h3 id="通知线程退出"><a href="#通知线程退出" class="headerlink" title="通知线程退出"></a>通知线程退出</h3><p>在主线程中控制子线程的变量实现子线程退出</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> com.hzb.thread;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">threadExit</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>        <span class="hljs-type">T3</span> <span class="hljs-variable">t3</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">T3</span>();<br>        t3.start();<br>        System.out.println(<span class="hljs-string">&quot;主线程休眠10s&quot;</span>);<br>        <span class="hljs-keyword">try</span> &#123;<br>            Thread.sleep(<span class="hljs-number">10000</span>);<br>        &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;<br>            e.printStackTrace();<br>        &#125; <span class="hljs-keyword">finally</span> &#123;<br>        &#125;<br>        t3.setFlag(<span class="hljs-literal">false</span>);<br><br>    &#125;<br>&#125;<br><span class="hljs-keyword">class</span> <span class="hljs-title class_">T3</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Thread</span>&#123;<br>    <span class="hljs-keyword">private</span> <span class="hljs-type">int</span> <span class="hljs-variable">count</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>;<br>    <span class="hljs-keyword">private</span> <span class="hljs-type">boolean</span> <span class="hljs-variable">flag</span> <span class="hljs-operator">=</span> <span class="hljs-literal">true</span>;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">run</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">while</span>(flag)&#123;<br>            System.out.println(<span class="hljs-string">&quot;线程&quot;</span>+Thread.currentThread().getName()+<span class="hljs-string">&quot;第&quot;</span>+(++count)+<span class="hljs-string">&quot;次&quot;</span>);<br>            <span class="hljs-keyword">try</span> &#123;<br>                Thread.sleep(<span class="hljs-number">50</span>);<br>            &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;<br>                e.printStackTrace();<br>            &#125;<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setFlag</span><span class="hljs-params">(<span class="hljs-type">boolean</span> flag)</span> &#123;<br>        <span class="hljs-built_in">this</span>.flag = flag;<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure><h3 id="线程休眠"><a href="#线程休眠" class="headerlink" title="线程休眠"></a>线程休眠</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> com.hzb.thread;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">threadInterrupt</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>        <span class="hljs-type">T4</span> <span class="hljs-variable">t4</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">T4</span>();<br>        t4.setName(<span class="hljs-string">&quot;bing&quot;</span>);<br>        t4.setPriority(Thread.MIN_PRIORITY);<br>        t4.start();<br>        System.out.println(<span class="hljs-string">&quot;主线程休眠5s&quot;</span>);<br>        <span class="hljs-keyword">try</span> &#123;<br>            Thread.sleep(<span class="hljs-number">5000</span>);<br>        &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;<br>            e.printStackTrace();<br>        &#125;<br>        <span class="hljs-comment">//提前终止子线程的休眠，让子线程继续运行。</span><br>        t4.interrupt();<br><br>    &#125;<br>&#125;<br><span class="hljs-keyword">class</span> <span class="hljs-title class_">T4</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Thread</span>&#123;<br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">run</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">while</span>(<span class="hljs-literal">true</span>)&#123;<br>            <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">100</span> ; i++) &#123;<br>                System.out.println(Thread.currentThread().getName()+<span class="hljs-string">&quot;看了&quot;</span>+i+<span class="hljs-string">&quot;页书&quot;</span>);<br>            &#125;<br>            <span class="hljs-keyword">try</span> &#123;<br>                Thread.sleep(<span class="hljs-number">20000</span>);<br>            &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;<br>                e.printStackTrace();<br>            &#125;<br><br>        &#125;<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure><h3 id="线程细节"><a href="#线程细节" class="headerlink" title="线程细节"></a>线程细节</h3><p><img src="/../images/1726475060804.png" alt="1726475060804"></p><h3 id="线程常用方法"><a href="#线程常用方法" class="headerlink" title="线程常用方法"></a>线程常用方法</h3><p><img src="/../images/1726474988275.png" alt="1726474988275"></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>java</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>java</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>project08</title>
+    <link href="/2024/09/15/project08/"/>
+    <url>/2024/09/15/project08/</url>
+    
+    <content type="html"><![CDATA[<h3 id="逐个函数测试"><a href="#逐个函数测试" class="headerlink" title="逐个函数测试"></a>逐个函数测试</h3><p>hipus没问题。</p><p>Flux_x  没问题</p><p>Flux_yz 没问题</p><p>RK 也没问题</p><p>成功了？</p><p>跑5025步试试</p><p>真没问题了</p><p>具体问题不知道，改为fluidone 和 fluidtwo 分开释放gpu变量就可以了。</p><h4 id="thread-和-block-数目"><a href="#thread-和-block-数目" class="headerlink" title="thread 和 block 数目"></a>thread 和 block 数目</h4><p><img src="/../images/1726390505156.png" alt="1726390505156"></p><h4 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h4><p><img src="/../images/1726390536881.png" alt="1726390536881"></p><h4 id="5025轮后的误差"><a href="#5025轮后的误差" class="headerlink" title="5025轮后的误差"></a>5025轮后的误差</h4><h3 id="测时间"><a href="#测时间" class="headerlink" title="测时间"></a>测时间</h3><h4 id="225轮"><a href="#225轮" class="headerlink" title="225轮"></a>225轮</h4><p>fortran单线程：971 seconds</p><p>fortran多线程：</p><p>开了移植代码部分的openmp</p><p>16线程：</p><p>32线程：</p><p>48线程：</p><p>多维c：875 seconds</p><p>一维c：</p><p>hipcc：</p><h4 id="5025轮"><a href="#5025轮" class="headerlink" title="5025轮"></a>5025轮</h4><p>fortran单线程：</p><p>fortran多线程：</p><p>多维c：</p><p>一维c：</p><p>hipcc：</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>项目</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>项目</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>project07</title>
     <link href="/2024/09/14/project07/"/>
     <url>/2024/09/14/project07/</url>

@@ -16,28 +16,25 @@
   <meta name="author" content="hzbing">
   <meta name="keywords" content="">
   
-    <meta name="description" content="fortran跑的时间也和之前不一样了，好抽象。快了不少。时间为之前的40%。线程数的问题。  FORTRAN: max_tstep &#x3D; 101   pg 12 threads  15h  max_tstep &#x3D; 101   pg  1 threads    7h 单线程比多线程要快 max_tstep &#x3D; 101   pg  12 threads   15h正常了">
+    <meta name="description" content="通知线程退出在主线程中控制子线程的变量实现子线程退出 1234567891011121314151617181920212223242526272829303132333435363738package com.hzb.thread;public class threadExit &#123;    public static void main(String[] args) &#123;">
 <meta property="og:type" content="article">
-<meta property="og:title" content="project07">
-<meta property="og:url" content="http://example.com/2024/09/14/project07/index.html">
+<meta property="og:title" content="java多线程02">
+<meta property="og:url" content="http://example.com/2024/09/16/java%E5%A4%9A%E7%BA%BF%E7%A8%8B02/index.html">
 <meta property="og:site_name" content="一拳超人">
-<meta property="og:description" content="fortran跑的时间也和之前不一样了，好抽象。快了不少。时间为之前的40%。线程数的问题。  FORTRAN: max_tstep &#x3D; 101   pg 12 threads  15h  max_tstep &#x3D; 101   pg  1 threads    7h 单线程比多线程要快 max_tstep &#x3D; 101   pg  12 threads   15h正常了">
+<meta property="og:description" content="通知线程退出在主线程中控制子线程的变量实现子线程退出 1234567891011121314151617181920212223242526272829303132333435363738package com.hzb.thread;public class threadExit &#123;    public static void main(String[] args) &#123;">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/images/1726194188049.png">
-<meta property="og:image" content="http://example.com/images/1726207940044.png">
-<meta property="og:image" content="http://example.com/images/1726302824553.png">
-<meta property="og:image" content="http://example.com/images/1726303204587.png">
-<meta property="og:image" content="http://example.com/images/1726303207829.png">
-<meta property="article:published_time" content="2024-09-14T12:30:00.000Z">
-<meta property="article:modified_time" content="2024-09-14T13:07:46.415Z">
+<meta property="og:image" content="http://example.com/images/1726475060804.png">
+<meta property="og:image" content="http://example.com/images/1726474988275.png">
+<meta property="article:published_time" content="2024-09-16T12:30:00.000Z">
+<meta property="article:modified_time" content="2024-09-16T12:34:30.420Z">
 <meta property="article:author" content="hzbing">
-<meta property="article:tag" content="项目">
+<meta property="article:tag" content="java">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://example.com/images/1726194188049.png">
+<meta name="twitter:image" content="http://example.com/images/1726475060804.png">
   
   
   
-  <title>project07 - 一拳超人</title>
+  <title>java多线程02 - 一拳超人</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -203,7 +200,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="project07"></span>
+            <span id="subtitle" data-typed-text="java多线程02"></span>
           
         </div>
 
@@ -214,8 +211,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2024-09-14 20:30" pubdate>
-          2024年9月14日 晚上
+        <time datetime="2024-09-16 20:30" pubdate>
+          2024年9月16日 晚上
         </time>
       </span>
     
@@ -226,7 +223,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          592 字
+          247 字
         
       </span>
     
@@ -237,7 +234,7 @@
         
         
         
-          5 分钟
+          3 分钟
         
       </span>
     
@@ -274,84 +271,18 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">project07</h1>
+            <h1 id="seo-header">java多线程02</h1>
             
             
               <div class="markdown-body">
                 
-                <p>fortran跑的时间也和之前不一样了，好抽象。快了不少。时间为之前的40%。线程数的问题。</p>
-<p> <strong>FORTRAN:</strong></p>
-<p>max_tstep &#x3D; 101   pg 12 threads  15h </p>
-<p>max_tstep &#x3D; 101   pg  1 threads    7h</p>
-<p>单线程比多线程要快</p>
-<p>max_tstep &#x3D; 101   pg  12 threads   15h正常了</p>
-<p>max_tstep &#x3D; 11   pg  12 threads  15h</p>
-<p>和max_tstep多大没关系，这个是输出文件的次数</p>
-<p> no pg 1 threads  5h大约</p>
-<p>没有pg后变快了 </p>
-<p> no pg 12 threads  12h大约 9s</p>
-<p> no pg 48 threads  24大约</p>
-<p>线程数越多越慢。。。</p>
-<p><strong>hipc</strong>：</p>
-<p><img src="/../images/1726194188049.png" srcset="/img/loading.gif" lazyload alt="1726194188049"></p>
-<p>之前跑通的时候用的这个卡</p>
-<p>可以指定哪一个节点跑吗？怀疑是节点的问题，但可能性不大。</p>
-<p>我可能改过输出语句，所以跑不了了？</p>
-<p>用之前成功的节点跑也不行，所以和节点没关系。</p>
-<p><img src="/../images/1726207940044.png" srcset="/img/loading.gif" lazyload alt="1726207940044"></p>
-<p>查看是否是同步的问题，也就是dcu完全算完之后再传给cpu，cpu完成后再执行dcu。</p>
-<p>多加点同步</p>
-<p>验证25次的输出是否和f一致</p>
-<p>256 去掉不必要的注释后 第一轮输出算错,a.txt</p>
-<p>128 也算错了</p>
-<p>256 能加的地方全部加上同步<code>hipDeviceSynchronize()</code> 还是发散了。</p>
-<h4 id="find-the-bug"><a href="#find-the-bug" class="headerlink" title="find the bug"></a>find the bug</h4><p>不知道哪个环节出了问题。</p>
-<p>跑一步，然后输出，比较fortran and hipc</p>
-<p>用diff找差别。</p>
-<p>保证第一步是对的就可以</p>
-<p>设置RK1，只循环一次。用128足够了</p>
-<p>验证了一维c程序，25轮还有误差。一维程序就不对。。。</p>
-<p>但之前是怎么跑通的，是错觉吗？</p>
-<h4 id="验证一维c的正确性"><a href="#验证一维c的正确性" class="headerlink" title="验证一维c的正确性"></a>验证一维c的正确性</h4><p>再测一遍，不对</p>
-<p>用多维的c测一遍。</p>
-<p>多维的没问题。duo.txt</p>
-<p>慢慢往里面加。</p>
-<p>Flux_x 没问题</p>
-<p>Flux_y 有问题</p>
-<p>Flux_z 也有问题</p>
-<p>看代码看不出什么问题</p>
-<p>check一下</p>
-<p>先从y开始，设置RK&#x3D;1 ,Fluid &#x3D; 1.</p>
-<p>check Lcon</p>
-<p>多维和一维</p>
-<p>fluid &#x3D; 1 Lcon 相同</p>
-<p>flux1 也相同，所以flux2也相同</p>
-<p>fluid &#x3D; 1 时没问题。</p>
-<p>fluid &#x3D; 2 </p>
-<p>Lcon diff后不同。</p>
-<p>flux1 相同</p>
-<p>flux2也相同</p>
-<p><img src="/../images/1726302824553.png" srcset="/img/loading.gif" lazyload alt="1726302824553"></p>
-<p>那这样只能是dy 的问题了。</p>
-<p>dy也没问题</p>
-<p><img src="/../images/1726303204587.png" srcset="/img/loading.gif" lazyload alt="1726303204587"></p>
-<p><img src="/../images/1726303207829.png" srcset="/img/loading.gif" lazyload alt="1726303207829"></p>
-<p>？？</p>
-<p>这个咋弄的</p>
-<p>+&#x3D; 和&#x3D; 眼瞎了</p>
-<p>改完后f2_Lcon没问题了。</p>
-<p>修改y后25轮后没问题</p>
-<p>修改z后25轮后没问题</p>
-<p>但是hip版本修改后还是有问题。</p>
-<p>接下来检查US和RK的一维版本有无问题。</p>
-<p>US： OK</p>
-<p>RK：OK</p>
-<p>全部转为一维的了。</p>
-<p>为什么hip还有错误。</p>
-<p>去掉同步试试，没用</p>
-<h4 id="一个核函数一个核函数试。"><a href="#一个核函数一个核函数试。" class="headerlink" title="一个核函数一个核函数试。"></a>一个核函数一个核函数试。</h4><p>从us开始</p>
-<p>在hip_1的基础上hip_2上面改</p>
-<p>想一下怎么改，cpu和dcu的函数不一样，要编译两个子函数。</p>
+                <h3 id="通知线程退出"><a href="#通知线程退出" class="headerlink" title="通知线程退出"></a>通知线程退出</h3><p>在主线程中控制子线程的变量实现子线程退出</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> com.hzb.thread;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">threadExit</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>        <span class="hljs-type">T3</span> <span class="hljs-variable">t3</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">T3</span>();<br>        t3.start();<br>        System.out.println(<span class="hljs-string">&quot;主线程休眠10s&quot;</span>);<br>        <span class="hljs-keyword">try</span> &#123;<br>            Thread.sleep(<span class="hljs-number">10000</span>);<br>        &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;<br>            e.printStackTrace();<br>        &#125; <span class="hljs-keyword">finally</span> &#123;<br>        &#125;<br>        t3.setFlag(<span class="hljs-literal">false</span>);<br><br>    &#125;<br>&#125;<br><span class="hljs-keyword">class</span> <span class="hljs-title class_">T3</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Thread</span>&#123;<br>    <span class="hljs-keyword">private</span> <span class="hljs-type">int</span> <span class="hljs-variable">count</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>;<br>    <span class="hljs-keyword">private</span> <span class="hljs-type">boolean</span> <span class="hljs-variable">flag</span> <span class="hljs-operator">=</span> <span class="hljs-literal">true</span>;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">run</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">while</span>(flag)&#123;<br>            System.out.println(<span class="hljs-string">&quot;线程&quot;</span>+Thread.currentThread().getName()+<span class="hljs-string">&quot;第&quot;</span>+(++count)+<span class="hljs-string">&quot;次&quot;</span>);<br>            <span class="hljs-keyword">try</span> &#123;<br>                Thread.sleep(<span class="hljs-number">50</span>);<br>            &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;<br>                e.printStackTrace();<br>            &#125;<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setFlag</span><span class="hljs-params">(<span class="hljs-type">boolean</span> flag)</span> &#123;<br>        <span class="hljs-built_in">this</span>.flag = flag;<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<h3 id="线程休眠"><a href="#线程休眠" class="headerlink" title="线程休眠"></a>线程休眠</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> com.hzb.thread;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">threadInterrupt</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>        <span class="hljs-type">T4</span> <span class="hljs-variable">t4</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">T4</span>();<br>        t4.setName(<span class="hljs-string">&quot;bing&quot;</span>);<br>        t4.setPriority(Thread.MIN_PRIORITY);<br>        t4.start();<br>        System.out.println(<span class="hljs-string">&quot;主线程休眠5s&quot;</span>);<br>        <span class="hljs-keyword">try</span> &#123;<br>            Thread.sleep(<span class="hljs-number">5000</span>);<br>        &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;<br>            e.printStackTrace();<br>        &#125;<br>        <span class="hljs-comment">//提前终止子线程的休眠，让子线程继续运行。</span><br>        t4.interrupt();<br><br>    &#125;<br>&#125;<br><span class="hljs-keyword">class</span> <span class="hljs-title class_">T4</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Thread</span>&#123;<br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">run</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">while</span>(<span class="hljs-literal">true</span>)&#123;<br>            <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">100</span> ; i++) &#123;<br>                System.out.println(Thread.currentThread().getName()+<span class="hljs-string">&quot;看了&quot;</span>+i+<span class="hljs-string">&quot;页书&quot;</span>);<br>            &#125;<br>            <span class="hljs-keyword">try</span> &#123;<br>                Thread.sleep(<span class="hljs-number">20000</span>);<br>            &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;<br>                e.printStackTrace();<br>            &#125;<br><br>        &#125;<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<h3 id="线程细节"><a href="#线程细节" class="headerlink" title="线程细节"></a>线程细节</h3><p><img src="/../images/1726475060804.png" srcset="/img/loading.gif" lazyload alt="1726475060804"></p>
+<h3 id="线程常用方法"><a href="#线程常用方法" class="headerlink" title="线程常用方法"></a>线程常用方法</h3><p><img src="/../images/1726474988275.png" srcset="/img/loading.gif" lazyload alt="1726474988275"></p>
 
                 
               </div>
@@ -370,7 +301,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/%E9%A1%B9%E7%9B%AE/" class="category-chain-item">项目</a>
+  <a href="/categories/java/" class="category-chain-item">java</a>
   
   
 
@@ -385,7 +316,7 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/%E9%A1%B9%E7%9B%AE/" class="print-no-link">#项目</a>
+        <a href="/tags/java/" class="print-no-link">#java</a>
       
     </div>
   
@@ -397,8 +328,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>project07</div>
-      <div>http://example.com/2024/09/14/project07/</div>
+      <div>java多线程02</div>
+      <div>http://example.com/2024/09/16/java多线程02/</div>
     </div>
     <div class="license-meta">
       
@@ -410,7 +341,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2024年9月14日</div>
+          <div>2024年9月16日</div>
         </div>
       
       
@@ -442,18 +373,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2024/09/15/project08/" title="project08">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">project08</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2024/09/11/project06/" title="project06">
-                        <span class="hidden-mobile">project06</span>
+                      <a href="/2024/09/15/project08/" title="project08">
+                        <span class="hidden-mobile">project08</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
