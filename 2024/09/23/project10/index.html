@@ -1,0 +1,849 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="hzbing">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="忘了从什么时候开始了，今天上传一下吧。 debug continue输出con con.txt 在第一次计算完con的时候输出，发现结果一样 所以说计算没问题，数据传输的过程中出了问题 也不一定，RK &#x3D; 2 的时候还没输出。 输出RK &#x3D; 2 计算后的con con1.txt 也没问题 所以是传输的问题。 到第二轮的时候传出错了？ 输出第二轮RK &#x3D; 1 con的值">
+<meta property="og:type" content="article">
+<meta property="og:title" content="project10">
+<meta property="og:url" content="http://example.com/2024/09/23/project10/index.html">
+<meta property="og:site_name" content="一拳超人">
+<meta property="og:description" content="忘了从什么时候开始了，今天上传一下吧。 debug continue输出con con.txt 在第一次计算完con的时候输出，发现结果一样 所以说计算没问题，数据传输的过程中出了问题 也不一定，RK &#x3D; 2 的时候还没输出。 输出RK &#x3D; 2 计算后的con con1.txt 也没问题 所以是传输的问题。 到第二轮的时候传出错了？ 输出第二轮RK &#x3D; 1 con的值">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/1726743891267.png">
+<meta property="og:image" content="http://example.com/images/1726744739022.png">
+<meta property="og:image" content="http://example.com/images/1726746211264.png">
+<meta property="og:image" content="http://example.com/images/1726748170663.png">
+<meta property="og:image" content="http://example.com/images/1726748992859.png">
+<meta property="og:image" content="http://example.com/images/1726749093536.png">
+<meta property="og:image" content="http://example.com/images/1726751718993.png">
+<meta property="og:image" content="http://example.com/images/1726811467197.png">
+<meta property="og:image" content="http://example.com/images/1726812665000.png">
+<meta property="og:image" content="http://example.com/images/1726812630792.png">
+<meta property="og:image" content="http://example.com/images/1726812675039.png">
+<meta property="og:image" content="http://example.com/images/1726812638239.png">
+<meta property="og:image" content="http://example.com/images/1726813751837.png">
+<meta property="og:image" content="http://example.com/images/1726820856229.png">
+<meta property="og:image" content="http://example.com/images/1726820860676.png">
+<meta property="og:image" content="http://example.com/images/1726821057524.png">
+<meta property="og:image" content="http://example.com/images/1726823350957.png">
+<meta property="og:image" content="http://example.com/images/1726823368568.png">
+<meta property="og:image" content="http://example.com/images/1726822860604.png">
+<meta property="og:image" content="http://example.com/images/1726822871588.png">
+<meta property="og:image" content="http://example.com/images/1726822640104.png">
+<meta property="og:image" content="http://example.com/images/1726822645076.png">
+<meta property="og:image" content="http://example.com/images/1726823555654.png">
+<meta property="og:image" content="http://example.com/images/1726816194526.png">
+<meta property="og:image" content="http://example.com/images/1726816253348.png">
+<meta property="og:image" content="http://example.com/images/1726816277693.png">
+<meta property="og:image" content="http://example.com/images/1726816747350.png">
+<meta property="og:image" content="http://example.com/images/1726816988622.png">
+<meta property="og:image" content="http://example.com/images/1726816992998.png">
+<meta property="og:image" content="http://example.com/images/1726817399595.png">
+<meta property="og:image" content="http://example.com/images/1726817413229.png">
+<meta property="og:image" content="http://example.com/images/1726817580413.png">
+<meta property="og:image" content="http://example.com/images/1726817588306.png">
+<meta property="og:image" content="http://example.com/images/1726824408942.png">
+<meta property="og:image" content="http://example.com/images/1726824424522.png">
+<meta property="og:image" content="http://example.com/images/1726829003927.png">
+<meta property="og:image" content="http://example.com/images/1726828627572.png">
+<meta property="og:image" content="http://example.com/images/1726828958979.png">
+<meta property="og:image" content="http://example.com/images/1726828964290.png">
+<meta property="og:image" content="http://example.com/images/1726909700605.png">
+<meta property="og:image" content="http://example.com/images/1726914905250.png">
+<meta property="og:image" content="http://example.com/images/1726915883217.png">
+<meta property="og:image" content="http://example.com/images/1727096755797.png">
+<meta property="article:published_time" content="2024-09-23T13:00:00.000Z">
+<meta property="article:modified_time" content="2024-09-23T13:07:21.329Z">
+<meta property="article:author" content="hzbing">
+<meta property="article:tag" content="项目">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/images/1726743891267.png">
+  
+  
+  
+  <title>project10 - 一拳超人</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.2.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>一拳超人</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/cs.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="project10"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-09-23 21:00" pubdate>
+          2024年9月23日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          11 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">project10</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>忘了从什么时候开始了，今天上传一下吧。</p>
+<h3 id="debug-continue"><a href="#debug-continue" class="headerlink" title="debug continue"></a>debug continue</h3><p>输出con con.txt</p>
+<p>在第一次计算完con的时候输出，发现结果一样</p>
+<p>所以说计算没问题，数据传输的过程中出了问题</p>
+<p>也不一定，RK &#x3D; 2 的时候还没输出。</p>
+<p>输出RK &#x3D; 2 计算后的con con1.txt</p>
+<p>也没问题</p>
+<p>所以是传输的问题。</p>
+<p>到第二轮的时候传出错了？</p>
+<p>输出第二轮RK &#x3D; 1 con的值。 con2.txt 误差很小</p>
+<p>输出第二轮RK &#x3D; 2 con的值，con3.txt 误差很小</p>
+<p>输出第三轮RK &#x3D; 1 con的值 ,  con4.txt  误差很小</p>
+<p>输出第三轮RK &#x3D; 2 con的值 ,  输出不了</p>
+<p>istep &#x3D; 3 RK &#x3D; 1 走完。</p>
+<p>istep &#x3D; 3 RK &#x3D; 2 的时候 经过Level_equation 程序断了</p>
+<p>在Level_equation上面输出 con5 误差很小</p>
+<p><img src="/../images/1726743891267.png" srcset="/img/loading.gif" lazyload alt="1726743891267"></p>
+<p><code>vel_w[2][ibnd_R][jbnd_R][kbnd_R]</code></p>
+<p>istep &#x3D; 3 RK &#x3D; 2 的时候,在Level_equation上面输出vel_w(2,i,j,k)       velw.txt</p>
+<p><img src="/../images/1726744739022.png" srcset="/img/loading.gif" lazyload alt="1726744739022"></p>
+<p>vel_w 算错了</p>
+<p>看看第一轮vel_w的值算对了没。 </p>
+<p>istep &#x3D; 1 RK &#x3D; 2 时 velw1.txt 算对了</p>
+<p>istep &#x3D; 2 RK &#x3D;1 时 velw2.txt  算对了</p>
+<p>istep &#x3D; 2 RK &#x3D;2 时 velw3.txt  不对</p>
+<p><img src="/../images/1726746211264.png" srcset="/img/loading.gif" lazyload alt="1726746211264"></p>
+<p>找到具体被改的位置</p>
+<p><img src="/../images/1726748170663.png" srcset="/img/loading.gif" lazyload alt="1726748170663"></p>
+<p>vel_w 是在 istep &#x3D; 2 ,RK &#x3D; 1时， 执行完Equation被改的。</p>
+<p>就在这几个位置</p>
+<p>在all_con_2_prim 上面输出 velw4.txt 对</p>
+<p>在all_con_2_prim 下面输出 velw5.txt  错</p>
+<p><img src="/../images/1726748992859.png" srcset="/img/loading.gif" lazyload alt="1726748992859"></p>
+<p>所以vel_w 是在 istep &#x3D; 2 ,RK &#x3D; 1时，在all_con_2_prim中     velw的值被改了</p>
+<p><img src="/../images/1726749093536.png" srcset="/img/loading.gif" lazyload alt="1726749093536"></p>
+<p>输出con 和con2的值</p>
+<p>之前测过con的值没问题，那就是con2的问题了。</p>
+<p>在Equation后输出</p>
+<p>输出第二轮RK &#x3D; 1 con2的值，con2.txt 误差很小</p>
+<p>con 和 con2 的值都没毛病 ，那是怎么回事</p>
+<p>在all_con_2_prim 下面输出 con con2 ….wait</p>
+<p>在同样的位置，再输出con2的值，算误差 con2_1.txt 对</p>
+<p>输出 con 的值 con_1.txt 对</p>
+<p>只能是dv了啊，</p>
+<p><img src="/../images/1726751718993.png" srcset="/img/loading.gif" lazyload alt="1726751718993"></p>
+<p>在all_con_2_prim前面输出</p>
+<p>dx,dy,dz ,dxyz.txt完全相同，没有误差</p>
+<p>奇怪了。</p>
+<p>明天再测vel_w的值在哪里错的，用err计算</p>
+<p>istep &#x3D;2 ,RK &#x3D; 1</p>
+<p>在all_con_2_prim上面输出 vel_w6.txt 完全相同</p>
+<p>在下面输出 vel_w7.txt 不对了</p>
+<p><img src="/../images/1726811467197.png" srcset="/img/loading.gif" lazyload alt="1726811467197"></p>
+<p>前面验证con和con2的值都没有错误，只能看imark 了</p>
+<p>在all_con_2_prim前输出imark的值 <code>imark[ibnd_R][jbnd_R][kbnd_R] </code>    imark1.txt</p>
+<p>imark 完全相同</p>
+<p><img src="/../images/1726812665000.png" srcset="/img/loading.gif" lazyload alt="1726812665000"></p>
+<p><img src="/../images/1726812630792.png" srcset="/img/loading.gif" lazyload alt="1726812630792"></p>
+<p><img src="/../images/1726812675039.png" srcset="/img/loading.gif" lazyload alt="1726812675039"></p>
+<p><img src="/../images/1726812638239.png" srcset="/img/loading.gif" lazyload alt="1726812638239"></p>
+<p>在all上面输出vel_w(1,i,j,k)的值  v1.txt 完全相同</p>
+<p>在all下面输出vel_w(1,i,j,k)的值  v2.txt </p>
+<p><img src="/../images/1726813751837.png" srcset="/img/loading.gif" lazyload alt="1726813751837"></p>
+<p>由于RK &#x3D;1 ，再输出con(4,i,j,k,2)的值和con(1,i,j,k,2)的值</p>
+<p>con(1,i,j,k,2) con3.txt  完全相同</p>
+<p>con(4,i,j,k,2) con4.txt  误差很小</p>
+<p>con2(1,i,j,k,2) con5.txt  误差很小</p>
+<p>con2(4,i,j,k,2) con6.txt  误差很小</p>
+<p>在all上面输出vel_w(2,i,j,k)的值  v3.txt 完全相同</p>
+<p>在all下面输出vel_w(2,i,j,k)的值  v4.txt  误差很大（应该就是这里的错误了）</p>
+<p>输出v8找到误差最大值的下标。</p>
+<p><strong>vel_w(2,47,58,4)</strong></p>
+<p>con2(4,47,58,4,2) </p>
+<p><img src="/../images/1726820856229.png" srcset="/img/loading.gif" lazyload alt="1726820856229"></p>
+<p><img src="/../images/1726820860676.png" srcset="/img/loading.gif" lazyload alt="1726820860676"></p>
+<p>con2(1,47,58,4,2) </p>
+<p><img src="/../images/1726821057524.png" srcset="/img/loading.gif" lazyload alt="1726821057524"></p>
+<p>一样的</p>
+<p><strong>vel_w(2,48,58,56)</strong> 误差最大的下标</p>
+<p>c</p>
+<p><img src="/../images/1726823350957.png" srcset="/img/loading.gif" lazyload alt="1726823350957"></p>
+<p>hipc</p>
+<p><img src="/../images/1726823368568.png" srcset="/img/loading.gif" lazyload alt="1726823368568"></p>
+<p>con2(4,48,58,56,2)</p>
+<p><img src="/../images/1726822860604.png" srcset="/img/loading.gif" lazyload alt="1726822860604"></p>
+<p><img src="/../images/1726822871588.png" srcset="/img/loading.gif" lazyload alt="1726822871588"></p>
+<p>con2(1,48,58,56,2)</p>
+<p><img src="/../images/1726822640104.png" srcset="/img/loading.gif" lazyload alt="1726822640104"></p>
+<p><img src="/../images/1726822645076.png" srcset="/img/loading.gif" lazyload alt="1726822645076"></p>
+<p>dx dy dz </p>
+<p><img src="/../images/1726823555654.png" srcset="/img/loading.gif" lazyload alt="1726823555654"></p>
+<p>122 ,89,89</p>
+<p>7921</p>
+<p>377453 %  372287 &#x3D; 5166</p>
+<p>377453 &#x2F;  372287 &#x3D; 47</p>
+<p>5166 &#x2F;89 &#x3D; 58</p>
+<p>5166 % 89 &#x3D; 4</p>
+<p><img src="/../images/1726816194526.png" srcset="/img/loading.gif" lazyload alt="1726816194526"></p>
+<p><img src="/../images/1726816253348.png" srcset="/img/loading.gif" lazyload alt="1726816253348"></p>
+<p>再回到上面的代码</p>
+<p><img src="/../images/1726816277693.png" srcset="/img/loading.gif" lazyload alt="1726816277693"></p>
+<p>con2(1,i,j,k,2) con5.txt  误差很小</p>
+<p>con2(4,i,j,k,2) con6.txt  误差很小</p>
+<p>看不出来</p>
+<p>在prim后面</p>
+<p>输出具体下标的值 vel_w</p>
+<p><img src="/../images/1726816747350.png" srcset="/img/loading.gif" lazyload alt="1726816747350"></p>
+<p><img src="/../images/1726816988622.png" srcset="/img/loading.gif" lazyload alt="1726816988622"></p>
+<p><img src="/../images/1726816992998.png" srcset="/img/loading.gif" lazyload alt="1726816992998"></p>
+<p>输出con2(1,32,49,36,2)</p>
+<p><img src="/../images/1726817399595.png" srcset="/img/loading.gif" lazyload alt="1726817399595"></p>
+<p><img src="/../images/1726817413229.png" srcset="/img/loading.gif" lazyload alt="1726817413229"></p>
+<p>输出con2(4,32,49,36,2)</p>
+<p><img src="/../images/1726817580413.png" srcset="/img/loading.gif" lazyload alt="1726817580413"></p>
+<p><img src="/../images/1726817588306.png" srcset="/img/loading.gif" lazyload alt="1726817588306"></p>
+<p>c:</p>
+<p><img src="/../images/1726824408942.png" srcset="/img/loading.gif" lazyload alt="1726824408942"></p>
+<p>hipc:</p>
+<p><img src="/../images/1726824424522.png" srcset="/img/loading.gif" lazyload alt="1726824424522"></p>
+<p>每一次出错的下标不同</p>
+<p>一起输出</p>
+<p><img src="/../images/1726829003927.png" srcset="/img/loading.gif" lazyload alt="1726829003927"></p>
+<p><img src="/../images/1726828627572.png" srcset="/img/loading.gif" lazyload alt="1726828627572"></p>
+<p>c：</p>
+<p><img src="/../images/1726828958979.png" srcset="/img/loading.gif" lazyload alt="1726828958979"></p>
+<p>hipc：</p>
+<p><img src="/../images/1726828964290.png" srcset="/img/loading.gif" lazyload alt="1726828964290"></p>
+<p>把RK改成一维c，还是同样的错误，说明错误不在这，还是前面算的有错误。</p>
+<p>con被其他数组的值赋值了。</p>
+<p>先启动一个核函数试试。</p>
+<p>US ok</p>
+<p>改了x （US 和 x一起）</p>
+<p><img src="/../images/1726909700605.png" srcset="/img/loading.gif" lazyload alt="1726909700605"></p>
+<p>x就算错了</p>
+<p>在测试一下RK是不是有错误</p>
+<p>x用一维c，US，RK设为核函数</p>
+<p>US和RK一起没问题</p>
+<p>再测试一下US RK z 有错误</p>
+<p><img src="/../images/1726914905250.png" srcset="/img/loading.gif" lazyload alt="1726914905250"></p>
+<p>再测试一下US RK y 有错误</p>
+<p><img src="/../images/1726915883217.png" srcset="/img/loading.gif" lazyload alt="1726915883217"></p>
+<p>US and x</p>
+<p>算误差 25次 ，误差很大</p>
+<p>xyz代码都有bug。</p>
+<p>bug类型应该是一样的</p>
+<p><strong>flux的赋值有两次，又先后顺序的，分了线程后，顺序可能不同了。结果就不同。这里有点绕。</strong></p>
+<p>改成一个if里面两个If分支还是有错误。</p>
+<p><strong>正常顺序是</strong></p>
+<p>a[0]  &#x3D; 0,a[1] &#x3D;2 ,a[2] &#x3D; 3</p>
+<p>给当前下标赋值，再给下一个下标赋值。</p>
+<p><strong>当前的顺序是</strong></p>
+<p>第一个线程给他的下标赋值完后a[0]  &#x3D;0 ，再给下一个下标赋值a[1] &#x3D; 1</p>
+<p>第二个线程给他的下标赋值a[1] &#x3D; 2完后，再给下一个下标赋值a[2] &#x3D; 3</p>
+<p>这两步是没有顺序的</p>
+<p>如果第二步在第一步上面的话</p>
+<p>a[0] &#x3D; 0,a[1] &#x3D;1 ,a[2]&#x3D;3 </p>
+<p>给数组赋的值不对了。</p>
+<p>怎么改，保证正确性。</p>
+<p>线程都给自己的下标赋完值后同步。</p>
+<p>a[0] &#x3D; 0,a[1] &#x3D;2 然后同步</p>
+<p>a[1] &#x3D;1 ,a[2] &#x3D;3 ,a[0] &#x3D; 0</p>
+<p>这样也是错的。</p>
+<p>一个线程操作一个k和j，i使用循环。试一下，感觉应该可以。</p>
+<p>有误差</p>
+<p><img src="/../images/1727096755797.png" srcset="/img/loading.gif" lazyload alt="1727096755797"></p>
+<p>不知道什么原因。。。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E9%A1%B9%E7%9B%AE/" class="category-chain-item">项目</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E9%A1%B9%E7%9B%AE/" class="print-no-link">#项目</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>project10</div>
+      <div>http://example.com/2024/09/23/project10/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>hzbing</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年9月23日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/09/18/project09/" title="project09">
+                        <span class="hidden-mobile">project09</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
