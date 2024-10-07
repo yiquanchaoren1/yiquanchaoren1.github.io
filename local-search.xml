@@ -4,6 +4,31 @@
   
   
   <entry>
+    <title>project11</title>
+    <link href="/2024/10/07/project11/"/>
+    <url>/2024/10/07/project11/</url>
+    
+    <content type="html"><![CDATA[<p>误差问题</p><p>把Flux_x改成一维c，误差还是存在，说明不是x的问题</p><p>可能是数据传输中出了问题。</p><p>先消除误差，找找哪个环节出了问题。</p><p>只添加一个x，没问题</p><p>把yz也改了</p><p>之前测的是加上US和xyz的任意一个就有错误</p><p>应该是中间值的传递错误。</p><p>xy一起 ok</p><p>xyz一起 ok</p><p>xyz RK一起 ok</p><p>4个核函数没问题了。</p><p>性能也有提升。时间测试在project08里面</p><p>所以说今天还是有收获的。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>项目</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>项目</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>project10</title>
     <link href="/2024/09/23/project10/"/>
     <url>/2024/09/23/project10/</url>
@@ -83,7 +108,7 @@
     <link href="/2024/09/15/project08/"/>
     <url>/2024/09/15/project08/</url>
     
-    <content type="html"><![CDATA[<h3 id="逐个函数测试"><a href="#逐个函数测试" class="headerlink" title="逐个函数测试"></a>逐个函数测试</h3><p>hipus没问题。</p><p>Flux_x  没问题</p><p>Flux_yz 没问题</p><p>RK 也没问题</p><p>成功了？</p><p>跑5025步试试</p><p>真没问题了</p><p>具体问题不知道，改为fluidone 和 fluidtwo 分开释放gpu变量就可以了。</p><h4 id="thread-和-block-数目"><a href="#thread-和-block-数目" class="headerlink" title="thread 和 block 数目"></a>thread 和 block 数目</h4><p><img src="/../images/1726390505156.png" alt="1726390505156"></p><h4 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h4><p><img src="/../images/1726390536881.png" alt="1726390536881"></p><h4 id="5025轮后的误差"><a href="#5025轮后的误差" class="headerlink" title="5025轮后的误差"></a>5025轮后的误差</h4><h3 id="测时间"><a href="#测时间" class="headerlink" title="测时间"></a>测时间</h3><h4 id="225轮"><a href="#225轮" class="headerlink" title="225轮"></a>225轮</h4><p>fortran单线程：971 seconds</p><p>fortran多线程</p><p>开了移植代码部分的openmp</p><p>16线程：2314 s</p><p>32线程：</p><p>48线程：</p><p>多维c：875 s</p><p>一维c：859 s</p><p>hipcc：</p><h4 id="5025轮"><a href="#5025轮" class="headerlink" title="5025轮"></a>5025轮</h4><p>fortran单线程：</p><p>fortran多线程：</p><p>多维c：</p><p>一维c：</p><p>hipcc：</p>]]></content>
+    <content type="html"><![CDATA[<h3 id="逐个函数测试"><a href="#逐个函数测试" class="headerlink" title="逐个函数测试"></a>逐个函数测试</h3><p>hipus没问题。</p><p>Flux_x  没问题</p><p>Flux_yz 没问题</p><p>RK 也没问题</p><p>成功了？</p><p>跑5025步试试</p><p>真没问题了</p><p>具体问题不知道，改为fluidone 和 fluidtwo 分开释放gpu变量就可以了。</p><h4 id="thread-和-block-数目"><a href="#thread-和-block-数目" class="headerlink" title="thread 和 block 数目"></a>thread 和 block 数目</h4><p><img src="/../images/1726390505156.png" alt="1726390505156"></p><h4 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h4><p><img src="/../images/1726390536881.png" alt="1726390536881"></p><h4 id="5025轮后的误差"><a href="#5025轮后的误差" class="headerlink" title="5025轮后的误差"></a>5025轮后的误差</h4><h3 id="测时间"><a href="#测时间" class="headerlink" title="测时间"></a>测时间</h3><h4 id="225轮"><a href="#225轮" class="headerlink" title="225轮"></a>225轮</h4><p><strong>fortran单线程</strong>：971 seconds</p><p><strong>fortran多线程</strong>（开了移植代码部分的openmp）</p><p>16线程：2314 s</p><p>32线程：</p><p>48线程：</p><p><strong>多维c</strong>：875 s</p><p><strong>一维c</strong>：859 s</p><p><strong>hipcc</strong>：</p><p>核函数xyz（二维拓扑）：786s</p><p> 核函数xyz（二维拓扑）RK（三维拓扑）：863</p><h4 id="5025轮"><a href="#5025轮" class="headerlink" title="5025轮"></a>5025轮</h4><p>fortran单线程：</p><p>fortran多线程：</p><p>多维c：</p><p>一维c：</p><p>hipcc：</p>]]></content>
     
     
     <categories>
