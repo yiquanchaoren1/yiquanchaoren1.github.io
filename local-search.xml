@@ -4,6 +4,31 @@
   
   
   <entry>
+    <title>project12</title>
+    <link href="/2024/10/08/project12/"/>
+    <url>/2024/10/08/project12/</url>
+    
+    <content type="html"><![CDATA[<p>225轮</p><p>hipc（xyz,rk四个核函数）</p><p><strong>加上输出</strong>:868s</p><p>输出部分为：868-598 &#x3D; 270s</p><p><strong>没加输出</strong>：598s</p><p>移植的部分（dcu部分）：330s(数据传输，同步)+40s（计算） &#x3D; 370s</p><p>其他的在cpu运行的时间：598-370 &#x3D; 228s</p><p><img src="/../images/1728372609809.png" alt="1728372609809"></p><p><img src="/../images/1728372657102.png" alt="1728372657102"></p><p>us加不上啊，有误差</p><p>不加也行。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>项目</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>项目</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>project11</title>
     <link href="/2024/10/07/project11/"/>
     <url>/2024/10/07/project11/</url>
