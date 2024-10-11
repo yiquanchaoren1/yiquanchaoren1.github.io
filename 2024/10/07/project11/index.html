@@ -16,15 +16,15 @@
   <meta name="author" content="hzbing">
   <meta name="keywords" content="">
   
-    <meta name="description" content="误差问题 把Flux_x改成一维c，误差还是存在，说明不是x的问题 可能是数据传输中出了问题。 先消除误差，找找哪个环节出了问题。 只添加一个x，没问题 把yz也改了 之前测的是加上US和xyz的任意一个就有错误 应该是中间值的传递错误。 xy一起 ok xyz一起 ok xyz RK一起 ok 4个核函数没问题了。 性能也有提升。时间测试在project08里面 所以说今天还是有收获的。">
+    <meta name="description" content="误差问题 把Flux_x改成一维c，误差还是存在，说明不是x的问题 可能是数据传输中出了问题。 先消除误差，找找哪个环节出了问题。 只添加一个x，没问题 把yz也改了 之前测的是加上US和xyz的任意一个就有错误（2024年10月11日16:12:56 这里描述有错误，之前有错误是程序中断，不是误差问题。这样看来还是US出现问题导致的误差） 应该是中间值的传递错误。 xy一起 ok xyz一起 o">
 <meta property="og:type" content="article">
 <meta property="og:title" content="project11">
 <meta property="og:url" content="http://example.com/2024/10/07/project11/index.html">
 <meta property="og:site_name" content="一拳超人">
-<meta property="og:description" content="误差问题 把Flux_x改成一维c，误差还是存在，说明不是x的问题 可能是数据传输中出了问题。 先消除误差，找找哪个环节出了问题。 只添加一个x，没问题 把yz也改了 之前测的是加上US和xyz的任意一个就有错误 应该是中间值的传递错误。 xy一起 ok xyz一起 ok xyz RK一起 ok 4个核函数没问题了。 性能也有提升。时间测试在project08里面 所以说今天还是有收获的。">
+<meta property="og:description" content="误差问题 把Flux_x改成一维c，误差还是存在，说明不是x的问题 可能是数据传输中出了问题。 先消除误差，找找哪个环节出了问题。 只添加一个x，没问题 把yz也改了 之前测的是加上US和xyz的任意一个就有错误（2024年10月11日16:12:56 这里描述有错误，之前有错误是程序中断，不是误差问题。这样看来还是US出现问题导致的误差） 应该是中间值的传递错误。 xy一起 ok xyz一起 o">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2024-10-07T11:30:00.000Z">
-<meta property="article:modified_time" content="2024-10-07T12:06:22.789Z">
+<meta property="article:modified_time" content="2024-10-11T08:13:39.972Z">
 <meta property="article:author" content="hzbing">
 <meta property="article:tag" content="项目">
 <meta name="twitter:card" content="summary_large_image">
@@ -220,7 +220,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          133 字
+          178 字
         
       </span>
     
@@ -279,7 +279,7 @@
 <p>先消除误差，找找哪个环节出了问题。</p>
 <p>只添加一个x，没问题</p>
 <p>把yz也改了</p>
-<p>之前测的是加上US和xyz的任意一个就有错误</p>
+<p>之前测的是加上US和xyz的任意一个就有错误（2024年10月11日16:12:56 这里描述有错误，之前有错误是程序中断，不是误差问题。这样看来还是US出现问题导致的误差）</p>
 <p>应该是中间值的传递错误。</p>
 <p>xy一起 ok</p>
 <p>xyz一起 ok</p>

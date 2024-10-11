@@ -224,6 +224,67 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2024/10/11/project13/" target="_self">
+          project013
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2024/10/11/project13/" target="_self">
+        <div>
+          再测试单独用us一个核函数有没有错误。 夸张，到底是什么错误。 单独用一个us也有错误。 就是us的错误吗，为什么之前测试的时候没有错误。 懂了，之前测试的是us没有中断的错误，但是有误差的错误。 所以误差还是us产生的，我确定 ijk的范围有错误吗，没有 代码也一样，到底是哪的错误呢？ 把下标计算放到if里面呢？经验证，不是这的错误 计算flux_US的的时候，下标之间有联系，不能分开算？ 确实
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2024-10-11 17:00" pubdate>
+              2024-10-11
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E9%A1%B9%E7%9B%AE/" class="category-chain-item">项目</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E9%A1%B9%E7%9B%AE/">#项目</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2024/10/08/project12/" target="_self">
           project12
         </a>
@@ -293,7 +354,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2024/10/07/project11/" target="_self">
         <div>
-          误差问题 把Flux_x改成一维c，误差还是存在，说明不是x的问题 可能是数据传输中出了问题。 先消除误差，找找哪个环节出了问题。 只添加一个x，没问题 把yz也改了 之前测的是加上US和xyz的任意一个就有错误 应该是中间值的传递错误。 xy一起 ok xyz一起 ok xyz RK一起 ok 4个核函数没问题了。 性能也有提升。时间测试在project08里面 所以说今天还是有收获的。
+          误差问题 把Flux_x改成一维c，误差还是存在，说明不是x的问题 可能是数据传输中出了问题。 先消除误差，找找哪个环节出了问题。 只添加一个x，没问题 把yz也改了 之前测的是加上US和xyz的任意一个就有错误（2024年10月11日16:12:56 这里描述有错误，之前有错误是程序中断，不是误差问题。这样看来还是US出现问题导致的误差） 应该是中间值的传递错误。 xy一起 ok xyz一起 o
         </div>
       </a>
 
@@ -767,72 +828,11 @@
     </article>
   </div>
 
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2024/09/09/project05/" target="_self">
-          project05
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2024/09/09/project05/" target="_self">
-        <div>
-          find the error程序运行慢的原因：申请的block数太多了，可能线程等待什么的需要时间。 改完后要比c快很多。 计算误差 225轮测试基本没有误差。  时间：225 轮 hip : 16min      f 走了94轮 快一倍不止 时间：5025轮 差不多三倍 前期优化已经完成，后期优化方向设置合适的block和thread 合并内存访问 bank冲突 shared memory 寄存
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2024-09-09 14:30" pubdate>
-              2024-09-09
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E9%A1%B9%E7%9B%AE/" class="category-chain-item">项目</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E9%A1%B9%E7%9B%AE/">#项目</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
 
 
   <nav aria-label="navigation">
     <span class="pagination" id="pagination">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/#board">2</a><a class="page-number" href="/page/3/#board">3</a><a class="extend next" rel="next" href="/page/2/#board"><i class="iconfont icon-arrowright"></i></a>
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/#board">2</a><a class="page-number" href="/page/3/#board">3</a><a class="page-number" href="/page/4/#board">4</a><a class="extend next" rel="next" href="/page/2/#board"><i class="iconfont icon-arrowright"></i></a>
     </span>
   </nav>
 
