@@ -16,32 +16,22 @@
   <meta name="author" content="hzbing">
   <meta name="keywords" content="">
   
-    <meta name="description" content="逐个函数测试hipus没问题。 Flux_x  没问题 Flux_yz 没问题 RK 也没问题 成功了？ 跑5025步试试 真没问题了 具体问题不知道，改为fluidone 和 fluidtwo 分开释放gpu变量就可以了。 thread 和 block 数目 环境 5025轮后的误差测时间225轮fortran单线程：971 seconds fortran多线程（开了移植代码部分的openmp）">
+    <meta name="description" content="测试的时间还是在project08 里面时间占用问题，用hipprof测的移植部分比重变小了,2025步是40% 可能还有其他的函数占比，hipprof没测出来。 重心1技术技术技术(important） 2.看论文 3.cfd的代码慢慢啃吧（参考） 改成传输一次（把equation合并在一起）us改了flux_US的值，flux_US在xyz和RK中都要用。 xyz 改了flux和Lcon的值。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="project08">
-<meta property="og:url" content="http://example.com/2024/09/15/project08/index.html">
+<meta property="og:title" content="project14">
+<meta property="og:url" content="http://example.com/2024/10/14/project14/index.html">
 <meta property="og:site_name" content="一拳超人">
-<meta property="og:description" content="逐个函数测试hipus没问题。 Flux_x  没问题 Flux_yz 没问题 RK 也没问题 成功了？ 跑5025步试试 真没问题了 具体问题不知道，改为fluidone 和 fluidtwo 分开释放gpu变量就可以了。 thread 和 block 数目 环境 5025轮后的误差测时间225轮fortran单线程：971 seconds fortran多线程（开了移植代码部分的openmp）">
+<meta property="og:description" content="测试的时间还是在project08 里面时间占用问题，用hipprof测的移植部分比重变小了,2025步是40% 可能还有其他的函数占比，hipprof没测出来。 重心1技术技术技术(important） 2.看论文 3.cfd的代码慢慢啃吧（参考） 改成传输一次（把equation合并在一起）us改了flux_US的值，flux_US在xyz和RK中都要用。 xyz 改了flux和Lcon的值。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/images/1726390505156.png">
-<meta property="og:image" content="http://example.com/images/1726390536881.png">
-<meta property="og:image" content="http://example.com/images/1728877817070.png">
-<meta property="og:image" content="http://example.com/images/1728877821569.png">
-<meta property="og:image" content="http://example.com/images/1728879348146.png">
-<meta property="og:image" content="http://example.com/images/1728885904189.png">
-<meta property="og:image" content="http://example.com/images/1728885927477.png">
-<meta property="og:image" content="http://example.com/images/1728895734760.png">
-<meta property="og:image" content="http://example.com/images/1728904797637.png">
-<meta property="article:published_time" content="2024-09-15T08:30:00.000Z">
-<meta property="article:modified_time" content="2024-10-14T13:26:24.308Z">
+<meta property="article:published_time" content="2024-10-14T12:00:00.000Z">
+<meta property="article:modified_time" content="2024-10-14T13:26:07.484Z">
 <meta property="article:author" content="hzbing">
 <meta property="article:tag" content="项目">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://example.com/images/1726390505156.png">
   
   
   
-  <title>project08 - 一拳超人</title>
+  <title>project14 - 一拳超人</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -207,7 +197,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="project08"></span>
+            <span id="subtitle" data-typed-text="project14"></span>
           
         </div>
 
@@ -218,8 +208,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2024-09-15 16:30" pubdate>
-          2024年9月15日 下午
+        <time datetime="2024-10-14 20:00" pubdate>
+          2024年10月14日 晚上
         </time>
       </span>
     
@@ -230,7 +220,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          236 字
+          335 字
         
       </span>
     
@@ -241,7 +231,7 @@
         
         
         
-          2 分钟
+          3 分钟
         
       </span>
     
@@ -278,55 +268,38 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">project08</h1>
+            <h1 id="seo-header">project14</h1>
             
             
               <div class="markdown-body">
                 
-                <h3 id="逐个函数测试"><a href="#逐个函数测试" class="headerlink" title="逐个函数测试"></a>逐个函数测试</h3><p>hipus没问题。</p>
-<p>Flux_x  没问题</p>
-<p>Flux_yz 没问题</p>
-<p>RK 也没问题</p>
-<p>成功了？</p>
-<p>跑5025步试试</p>
-<p>真没问题了</p>
-<p>具体问题不知道，改为fluidone 和 fluidtwo 分开释放gpu变量就可以了。</p>
-<h4 id="thread-和-block-数目"><a href="#thread-和-block-数目" class="headerlink" title="thread 和 block 数目"></a>thread 和 block 数目</h4><p><img src="/../images/1726390505156.png" srcset="/img/loading.gif" lazyload alt="1726390505156"></p>
-<h4 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h4><p><img src="/../images/1726390536881.png" srcset="/img/loading.gif" lazyload alt="1726390536881"></p>
-<h4 id="5025轮后的误差"><a href="#5025轮后的误差" class="headerlink" title="5025轮后的误差"></a>5025轮后的误差</h4><h3 id="测时间"><a href="#测时间" class="headerlink" title="测时间"></a>测时间</h3><h4 id="225轮"><a href="#225轮" class="headerlink" title="225轮"></a>225轮</h4><p><strong>fortran单线程</strong>：971 seconds</p>
-<p><strong>fortran多线程</strong>（开了移植代码部分的openmp）</p>
-<p>16线程：2314 s</p>
-<p>32线程：</p>
-<p>48线程：</p>
-<p><strong>多维c</strong>：875 s</p>
-<p><strong>一维c</strong>：859 s</p>
-<p><strong>hipcc</strong>：</p>
-<p><img src="/../images/1728877817070.png" srcset="/img/loading.gif" lazyload alt="1728877817070"></p>
-<p>核函数xyz（二维拓扑）：786s</p>
-<p> 核函数xyz（二维拓扑）RK（三维拓扑）：863s</p>
-<p>核函数us,xyz（二维拓扑）RK（三维拓扑）:897s</p>
-<p>改为一个equation后：663s</p>
-<p><img src="/../images/1728877821569.png" srcset="/img/loading.gif" lazyload alt="1728877821569"></p>
-<p>核函数us,xyz（二维拓扑）RK（三维拓扑）:854s</p>
-<p><img src="/../images/1728879348146.png" srcset="/img/loading.gif" lazyload alt="1728879348146"></p>
-<p>核函数us,xyz（二维拓扑）RK（三维拓扑）：848s</p>
-<p><img src="/../images/1728885904189.png" srcset="/img/loading.gif" lazyload alt="1728885904189"></p>
-<p>核函数us,xyz（二维拓扑）RK（三维拓扑）：830s</p>
-<p><img src="/../images/1728885927477.png" srcset="/img/loading.gif" lazyload alt="1728885927477"></p>
-<p>有错误</p>
-<h4 id="2025轮"><a href="#2025轮" class="headerlink" title="2025轮"></a>2025轮</h4><p><strong>fortran</strong>:</p>
-<p>单线程：</p>
-<p>2个线程：</p>
-<p><strong>一维c</strong>：7248s</p>
-<p><img src="/../images/1728895734760.png" srcset="/img/loading.gif" lazyload alt="1728895734760"></p>
-<p><strong>hipc 5个核函数：</strong>6865s(移植代码占比40%)</p>
-<p><img src="/../images/1728904797637.png" srcset="/img/loading.gif" lazyload alt="1728904797637"></p>
-<p><strong>hipc改为一个equation后：</strong></p>
-<h4 id="5025轮"><a href="#5025轮" class="headerlink" title="5025轮"></a>5025轮</h4><p>fortran单线程：</p>
-<p>fortran多线程：</p>
-<p>多维c：</p>
-<p>一维c：</p>
-<p>hipcc：</p>
+                <h3 id="测试的时间还是在project08-里面"><a href="#测试的时间还是在project08-里面" class="headerlink" title="测试的时间还是在project08 里面"></a>测试的时间还是在project08 里面</h3><p>时间占用问题，用hipprof测的移植部分比重变小了,2025步是40%</p>
+<p>可能还有其他的函数占比，hipprof没测出来。</p>
+<h3 id="重心"><a href="#重心" class="headerlink" title="重心"></a>重心</h3><p>1技术技术技术(important）</p>
+<p>2.看论文</p>
+<p>3.cfd的代码慢慢啃吧（参考）</p>
+<h3 id="改成传输一次（把equation合并在一起）"><a href="#改成传输一次（把equation合并在一起）" class="headerlink" title="改成传输一次（把equation合并在一起）"></a><strong>改成传输一次</strong>（把equation合并在一起）</h3><p>us改了flux_US的值，flux_US在xyz和RK中都要用。</p>
+<p>xyz 改了flux和Lcon的值。</p>
+<p>RK改了con的值。</p>
+<p>flux flux_US Lcon 还需要传回来吗？</p>
+<p>看一下后面的代码</p>
+<p>应该只改了con,con2这两个数组</p>
+<p>flux_cutface 和 flux_cutface2的值也没变</p>
+<p>只用到了flux_cutface的值,所以，flux_cutface2不用传入</p>
+<p>这两个数组都不用传回来。</p>
+<p><strong>225步</strong></p>
+<p>没改之前：830s</p>
+<p>改为一个Equation：</p>
+<p>663s(直接跑)</p>
+<p>795s,706s（hipprof）<br>输出占75s *2 &#x3D; 150s</p>
+<h3 id="后续思路"><a href="#后续思路" class="headerlink" title="后续思路"></a>后续思路</h3><p>为什么传入的次数减半，时间并没有减少（测步数多一点试试，输出占的时间太多了）</p>
+<p>把同步去掉试试。</p>
+<p>去掉检查check函数</p>
+<p>常量只需在第一次传入即可，用if实现</p>
+<p>con用不用传入，给他赋初值都是0试试有没有错误</p>
+<p>怎么进一步减少<strong>传输时间</strong>？memcpy</p>
+<p><strong>计算时间</strong>已经很少了，加速了很多倍。（这个地方再优化也就那样了）</p>
+<p>测cpu和gpu 分别的时间，感觉hipprof不是很准</p>
 
                 
               </div>
@@ -372,8 +345,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>project08</div>
-      <div>http://example.com/2024/09/15/project08/</div>
+      <div>project14</div>
+      <div>http://example.com/2024/10/14/project14/</div>
     </div>
     <div class="license-meta">
       
@@ -385,7 +358,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2024年9月15日</div>
+          <div>2024年10月14日</div>
         </div>
       
       
@@ -417,18 +390,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2024/09/16/java%E5%A4%9A%E7%BA%BF%E7%A8%8B02/" title="java多线程02">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">java多线程02</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2024/09/14/project07/" title="project07">
-                        <span class="hidden-mobile">project07</span>
+                      <a href="/2024/10/11/project13/" title="project013">
+                        <span class="hidden-mobile">project013</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

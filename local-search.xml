@@ -4,6 +4,31 @@
   
   
   <entry>
+    <title>project14</title>
+    <link href="/2024/10/14/project14/"/>
+    <url>/2024/10/14/project14/</url>
+    
+    <content type="html"><![CDATA[<h3 id="测试的时间还是在project08-里面"><a href="#测试的时间还是在project08-里面" class="headerlink" title="测试的时间还是在project08 里面"></a>测试的时间还是在project08 里面</h3><p>时间占用问题，用hipprof测的移植部分比重变小了,2025步是40%</p><p>可能还有其他的函数占比，hipprof没测出来。</p><h3 id="重心"><a href="#重心" class="headerlink" title="重心"></a>重心</h3><p>1技术技术技术(important）</p><p>2.看论文</p><p>3.cfd的代码慢慢啃吧（参考）</p><h3 id="改成传输一次（把equation合并在一起）"><a href="#改成传输一次（把equation合并在一起）" class="headerlink" title="改成传输一次（把equation合并在一起）"></a><strong>改成传输一次</strong>（把equation合并在一起）</h3><p>us改了flux_US的值，flux_US在xyz和RK中都要用。</p><p>xyz 改了flux和Lcon的值。</p><p>RK改了con的值。</p><p>flux flux_US Lcon 还需要传回来吗？</p><p>看一下后面的代码</p><p>应该只改了con,con2这两个数组</p><p>flux_cutface 和 flux_cutface2的值也没变</p><p>只用到了flux_cutface的值,所以，flux_cutface2不用传入</p><p>这两个数组都不用传回来。</p><p><strong>225步</strong></p><p>没改之前：830s</p><p>改为一个Equation：</p><p>663s(直接跑)</p><p>795s,706s（hipprof）<br>输出占75s *2 &#x3D; 150s</p><h3 id="后续思路"><a href="#后续思路" class="headerlink" title="后续思路"></a>后续思路</h3><p>为什么传入的次数减半，时间并没有减少（测步数多一点试试，输出占的时间太多了）</p><p>把同步去掉试试。</p><p>去掉检查check函数</p><p>常量只需在第一次传入即可，用if实现</p><p>con用不用传入，给他赋初值都是0试试有没有错误</p><p>怎么进一步减少<strong>传输时间</strong>？memcpy</p><p><strong>计算时间</strong>已经很少了，加速了很多倍。（这个地方再优化也就那样了）</p><p>测cpu和gpu 分别的时间，感觉hipprof不是很准</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>项目</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>项目</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>project013</title>
     <link href="/2024/10/11/project13/"/>
     <url>/2024/10/11/project13/</url>
@@ -158,7 +183,7 @@
     <link href="/2024/09/15/project08/"/>
     <url>/2024/09/15/project08/</url>
     
-    <content type="html"><![CDATA[<h3 id="逐个函数测试"><a href="#逐个函数测试" class="headerlink" title="逐个函数测试"></a>逐个函数测试</h3><p>hipus没问题。</p><p>Flux_x  没问题</p><p>Flux_yz 没问题</p><p>RK 也没问题</p><p>成功了？</p><p>跑5025步试试</p><p>真没问题了</p><p>具体问题不知道，改为fluidone 和 fluidtwo 分开释放gpu变量就可以了。</p><h4 id="thread-和-block-数目"><a href="#thread-和-block-数目" class="headerlink" title="thread 和 block 数目"></a>thread 和 block 数目</h4><p><img src="/../images/1726390505156.png" alt="1726390505156"></p><h4 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h4><p><img src="/../images/1726390536881.png" alt="1726390536881"></p><h4 id="5025轮后的误差"><a href="#5025轮后的误差" class="headerlink" title="5025轮后的误差"></a>5025轮后的误差</h4><h3 id="测时间"><a href="#测时间" class="headerlink" title="测时间"></a>测时间</h3><h4 id="225轮"><a href="#225轮" class="headerlink" title="225轮"></a>225轮</h4><p><strong>fortran单线程</strong>：971 seconds</p><p><strong>fortran多线程</strong>（开了移植代码部分的openmp）</p><p>16线程：2314 s</p><p>32线程：</p><p>48线程：</p><p><strong>多维c</strong>：875 s</p><p><strong>一维c</strong>：859 s</p><p><strong>hipcc</strong>：</p><p>核函数xyz（二维拓扑）：786s</p><p> 核函数xyz（二维拓扑）RK（三维拓扑）：863s</p><p>核函数us,xyz（二维拓扑）RK（三维拓扑）:897s</p><h4 id="5025轮"><a href="#5025轮" class="headerlink" title="5025轮"></a>5025轮</h4><p>fortran单线程：</p><p>fortran多线程：</p><p>多维c：</p><p>一维c：</p><p>hipcc：</p>]]></content>
+    <content type="html"><![CDATA[<h3 id="逐个函数测试"><a href="#逐个函数测试" class="headerlink" title="逐个函数测试"></a>逐个函数测试</h3><p>hipus没问题。</p><p>Flux_x  没问题</p><p>Flux_yz 没问题</p><p>RK 也没问题</p><p>成功了？</p><p>跑5025步试试</p><p>真没问题了</p><p>具体问题不知道，改为fluidone 和 fluidtwo 分开释放gpu变量就可以了。</p><h4 id="thread-和-block-数目"><a href="#thread-和-block-数目" class="headerlink" title="thread 和 block 数目"></a>thread 和 block 数目</h4><p><img src="/../images/1726390505156.png" alt="1726390505156"></p><h4 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h4><p><img src="/../images/1726390536881.png" alt="1726390536881"></p><h4 id="5025轮后的误差"><a href="#5025轮后的误差" class="headerlink" title="5025轮后的误差"></a>5025轮后的误差</h4><h3 id="测时间"><a href="#测时间" class="headerlink" title="测时间"></a>测时间</h3><h4 id="225轮"><a href="#225轮" class="headerlink" title="225轮"></a>225轮</h4><p><strong>fortran单线程</strong>：971 seconds</p><p><strong>fortran多线程</strong>（开了移植代码部分的openmp）</p><p>16线程：2314 s</p><p>32线程：</p><p>48线程：</p><p><strong>多维c</strong>：875 s</p><p><strong>一维c</strong>：859 s</p><p><strong>hipcc</strong>：</p><p><img src="/../images/1728877817070.png" alt="1728877817070"></p><p>核函数xyz（二维拓扑）：786s</p><p> 核函数xyz（二维拓扑）RK（三维拓扑）：863s</p><p>核函数us,xyz（二维拓扑）RK（三维拓扑）:897s</p><p>改为一个equation后：663s</p><p><img src="/../images/1728877821569.png" alt="1728877821569"></p><p>核函数us,xyz（二维拓扑）RK（三维拓扑）:854s</p><p><img src="/../images/1728879348146.png" alt="1728879348146"></p><p>核函数us,xyz（二维拓扑）RK（三维拓扑）：848s</p><p><img src="/../images/1728885904189.png" alt="1728885904189"></p><p>核函数us,xyz（二维拓扑）RK（三维拓扑）：830s</p><p><img src="/../images/1728885927477.png" alt="1728885927477"></p><p>有错误</p><h4 id="2025轮"><a href="#2025轮" class="headerlink" title="2025轮"></a>2025轮</h4><p><strong>fortran</strong>:</p><p>单线程：</p><p>2个线程：</p><p><strong>一维c</strong>：7248s</p><p><img src="/../images/1728895734760.png" alt="1728895734760"></p><p><strong>hipc 5个核函数：</strong>6865s(移植代码占比40%)</p><p><img src="/../images/1728904797637.png" alt="1728904797637"></p><p><strong>hipc改为一个equation后：</strong></p><h4 id="5025轮"><a href="#5025轮" class="headerlink" title="5025轮"></a>5025轮</h4><p>fortran单线程：</p><p>fortran多线程：</p><p>多维c：</p><p>一维c：</p><p>hipcc：</p>]]></content>
     
     
     <categories>
