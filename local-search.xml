@@ -4,6 +4,31 @@
   
   
   <entry>
+    <title>project15（锁页内存初尝试）</title>
+    <link href="/2024/10/25/project15%EF%BC%88%E9%94%81%E9%A1%B5%E5%86%85%E5%AD%98%E5%88%9D%E5%B0%9D%E8%AF%95%EF%BC%89/"/>
+    <url>/2024/10/25/project15%EF%BC%88%E9%94%81%E9%A1%B5%E5%86%85%E5%AD%98%E5%88%9D%E5%B0%9D%E8%AF%95%EF%BC%89/</url>
+    
+    <content type="html"><![CDATA[<h3 id="Equation’s-time-of-all-time"><a href="#Equation’s-time-of-all-time" class="headerlink" title="Equation’s time of all time"></a>Equation’s time of all time</h3><p>fortran 最初的大网格 单线程，225步（没加输出.plt 的代码）</p><p><img src="/../images/1729664480198.png" alt="1729664480198"></p><p><img src="/../images/1729664464177.png" alt="1729664464177"></p><p><img src="/../images/1729664438507.png" alt="1729664438507"></p><p>占比80%</p><h3 id="锁页内存"><a href="#锁页内存" class="headerlink" title="锁页内存"></a>锁页内存</h3><p>1直接分配锁内存有错误，显示分配失败</p><p>2采用第二种方法：将已有的内存注册为锁内存</p><p>之前：1437s</p><p><img src="/../images/1729858847603.png" alt="1729858847603"></p><p>用了锁业内存后：1473s</p><p><img src="/../images/1729858898507.png" alt="1729858898507"></p><p>还慢了。。。</p><p>Memcpy快了一点(10s)，但总体时间慢了（50s），cpu时间增多了(60s)</p><p>影响的是cpu的效率，因为分配了锁页内存，说明这两种方法的效率是差不多的。</p><p>就不试直接分配了，费力不讨好。</p><h3 id="下一步"><a href="#下一步" class="headerlink" title="下一步"></a>下一步</h3><p>多个cpu核心同时传输</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>project</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>project</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>一些idea</title>
     <link href="/2024/10/18/%E4%B8%80%E4%BA%9Bidea/"/>
     <url>/2024/10/18/%E4%B8%80%E4%BA%9Bidea/</url>
