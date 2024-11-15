@@ -16,19 +16,40 @@
   <meta name="author" content="hzbing">
   <meta name="keywords" content="">
   
-    <meta property="og:type" content="article">
-<meta property="og:title" content="一拳超人">
-<meta property="og:url" content="http://example.com/2024/11/09/project17(mps)/index.html">
+    <meta name="description" content="con传入dcu是否可以省略con也不能省略，会有误差 con2不能省略，会有错误。将con2初始值设置为0会有错误。可能要用到con2的值吧，先不考虑了。 所以con，con2还是要传入才行。 这里省略了的意思是，d_con,d_con2都为0。但是有些值不能设置为0 优化补充pinned补充和memset赋值将之前没设置为pinned的数组设置为pinned,并给它们赋值的时候采用memset">
+<meta property="og:type" content="article">
+<meta property="og:title" content="project17(mps尝试和计算通信时间重叠后续思路)">
+<meta property="og:url" content="http://example.com/2024/11/15/project17(mps)/index.html">
 <meta property="og:site_name" content="一拳超人">
+<meta property="og:description" content="con传入dcu是否可以省略con也不能省略，会有误差 con2不能省略，会有错误。将con2初始值设置为0会有错误。可能要用到con2的值吧，先不考虑了。 所以con，con2还是要传入才行。 这里省略了的意思是，d_con,d_con2都为0。但是有些值不能设置为0 优化补充pinned补充和memset赋值将之前没设置为pinned的数组设置为pinned,并给它们赋值的时候采用memset">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2024-11-09T12:42:13.001Z">
-<meta property="article:modified_time" content="2024-11-09T12:42:13.534Z">
+<meta property="og:image" content="http://example.com/images/1731225842706.png">
+<meta property="og:image" content="http://example.com/images/1731392053516.png">
+<meta property="og:image" content="http://example.com/images/1731393477020.png">
+<meta property="og:image" content="http://example.com/images/1731393500273.png">
+<meta property="og:image" content="http://example.com/images/1731393703877.png">
+<meta property="og:image" content="http://example.com/images/1731475603778.png">
+<meta property="og:image" content="http://example.com/images/1731475633149.png">
+<meta property="og:image" content="http://example.com/images/1731475546662.png">
+<meta property="og:image" content="http://example.com/images/1731467049782.png">
+<meta property="og:image" content="http://example.com/images/1731467070574.png">
+<meta property="og:image" content="http://example.com/images/1731479179196.png">
+<meta property="og:image" content="http://example.com/images/1731482129268.png">
+<meta property="og:image" content="http://example.com/images/1731479198112.png">
+<meta property="og:image" content="http://example.com/images/1731482857003.png">
+<meta property="og:image" content="http://example.com/images/1731486217222.png">
+<meta property="og:image" content="http://example.com/images/1731664373029.png">
+<meta property="og:image" content="http://example.com/images/1731664387717.png">
+<meta property="article:published_time" content="2024-11-15T10:00:00.000Z">
+<meta property="article:modified_time" content="2024-11-15T10:03:54.004Z">
 <meta property="article:author" content="hzbing">
+<meta property="article:tag" content="项目">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/images/1731225842706.png">
   
   
   
-  <title>一拳超人</title>
+  <title>project17(mps尝试和计算通信时间重叠后续思路) - 一拳超人</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -194,7 +215,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text=""></span>
+            <span id="subtitle" data-typed-text="project17(mps尝试和计算通信时间重叠后续思路)"></span>
           
         </div>
 
@@ -205,8 +226,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2024-11-09 20:42" pubdate>
-          2024年11月9日 晚上
+        <time datetime="2024-11-15 18:00" pubdate>
+          2024年11月15日 晚上
         </time>
       </span>
     
@@ -217,7 +238,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          0 字
+          1k 字
         
       </span>
     
@@ -228,7 +249,7 @@
         
         
         
-          1 分钟
+          9 分钟
         
       </span>
     
@@ -265,12 +286,132 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header"></h1>
+            <h1 id="seo-header">project17(mps尝试和计算通信时间重叠后续思路)</h1>
             
             
               <div class="markdown-body">
                 
-                
+                <h3 id="con传入dcu是否可以省略"><a href="#con传入dcu是否可以省略" class="headerlink" title="con传入dcu是否可以省略"></a>con传入dcu是否可以省略</h3><p>con也不能省略，会有误差</p>
+<p>con2不能省略，会有错误。将con2初始值设置为0会有错误。可能要用到con2的值吧，先不考虑了。</p>
+<p>所以con，con2还是要传入才行。</p>
+<p>这里省略了的意思是，d_con,d_con2都为0。但是有些值不能设置为0</p>
+<h3 id="优化补充"><a href="#优化补充" class="headerlink" title="优化补充"></a>优化补充</h3><h4 id="pinned补充和memset赋值"><a href="#pinned补充和memset赋值" class="headerlink" title="pinned补充和memset赋值"></a>pinned补充和memset赋值</h4><p>将之前没设置为pinned的数组设置为pinned,并给它们赋值的时候采用memset函数（更高效）</p>
+<p>flux_US,flux,Lcon,flux_cutside.</p>
+<p>25轮没有误差</p>
+<h4 id="性能测试"><a href="#性能测试" class="headerlink" title="性能测试"></a>性能测试</h4><p>5025轮中等网格：26556s</p>
+<p>之前：28809s</p>
+<p>1000轮中等网格：5321</p>
+<p>之前：5653</p>
+<h3 id="计算数组的大小"><a href="#计算数组的大小" class="headerlink" title="计算数组的大小"></a>计算数组的大小</h3><p>为了便于数据量的分配，必须计算数组的大小。</p>
+<p>以中等网格为例</p>
+<p><img src="/../images/1731225842706.png" srcset="/img/loading.gif" lazyload alt="1731225842706"></p>
+<h4 id="输出结果："><a href="#输出结果：" class="headerlink" title="输出结果："></a>输出结果：</h4><p> ibnd_R         222<br> jbnd_R         172<br> kbnd_R         172<br> Max_cutface_num     3000000<br> Max_side_num     6000000<br> Max_cutface_num     3000000</p>
+<p> fortran size_3D     6567648<br> fortran size_xyzside    19702944<br> fortran size_cutside    18000000<br> fortran size_Lcon    32838240<br> fortran size_flux_US    30000000<br> fortran size_con    98514720<br> fortran size_flux_cutface    15000000<br> fortran size_den    13135296</p>
+<h4 id="计算大小："><a href="#计算大小：" class="headerlink" title="计算大小："></a>计算大小：</h4><p><strong>16个数组，总共大小：</strong></p>
+<h5 id="int-57-405-888（219M）"><a href="#int-57-405-888（219M）" class="headerlink" title="int:57,405,888（219M）"></a>int:57,405,888（219M）</h5><p>单位为数组大小</p>
+<p>imark：6567648，26,270,592</p>
+<p>cut_model：6567648，26,270,592</p>
+<p>cutface:6567648，26,270,592</p>
+<p>xyzside:19702944，78,811,776</p>
+<p>cutside:18000000，72,000,000</p>
+<h5 id="double-392-518-262-2995M-2-92G"><a href="#double-392-518-262-2995M-2-92G" class="headerlink" title="double:392,518,262 (2995M,2.92G)"></a>double:392,518,262 (2995M,2.92G)</h5><p>phimac:6567648 ，52,541,184</p>
+<p>VOL:6567648，52,541,184</p>
+<p>dx:222，1,776</p>
+<p>dy:172，1,376</p>
+<p>dz:172，1,376</p>
+<p>area_cutside:6000000，48,000,000</p>
+<p>thread1:386,000,000</p>
+<p>den:13135296，105,082,368</p>
+<p>pre:13135296，105,082,368</p>
+<p>vel_u:13135296，105,082,368</p>
+<p>vel_v:13135296，105,082,368</p>
+<p>thread2:420</p>
+<p>vel_w:13135296，105,082,368</p>
+<p>flux_US:30,000,000，240,000,000</p>
+<p>flux_cutface:15,000,000，120,000,000</p>
+<p>thread3:465</p>
+<p>Lcon:32,838,240，262,705,920</p>
+<p>flux:32,838,240，262,705,920</p>
+<p>thread4:525</p>
+<p>con:98514720，788,117,760</p>
+<p>thread5,6:394</p>
+<p>con2:98514720，788,117,760</p>
+<p>thread7,8:394</p>
+<h4 id="手动分组："><a href="#手动分组：" class="headerlink" title="手动分组："></a>手动分组：</h4><p>起8个线程</p>
+<p>3368&#x2F;8 &#x3D; 421,000,000</p>
+<p><img src="/../images/1731392053516.png" srcset="/img/loading.gif" lazyload alt="1731392053516"></p>
+<p>#SBATCH –ntasks-per-node&#x3D;10</p>
+<p>#SBATCH –cpus-per-task&#x3D;1</p>
+<p><strong>传回的两个数组：1,503M（1.46G）</strong></p>
+<p>con:98514720</p>
+<p>con2:98514720</p>
+<h2 id="性能测试-1"><a href="#性能测试-1" class="headerlink" title="性能测试"></a>性能测试</h2><h3 id="demo测试8个线程"><a href="#demo测试8个线程" class="headerlink" title="demo测试8个线程"></a>demo测试8个线程</h3><h4 id="不加"><a href="#不加" class="headerlink" title="不加"></a>不加</h4><p>#SBATCH –ntasks-per-node&#x3D;8</p>
+<p>#SBATCH –cpus-per-task&#x3D;1</p>
+<p><img src="/../images/1731393477020.png" srcset="/img/loading.gif" lazyload alt="1731393477020"></p>
+<h4 id="加上"><a href="#加上" class="headerlink" title="加上"></a>加上</h4><p><img src="/../images/1731393500273.png" srcset="/img/loading.gif" lazyload alt="1731393500273"></p>
+<h4 id="一个任务两个cpu核"><a href="#一个任务两个cpu核" class="headerlink" title="一个任务两个cpu核"></a>一个任务两个cpu核</h4><p>#SBATCH –ntasks-per-node&#x3D;8</p>
+<p>#SBATCH –cpus-per-task&#x3D;2</p>
+<p>同时要设置两个dcu卡</p>
+<p>#SBATCH –gres:dcu&#x3D;2</p>
+<p><img src="/../images/1731393703877.png" srcset="/img/loading.gif" lazyload alt="1731393703877"></p>
+<h3 id="3D-cutcell测试"><a href="#3D-cutcell测试" class="headerlink" title="3D-cutcell测试"></a>3D-cutcell测试</h3><p><strong>中等网格1000轮</strong></p>
+<h4 id="什么也不加"><a href="#什么也不加" class="headerlink" title="什么也不加"></a>什么也不加</h4><p>5321s</p>
+<p><img src="/../images/1731475603778.png" srcset="/img/loading.gif" lazyload alt="1731475603778"></p>
+<h4 id="加上openmp后"><a href="#加上openmp后" class="headerlink" title="加上openmp后"></a>加上openmp后</h4><p><img src="/../images/1731475633149.png" srcset="/img/loading.gif" lazyload alt="1731475633149"></p>
+<h5 id="不加-1"><a href="#不加-1" class="headerlink" title="不加"></a>不加</h5><p>#SBATCH –ntasks-per-node&#x3D;8</p>
+<p>#SBATCH –cpus-per-task&#x3D;1</p>
+<p>5354s</p>
+<h5 id="加上-1"><a href="#加上-1" class="headerlink" title="加上"></a>加上</h5><p>5201s</p>
+<p>去掉hipStreamSyn同步，改用hipDeviceSyn替代：5234s</p>
+<p><img src="/../images/1731475546662.png" srcset="/img/loading.gif" lazyload alt="1731475546662"></p>
+<p>正确性验证</p>
+<p>25轮没问题</p>
+<h5 id="两个cpu核"><a href="#两个cpu核" class="headerlink" title="两个cpu核"></a>两个cpu核</h5><p>5424</p>
+<p><strong>中等网格5025轮</strong></p>
+<p>加上</p>
+<p>#SBATCH –ntasks-per-node&#x3D;8</p>
+<p>#SBATCH –cpus-per-task&#x3D;1</p>
+<p>27410s</p>
+<p>还慢了</p>
+<p>The reason？</p>
+<p>写demo测试一下，对比memcpy和其他函数的时间</p>
+<h4 id="对比hipperf函数时间"><a href="#对比hipperf函数时间" class="headerlink" title="对比hipperf函数时间"></a>对比hipperf函数时间</h4><p>之前</p>
+<p><img src="/../images/1731467049782.png" srcset="/img/loading.gif" lazyload alt="1731467049782"></p>
+<p>加上openmp后</p>
+<p><img src="/../images/1731467070574.png" srcset="/img/loading.gif" lazyload alt="1731467070574"></p>
+<p>hipStreamSynchronize的时间占用的很多</p>
+<p>去掉hipStreamSyn同步，改用hipDeviceSyn替代</p>
+<h4 id="200步中等网格测试"><a href="#200步中等网格测试" class="headerlink" title="200步中等网格测试"></a>200步中等网格测试</h4><p>pinned后</p>
+<p><img src="/../images/1731479179196.png" srcset="/img/loading.gif" lazyload alt="1731479179196"></p>
+<p>去掉同步后</p>
+<p><img src="/../images/1731482129268.png" srcset="/img/loading.gif" lazyload alt="1731482129268"></p>
+<p>openmp后，并去掉所有的同步</p>
+<p><img src="/../images/1731479198112.png" srcset="/img/loading.gif" lazyload alt="1731479198112"></p>
+<p>将全部的hipmemcpy都分线程后</p>
+<p><img src="/../images/1731482857003.png" srcset="/img/loading.gif" lazyload alt="1731482857003"></p>
+<p>只创建销毁一次流</p>
+<p><img src="/../images/1731486217222.png" srcset="/img/loading.gif" lazyload alt="1731486217222"></p>
+<p>潜在的同步，还是流传输的同步时间，只不过加到了别的函数时间上，总时间没有差别。</p>
+<p>还是写demo，分别测，加上openmp到底有没有效果。再应用到程序里面。</p>
+<p>不用测了，说明pcie总线信道已经被占满了，分线程也没用，因为一个线程可能就占满了传输信道。</p>
+<h2 id="后续任务"><a href="#后续任务" class="headerlink" title="后续任务"></a>后续任务</h2><p>感觉有点扯。先传一部分，传完进行计算，在计算的时候再传另一部分。实现传输和计算的重叠。</p>
+<p>就相当于把网格分为几部分。但是怎么分呢？</p>
+<p>为什么要合并核函数？没搞懂。不合并行不行？有必要吗？</p>
+<p>把一次要处理的核函数放在一个流中，保证计算的顺序，就不需要合并了。</p>
+<h3 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h3><p>代码不用改，只改要传输的数组块即可，就是每次计算要用到数组的哪一部分。</p>
+<p>由于内核对所有元素都是独立操作的，因此每个块都可以独立处理。</p>
+<p>可就是核函数中处理的是数组的一个下标或多个下标（称为块）。可以单独运行。</p>
+<p>传输了数组的哪部分内容，就计算哪块。不用改核函数。</p>
+<p>重点是对多个数组进行分块传输，用流。</p>
+<p>流1计算的时候流2可以进行数据传输。</p>
+<p>con没必要全传入</p>
+<p><img src="/../images/1731664373029.png" srcset="/img/loading.gif" lazyload alt="1731664373029"></p>
+<p><img src="/../images/1731664387717.png" srcset="/img/loading.gif" lazyload alt="1731664387717"></p>
+<p>这些值在RK里面会被初始化为新的值。</p>
+<p>也就是说在equation中，只改了这一部分的值。</p>
+<p>所以，不用传入d_con（默认为0）,只需将d_con更改的地方（也就是这个范围的值）传回。</p>
+<p>不要传其他的值。</p>
+
                 
               </div>
             
@@ -278,6 +419,34 @@
             <div>
               <div class="post-metas my-3">
   
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E9%A1%B9%E7%9B%AE/" class="category-chain-item">项目</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E9%A1%B9%E7%9B%AE/" class="print-no-link">#项目</a>
+      
+    </div>
   
 </div>
 
@@ -287,8 +456,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div></div>
-      <div>http://example.com/2024/11/09/project17(mps)/</div>
+      <div>project17(mps尝试和计算通信时间重叠后续思路)</div>
+      <div>http://example.com/2024/11/15/project17(mps)/</div>
     </div>
     <div class="license-meta">
       
@@ -300,7 +469,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2024年11月9日</div>
+          <div>2024年11月15日</div>
         </div>
       
       
