@@ -4,6 +4,31 @@
   
   
   <entry>
+    <title>project18(con必须传入，申请释放一次，gpu数组直接赋值)</title>
+    <link href="/2024/11/18/project18(con%E5%BF%85%E9%A1%BB%E4%BC%A0%E5%85%A5%EF%BC%8C%E7%94%B3%E8%AF%B7%E9%87%8A%E6%94%BE%E4%B8%80%E6%AC%A1%EF%BC%8Cgpu%E6%95%B0%E7%BB%84%E7%9B%B4%E6%8E%A5%E8%B5%8B%E5%80%BC)/"/>
+    <url>/2024/11/18/project18(con%E5%BF%85%E9%A1%BB%E4%BC%A0%E5%85%A5%EF%BC%8C%E7%94%B3%E8%AF%B7%E9%87%8A%E6%94%BE%E4%B8%80%E6%AC%A1%EF%BC%8Cgpu%E6%95%B0%E7%BB%84%E7%9B%B4%E6%8E%A5%E8%B5%8B%E5%80%BC)/</url>
+    
+    <content type="html"><![CDATA[<h3 id="对con数组的操作，减少传输"><a href="#对con数组的操作，减少传输" class="headerlink" title="对con数组的操作，减少传输"></a>对con数组的操作，减少传输</h3><p><strong>d_con都设置为0，然后传回的时候只传回修改的部分，这样就减少了con传入gpu的memcpy时间</strong></p><p><img src="/../images/1731730333252.png" alt="1731730333252"></p><p><img src="/../images/1731730339857.png" alt="1731730339857"></p><p><code>con[3][172][172][222][5]</code></p><p>在gpu里面更改的范围</p><p><img src="/../images/1731730950856.png" alt="1731730950856"></p><p><code>下标con[0-2][3-168][3-168][3-218][0-4]</code></p><p>d_con  &#x3D; 0  </p><p>然后只需要把这一部分传回即可</p><p><code>3*((*kbnd_R) * (*jbnd_R) * (*ibnd_R) * 5) + k * ((*jbnd_R) * (*ibnd_R) * 5) + j * ((*ibnd_R) * 5) + i * 5;</code></p><p><code>(c1*(*kbnd_R) * (*jbnd_R) * (*ibnd_R) + k * (*jbnd_R) * (*ibnd_R) + j * (*ibnd_R) + i )*5</code></p><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs c++">(c1*(*kbnd_R) * (*jbnd_R) * (*ibnd_R) + k * (*jbnd_R) * (*ibnd_R) + j * (*ibnd_R) + i )*<span class="hljs-number">5</span><br>    <br><span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> c = <span class="hljs-number">0</span>; c &lt; <span class="hljs-number">3</span>; c++) &#123;<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> k = kbnd_L1 - <span class="hljs-number">1</span>; k &lt;= kbnd_R1 - <span class="hljs-number">1</span>; k++) &#123;<br>            <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j = jbnd_L1 - <span class="hljs-number">1</span>; j &lt;= jbnd_R1 - <span class="hljs-number">1</span>; j++) &#123;<br>                <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = ibnd_L1 - <span class="hljs-number">1</span>; i &lt;= ibnd_R1 - <span class="hljs-number">1</span>; i++) &#123;<br>                    <span class="hljs-comment">// 偏移</span><br>                    <span class="hljs-type">int</span> offset = (c*(*kbnd_R) * (*jbnd_R) * (*ibnd_R) + k * (*jbnd_R) * (*ibnd_R) + j * (*ibnd_R) + i )*<span class="hljs-number">5</span>;<br><br>                    <span class="hljs-comment">// 一次性传输 [c][k][j][i][0:4]，即第五维大小 C5 的数据</span><br>                    <span class="hljs-built_in">cudaMemcpy</span>(&amp;con[offset], &amp;d_con[offset], <span class="hljs-number">5</span> * <span class="hljs-built_in">sizeof</span>(<span class="hljs-type">double</span>), cudaMemcpyDeviceToHost);<br>                &#125;<br>            &#125;<br>        &#125;<br>    &#125;<br><br></code></pre></td></tr></table></figure><p>这样调用的memcpy次数太多了</p><p>改为将没有更改的部分传入，传回的时候只需要传回整个数组</p><p>传整个con的时间为</p><p><img src="/../images/1731918932401.png" alt="1731918932401"></p><p>将边界传入的时间为</p><p><img src="/../images/1731919095236.png" alt="1731919095236"></p><p>只传con有误差，不可行。</p><p><strong>con大结局！！！</strong></p><p><img src="/../images/1731920959871.png" alt="1731920959871"></p><p>con用到了自己的值，必须要传进来。</p><h3 id="gpu变量申请释放一次"><a href="#gpu变量申请释放一次" class="headerlink" title="gpu变量申请释放一次"></a>gpu变量申请释放一次</h3><p>在循环体外面声明，并在外面释放。</p><p>性能测试1000轮中等网格</p><p>之前 5321s</p><p><img src="/../images/1731925918273.png" alt="1731925918273"></p><p>申请释放一次后 5430s</p><p>去掉三个数组后 5078s</p><p><img src="/../images/1731937726798.png" alt="1731937726798"></p><h3 id="实现计算传输重叠（no-do-it-）"><a href="#实现计算传输重叠（no-do-it-）" class="headerlink" title="实现计算传输重叠（no do it ）"></a>实现计算传输重叠（no do it ）</h3><p>分块怎么分，涉及到的数组太多，数组的大小维度不同</p><p>每一块的内存连续问题</p><p>如果要保证每一块的内存都是连续的，没法算</p><p>如果要分块，在内存中肯定是不连续的，不连续怎么传？分段memcpy</p><p>好像不能分块,必须传入全部的数据。计算过程中需要使用连续的i,连续的j,连续的k.</p><p>&#x2F;&#x2F;可以把不好分块的数组先全部传进来，只对容易分块的数组进行分块。</p><p>核函数有必要合并吗，目前没必要。</p><p>&#x2F;&#x2F;后期扩展到多卡上，分块又要重新分</p><p>&#x2F;&#x2F;传输掩盖了计算的时间后，还对计算进行优化吗？</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>项目</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>项目</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>project17(mps尝试和计算通信时间重叠后续思路)</title>
     <link href="/2024/11/15/project17(mps)/"/>
     <url>/2024/11/15/project17(mps)/</url>
