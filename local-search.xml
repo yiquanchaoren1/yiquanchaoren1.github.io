@@ -4,6 +4,31 @@
   
   
   <entry>
+    <title>小论文</title>
+    <link href="/2024/12/16/%E8%AE%BA%E6%96%87/"/>
+    <url>/2024/12/16/%E8%AE%BA%E6%96%87/</url>
+    
+    <content type="html"><![CDATA[<h2 id="项目背景介绍和工作重点"><a href="#项目背景介绍和工作重点" class="headerlink" title="项目背景介绍和工作重点"></a>项目背景介绍和工作重点</h2><p><strong>界面湍流模拟仿真软件（Cut-Cell）</strong></p><p>可压缩多相流模拟仿真软件</p><p>软件功能：模拟三维液滴的变形、破碎</p><p><strong>Fortran代码，目前是OpenMP版本，尚未有GPU&#x2F;DCU工作</strong> </p><p><strong>功能简述：</strong>基于笛卡尔背景网格，使用三维切割网格重构-组装生成非结构界面网格，在 </p><p>ALE框架下采用有限体积法离散和求解水&#x2F;气两相欧拉方程</p><p><strong>核心算法：</strong> </p><p>•守恒性尖锐界面方法，切割网格技术， </p><p>中科大的工作将284种一般切割模态 </p><p>减少到12种基本切割模态</p><p><strong>算法分析</strong> </p><p>• 切割网格技术涉及笛卡尔网格&#x2F;非结构网格混合，算术强度低、分支判断多，无法发挥 </p><p>GPU&#x2F;DCU计算性能 </p><p>• 二阶Runge-Kutta法推进水&#x2F;气两相欧拉方程求解，占计算时间≈**50%**，是性能热点 </p><p>• <strong>Cut-Cell优化的工作重点是：欧拉方程求解的异构移植和性能优化、以及CPU和DCU协同计算</strong> </p><hr><h2 id="已做的工作"><a href="#已做的工作" class="headerlink" title="已做的工作"></a>已做的工作</h2><p>1.使用vtune,gprof等软件对程序整体热点进行分析。对算法特征进行分析。</p><p>1.两相流欧拉方程求解部分的代码移植 fortran&gt;c ，采用混编的方式</p><p>2.欧拉方程求解的异构移植,c&gt;hipc，采用CPU和DCU协同计算，采用的并行方法…</p><p>3.设置为锁页内存，减少cpu，dcu之间的传输时间</p><p>4.通过算法重排，实现cpu，dcu之间的数据传输和cpu上的函数计算时间掩盖。使用异步传输函数hipMemcpyAsync.</p><p>5.将all_prim_2_con和all_con_2_prim两段代码（原始变量con和守恒变量的相互转换）也放在移植到dcu上面。</p><p>6.正确性验证</p><p>7.后续工作。。。</p><h2 id="论文结构"><a href="#论文结构" class="headerlink" title="论文结构"></a><strong>论文结构</strong></h2><p><strong>界面湍流模拟仿真软件的异构移植与性能优化</strong></p><h3 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a><strong>摘要</strong></h3><p>概述研究背景、问题、优化方法及主要结果：</p><ul><li>背景：界面湍流模拟的重要性。</li><li>问题：传统算法在多相流计算中的性能瓶颈。</li><li>方法：提出CPU-DCU协同计算策略，使用锁页内存及异步传输优化。</li><li>结果：优化后性能提升显著，正确性验证通过。</li></ul><hr><h3 id="1-引言"><a href="#1-引言" class="headerlink" title="1. 引言"></a><strong>1. 引言</strong></h3><p>1.1 <strong>研究背景</strong></p><ul><li>多相流动模拟在工程与自然科学中的广泛应用。</li><li>当前算法在三维切割网格技术上的性能挑战。</li></ul><p>1.2 <strong>研究现状</strong></p><ul><li>可压缩多相流模拟领域的研究进展。</li><li>切割网格技术及守恒性尖锐界面方法的适配性问题。</li></ul><p>1.3 <strong>本文贡献</strong></p><ul><li>提出Cut-Cell代码的异构优化方案。</li><li>使用HIP编程实现CPU和DCU协同计算。</li></ul><hr><h3 id="2-Cut-Cell软件分析"><a href="#2-Cut-Cell软件分析" class="headerlink" title="2. Cut-Cell软件分析"></a><strong>2. Cut-Cell软件分析</strong></h3><p>2.1 <strong>算法框架</strong></p><ul><li>基于笛卡尔背景网格的网格切割与重构技术。</li><li>有限体积法在ALE框架下的离散和求解。</li></ul><p>2.2 <strong>热点模块</strong></p><ul><li>欧拉方程求解中的性能瓶颈。</li><li>守恒变量与原始变量转换模块。</li></ul><p>2.3 <strong>异构移植难点</strong></p><ul><li>算术强度低、分支判断多对GPU性能的不利影响。</li><li>数据传输开销大导致的效率瓶颈。</li></ul><hr><h3 id="3-优化方法"><a href="#3-优化方法" class="headerlink" title="3. 优化方法"></a><strong>3. 优化方法</strong></h3><p>3.1 <strong>代码移植</strong></p><ul><li>Fortran到C的移植方案。</li><li>混合编程模式及接口设计。</li></ul><p>3.2 <strong>异构计算设计</strong></p><ul><li>基于HIP的核函数设计。</li><li>数据并行化与任务分配策略。</li></ul><p>3.3 <strong>数据传输优化</strong></p><ul><li>锁页内存的使用及传输延迟优化。</li><li>使用异步传输（hipMemcpyAsync）实现计算与传输的时间重叠。</li></ul><p>3.4 <strong>其他模块优化</strong></p><ul><li>守恒变量与原始变量转换代码的异构移植。</li><li>算法重排以减少数据依赖。</li></ul><hr><h3 id="4-实验与结果"><a href="#4-实验与结果" class="headerlink" title="4. 实验与结果"></a><strong>4. 实验与结果</strong></h3><p>4.1 <strong>实验设置</strong></p><ul><li>硬件环境：CPU和DCU配置。</li><li>测试场景：三维液滴变形与破碎。</li></ul><p>4.2 <strong>性能分析</strong></p><ul><li>优化前后的加速比与运行时间对比。</li><li>数据传输开销对总计算效率的影响。</li></ul><p>4.3 <strong>正确性验证</strong></p><ul><li>模拟结果与理论解的对比。</li><li>多场景验证优化算法的鲁棒性。</li></ul><hr><h3 id="5-结论与展望"><a href="#5-结论与展望" class="headerlink" title="5. 结论与展望"></a><strong>5. 结论与展望</strong></h3><p>5.1 <strong>研究总结</strong></p><ul><li>代码异构移植和性能优化的关键成果。</li></ul><p>5.2 <strong>未来工作</strong></p><ul><li>多节点协同计算扩展。</li><li>针对更复杂多相流场景的适配与优化。</li></ul><hr><h3 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a><strong>参考文献</strong></h3><p>按照目标期刊要求，列出所有相关文献，涵盖背景研究和优化技术。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>项目</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>项目</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>project21_split成功all改为核函数</title>
     <link href="/2024/12/14/project21_split%E6%88%90%E5%8A%9Fall%E6%94%B9%E4%B8%BA%E6%A0%B8%E5%87%BD%E6%95%B0/"/>
     <url>/2024/12/14/project21_split%E6%88%90%E5%8A%9Fall%E6%94%B9%E4%B8%BA%E6%A0%B8%E5%87%BD%E6%95%B0/</url>

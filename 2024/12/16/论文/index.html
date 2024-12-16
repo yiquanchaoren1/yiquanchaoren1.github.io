@@ -16,34 +16,22 @@
   <meta name="author" content="hzbing">
   <meta name="keywords" content="">
   
-    <meta name="description" content="后续工作1.将all_con_2_prim.F90  all_prim_2_con.F90 两段代码放在GPU上计算 2.做一个函数input output 的表 3.搞明白US Flux_x_FVM依赖关系，才能分块。 4.fluid &#x3D; 1 算完后能不能传回数据。 5.写小论文 实验先将all_con_2_prim放在GPU上面并测试 函数中做的操作： all_con_2_prim将">
+    <meta name="description" content="项目背景介绍和工作重点界面湍流模拟仿真软件（Cut-Cell） 可压缩多相流模拟仿真软件 软件功能：模拟三维液滴的变形、破碎 Fortran代码，目前是OpenMP版本，尚未有GPU&#x2F;DCU工作  功能简述：基于笛卡尔背景网格，使用三维切割网格重构-组装生成非结构界面网格，在  ALE框架下采用有限体积法离散和求解水&#x2F;气两相欧拉方程 核心算法：  •守恒性尖锐界面方法，切割网格">
 <meta property="og:type" content="article">
-<meta property="og:title" content="project21_split成功all改为核函数">
-<meta property="og:url" content="http://example.com/2024/12/14/project21_split%E6%88%90%E5%8A%9Fall%E6%94%B9%E4%B8%BA%E6%A0%B8%E5%87%BD%E6%95%B0/index.html">
+<meta property="og:title" content="小论文">
+<meta property="og:url" content="http://example.com/2024/12/16/%E8%AE%BA%E6%96%87/index.html">
 <meta property="og:site_name" content="一拳超人">
-<meta property="og:description" content="后续工作1.将all_con_2_prim.F90  all_prim_2_con.F90 两段代码放在GPU上计算 2.做一个函数input output 的表 3.搞明白US Flux_x_FVM依赖关系，才能分块。 4.fluid &#x3D; 1 算完后能不能传回数据。 5.写小论文 实验先将all_con_2_prim放在GPU上面并测试 函数中做的操作： all_con_2_prim将">
+<meta property="og:description" content="项目背景介绍和工作重点界面湍流模拟仿真软件（Cut-Cell） 可压缩多相流模拟仿真软件 软件功能：模拟三维液滴的变形、破碎 Fortran代码，目前是OpenMP版本，尚未有GPU&#x2F;DCU工作  功能简述：基于笛卡尔背景网格，使用三维切割网格重构-组装生成非结构界面网格，在  ALE框架下采用有限体积法离散和求解水&#x2F;气两相欧拉方程 核心算法：  •守恒性尖锐界面方法，切割网格">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/images/1733724808481.png">
-<meta property="og:image" content="http://example.com/images/1733744265844.png">
-<meta property="og:image" content="http://example.com/images/1733744271811.png">
-<meta property="og:image" content="http://example.com/images/1733824701903.png">
-<meta property="og:image" content="http://example.com/images/1733824708148.png">
-<meta property="og:image" content="http://example.com/images/1733824729800.png">
-<meta property="og:image" content="http://example.com/images/1733824737115.png">
-<meta property="og:image" content="http://example.com/images/1734004219791.png">
-<meta property="og:image" content="http://example.com/images/1734007024726.png">
-<meta property="og:image" content="http://example.com/images/1734072917325.png">
-<meta property="og:image" content="http://example.com/images/1734150346109.png">
-<meta property="article:published_time" content="2024-12-14T12:00:00.000Z">
-<meta property="article:modified_time" content="2024-12-14T13:01:04.500Z">
+<meta property="article:published_time" content="2024-12-16T12:00:00.000Z">
+<meta property="article:modified_time" content="2024-12-16T06:29:05.724Z">
 <meta property="article:author" content="hzbing">
 <meta property="article:tag" content="项目">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://example.com/images/1733724808481.png">
   
   
   
-  <title>project21_split成功all改为核函数 - 一拳超人</title>
+  <title>小论文 - 一拳超人</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -209,7 +197,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="project21_split成功all改为核函数"></span>
+            <span id="subtitle" data-typed-text="小论文"></span>
           
         </div>
 
@@ -220,8 +208,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2024-12-14 20:00" pubdate>
-          2024年12月14日 晚上
+        <time datetime="2024-12-16 20:00" pubdate>
+          2024年12月16日 晚上
         </time>
       </span>
     
@@ -232,7 +220,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          875 字
+          1.1k 字
         
       </span>
     
@@ -243,7 +231,7 @@
         
         
         
-          8 分钟
+          10 分钟
         
       </span>
     
@@ -280,65 +268,124 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">project21_split成功all改为核函数</h1>
+            <h1 id="seo-header">小论文</h1>
             
             
               <div class="markdown-body">
                 
-                <h2 id="后续工作"><a href="#后续工作" class="headerlink" title="后续工作"></a>后续工作</h2><p>1.将all_con_2_prim.F90  all_prim_2_con.F90 两段代码放在GPU上计算</p>
-<p>2.做一个函数input output 的表</p>
-<p>3.搞明白US Flux_x_FVM依赖关系，才能分块。</p>
-<p>4.fluid &#x3D; 1 算完后能不能传回数据。</p>
-<p>5.写小论文</p>
-<h2 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h2><h3 id="先将all-con-2-prim放在GPU上面并测试"><a href="#先将all-con-2-prim放在GPU上面并测试" class="headerlink" title="先将all_con_2_prim放在GPU上面并测试"></a>先将all_con_2_prim放在GPU上面并测试</h3><p><img src="/../images/1733724808481.png" srcset="/img/loading.gif" lazyload alt="1733724808481"></p>
-<p><strong>函数中做的操作：</strong></p>
-<p>all_con_2_prim将con的值赋给pre，….</p>
-<p>US_2_S中也将con的值赋给pre…</p>
-<p>后面的函数没有能掩盖传输时间的了。</p>
-<p><strong>目的</strong>：减少all_con_2_prim在cpu上的执行时间（453s），改为在GPU运算(测试时间: 8s )</p>
-<p>增加了传回时间，con和pre（74s）都要传回。</p>
-<p>在执行完eauqation后将con传回，因为all_con_2_prim中要用到con</p>
-<p>执行完all_con_2_prim后将pre…传回,因为US_2_S中要给pre赋值</p>
-<h4 id="1000步中等网格"><a href="#1000步中等网格" class="headerlink" title="1000步中等网格"></a>1000步中等网格</h4><p>之前4612s</p>
-<p><img src="/../images/1733744265844.png" srcset="/img/loading.gif" lazyload alt="1733744265844"></p>
-<p><img src="/../images/1733744271811.png" srcset="/img/loading.gif" lazyload alt="1733744271811"></p>
-<h3 id="将all-prim-2-con移植到GPU"><a href="#将all-prim-2-con移植到GPU" class="headerlink" title="将all_prim_2_con移植到GPU"></a>将all_prim_2_con移植到GPU</h3><p>先异步传入pre…和con，con2，然后在gpu上面计算con</p>
-<p>目的：减少all_prim_2_con在cpu上的计算时间(307s),增加了all_prim_2_con核函数的运行时间( 25s)</p>
-<h4 id="1000步中等网格-1"><a href="#1000步中等网格-1" class="headerlink" title="1000步中等网格"></a>1000步中等网格</h4><p><img src="/../images/1733824701903.png" srcset="/img/loading.gif" lazyload alt="1733824701903"></p>
-<p><img src="/../images/1733824708148.png" srcset="/img/loading.gif" lazyload alt="1733824708148"></p>
-<h3 id="将Flux-xyz-FVM等分成两个核函数"><a href="#将Flux-xyz-FVM等分成两个核函数" class="headerlink" title="将Flux_xyz_FVM等分成两个核函数"></a>将Flux_xyz_FVM等分成两个核函数</h3><p><img src="/../images/1733824729800.png" srcset="/img/loading.gif" lazyload alt="1733824729800"></p>
-<p><img src="/../images/1733824737115.png" srcset="/img/loading.gif" lazyload alt="1733824737115"></p>
-<p>差不多没变化</p>
-<h3 id="输出拆分后（拆分成两个）核函书的时间"><a href="#输出拆分后（拆分成两个）核函书的时间" class="headerlink" title="输出拆分后（拆分成两个）核函书的时间"></a>输出拆分后（拆分成两个）核函书的时间</h3><p><img src="/../images/1734004219791.png" srcset="/img/loading.gif" lazyload alt="1734004219791"></p>
-<p>二维kernel的时间占大部分。</p>
-<h3 id="拆分成三个"><a href="#拆分成三个" class="headerlink" title="拆分成三个"></a>拆分成三个</h3><p>都是三维线程拓扑</p>
-<p>正确性：正确</p>
-<p>说明这两部分要按照顺序进行，不能分线程算每一个i,这样顺序就乱了。</p>
-<p>即对一个下标的计算赋值顺序本来是123，分线程后变成了231，这样得出的flux值就有错误。</p>
-<p>涉及到对同一个下标赋值，这里相当于和us一样的情况</p>
-<p>把这两个部分分成两个核函数，执行完第一个核函数后进行同步，就没错误了。因为本来的顺序就是先执行条件1，再执行条件2 。</p>
-<p>因为如果是一个核函数，其中对一个下标进行了两次操作，这样就可能产生由于线程执行顺序不同造成的错误</p>
-<p>所以将操作flux的代码分为三个部分。</p>
-<p><img src="/../images/1734007024726.png" srcset="/img/loading.gif" lazyload alt="1734007024726"></p>
-<h4 id="测试"><a href="#测试" class="headerlink" title="测试"></a><strong>测试</strong></h4><p><img src="/../images/1734072917325.png" srcset="/img/loading.gif" lazyload alt="1734072917325"></p>
-<h3 id="mark-mb掩盖部分传输时间"><a href="#mark-mb掩盖部分传输时间" class="headerlink" title="mark_mb掩盖部分传输时间"></a>mark_mb掩盖部分传输时间</h3><p>真没有能掩盖的代码了，都要用到con,pre…的值。</p>
-<p>equation中异步传输数组pre…,equation后调用mark_mb，然后添加同步,再执行US_2_S函数</p>
-<p>只有US_2_S函数用到了con,考虑只把用到了con的地方移植，就不用传con的值了。（要传入的数组太多，费力不讨好）。只做mark_mb吧。</p>
-<p>把重点放在核函数的优化上面，分块，stencil ,shared memory.</p>
-<h3 id="分块success"><a href="#分块success" class="headerlink" title="分块success"></a>分块success</h3><p>US算界面上切割网格的通量，物理意义。</p>
-<p>Flux_FVM_US中这段代码是算什么的</p>
-<p>已经在jk方向上是没有顺序的，但是算i的时候必须要按照顺序进行算，不能乱序。</p>
-<p>这里如果两次循环算出来的side值相同的话，会对flux_US的同一个下标进行操作。这样就把前一个算出的flux_US的值覆盖掉。</p>
-<p>我现在做分块，如果i之间有这种依赖的话，就没法分块。</p>
-<p>单个if里面side不相同</p>
-<p>和其他的if里面有相同的side</p>
-<p>把US拆开，分几个if</p>
-<p>顺序是怎样的。</p>
-<p>两个if是有交集的，排斥的不可能</p>
-<p>if ，i+1的和i如果if判断的条件相同，就有可能对一个值进行操作</p>
-<p>分成两块，先算i，再算+1的部分。</p>
-<p><strong>success</strong> ：将ijk 分为一块，将i+1 ,j+1 ,k+1 分为一块，再将之前将两个流体的分块合并起来。成功了，现在us被分成两块了。</p>
-<h4 id="测试-1"><a href="#测试-1" class="headerlink" title="测试"></a>测试</h4><p><img src="/../images/1734150346109.png" srcset="/img/loading.gif" lazyload alt="1734150346109"></p>
+                <h2 id="项目背景介绍和工作重点"><a href="#项目背景介绍和工作重点" class="headerlink" title="项目背景介绍和工作重点"></a>项目背景介绍和工作重点</h2><p><strong>界面湍流模拟仿真软件（Cut-Cell）</strong></p>
+<p>可压缩多相流模拟仿真软件</p>
+<p>软件功能：模拟三维液滴的变形、破碎</p>
+<p><strong>Fortran代码，目前是OpenMP版本，尚未有GPU&#x2F;DCU工作</strong> </p>
+<p><strong>功能简述：</strong>基于笛卡尔背景网格，使用三维切割网格重构-组装生成非结构界面网格，在 </p>
+<p>ALE框架下采用有限体积法离散和求解水&#x2F;气两相欧拉方程</p>
+<p><strong>核心算法：</strong> </p>
+<p>•守恒性尖锐界面方法，切割网格技术， </p>
+<p>中科大的工作将284种一般切割模态 </p>
+<p>减少到12种基本切割模态</p>
+<p><strong>算法分析</strong> </p>
+<p>• 切割网格技术涉及笛卡尔网格&#x2F;非结构网格混合，算术强度低、分支判断多，无法发挥 </p>
+<p>GPU&#x2F;DCU计算性能 </p>
+<p>• 二阶Runge-Kutta法推进水&#x2F;气两相欧拉方程求解，占计算时间≈**50%**，是性能热点 </p>
+<p>• <strong>Cut-Cell优化的工作重点是：欧拉方程求解的异构移植和性能优化、以及CPU和DCU协同计算</strong> </p>
+<hr>
+<h2 id="已做的工作"><a href="#已做的工作" class="headerlink" title="已做的工作"></a>已做的工作</h2><p>1.使用vtune,gprof等软件对程序整体热点进行分析。对算法特征进行分析。</p>
+<p>1.两相流欧拉方程求解部分的代码移植 fortran&gt;c ，采用混编的方式</p>
+<p>2.欧拉方程求解的异构移植,c&gt;hipc，采用CPU和DCU协同计算，采用的并行方法…</p>
+<p>3.设置为锁页内存，减少cpu，dcu之间的传输时间</p>
+<p>4.通过算法重排，实现cpu，dcu之间的数据传输和cpu上的函数计算时间掩盖。使用异步传输函数hipMemcpyAsync.</p>
+<p>5.将all_prim_2_con和all_con_2_prim两段代码（原始变量con和守恒变量的相互转换）也放在移植到dcu上面。</p>
+<p>6.正确性验证</p>
+<p>7.后续工作。。。</p>
+<h2 id="论文结构"><a href="#论文结构" class="headerlink" title="论文结构"></a><strong>论文结构</strong></h2><p><strong>界面湍流模拟仿真软件的异构移植与性能优化</strong></p>
+<h3 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a><strong>摘要</strong></h3><p>概述研究背景、问题、优化方法及主要结果：</p>
+<ul>
+<li>背景：界面湍流模拟的重要性。</li>
+<li>问题：传统算法在多相流计算中的性能瓶颈。</li>
+<li>方法：提出CPU-DCU协同计算策略，使用锁页内存及异步传输优化。</li>
+<li>结果：优化后性能提升显著，正确性验证通过。</li>
+</ul>
+<hr>
+<h3 id="1-引言"><a href="#1-引言" class="headerlink" title="1. 引言"></a><strong>1. 引言</strong></h3><p>1.1 <strong>研究背景</strong></p>
+<ul>
+<li>多相流动模拟在工程与自然科学中的广泛应用。</li>
+<li>当前算法在三维切割网格技术上的性能挑战。</li>
+</ul>
+<p>1.2 <strong>研究现状</strong></p>
+<ul>
+<li>可压缩多相流模拟领域的研究进展。</li>
+<li>切割网格技术及守恒性尖锐界面方法的适配性问题。</li>
+</ul>
+<p>1.3 <strong>本文贡献</strong></p>
+<ul>
+<li>提出Cut-Cell代码的异构优化方案。</li>
+<li>使用HIP编程实现CPU和DCU协同计算。</li>
+</ul>
+<hr>
+<h3 id="2-Cut-Cell软件分析"><a href="#2-Cut-Cell软件分析" class="headerlink" title="2. Cut-Cell软件分析"></a><strong>2. Cut-Cell软件分析</strong></h3><p>2.1 <strong>算法框架</strong></p>
+<ul>
+<li>基于笛卡尔背景网格的网格切割与重构技术。</li>
+<li>有限体积法在ALE框架下的离散和求解。</li>
+</ul>
+<p>2.2 <strong>热点模块</strong></p>
+<ul>
+<li>欧拉方程求解中的性能瓶颈。</li>
+<li>守恒变量与原始变量转换模块。</li>
+</ul>
+<p>2.3 <strong>异构移植难点</strong></p>
+<ul>
+<li>算术强度低、分支判断多对GPU性能的不利影响。</li>
+<li>数据传输开销大导致的效率瓶颈。</li>
+</ul>
+<hr>
+<h3 id="3-优化方法"><a href="#3-优化方法" class="headerlink" title="3. 优化方法"></a><strong>3. 优化方法</strong></h3><p>3.1 <strong>代码移植</strong></p>
+<ul>
+<li>Fortran到C的移植方案。</li>
+<li>混合编程模式及接口设计。</li>
+</ul>
+<p>3.2 <strong>异构计算设计</strong></p>
+<ul>
+<li>基于HIP的核函数设计。</li>
+<li>数据并行化与任务分配策略。</li>
+</ul>
+<p>3.3 <strong>数据传输优化</strong></p>
+<ul>
+<li>锁页内存的使用及传输延迟优化。</li>
+<li>使用异步传输（hipMemcpyAsync）实现计算与传输的时间重叠。</li>
+</ul>
+<p>3.4 <strong>其他模块优化</strong></p>
+<ul>
+<li>守恒变量与原始变量转换代码的异构移植。</li>
+<li>算法重排以减少数据依赖。</li>
+</ul>
+<hr>
+<h3 id="4-实验与结果"><a href="#4-实验与结果" class="headerlink" title="4. 实验与结果"></a><strong>4. 实验与结果</strong></h3><p>4.1 <strong>实验设置</strong></p>
+<ul>
+<li>硬件环境：CPU和DCU配置。</li>
+<li>测试场景：三维液滴变形与破碎。</li>
+</ul>
+<p>4.2 <strong>性能分析</strong></p>
+<ul>
+<li>优化前后的加速比与运行时间对比。</li>
+<li>数据传输开销对总计算效率的影响。</li>
+</ul>
+<p>4.3 <strong>正确性验证</strong></p>
+<ul>
+<li>模拟结果与理论解的对比。</li>
+<li>多场景验证优化算法的鲁棒性。</li>
+</ul>
+<hr>
+<h3 id="5-结论与展望"><a href="#5-结论与展望" class="headerlink" title="5. 结论与展望"></a><strong>5. 结论与展望</strong></h3><p>5.1 <strong>研究总结</strong></p>
+<ul>
+<li>代码异构移植和性能优化的关键成果。</li>
+</ul>
+<p>5.2 <strong>未来工作</strong></p>
+<ul>
+<li>多节点协同计算扩展。</li>
+<li>针对更复杂多相流场景的适配与优化。</li>
+</ul>
+<hr>
+<h3 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a><strong>参考文献</strong></h3><p>按照目标期刊要求，列出所有相关文献，涵盖背景研究和优化技术。</p>
 
                 
               </div>
@@ -384,8 +431,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>project21_split成功all改为核函数</div>
-      <div>http://example.com/2024/12/14/project21_split成功all改为核函数/</div>
+      <div>小论文</div>
+      <div>http://example.com/2024/12/16/论文/</div>
     </div>
     <div class="license-meta">
       
@@ -397,7 +444,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2024年12月14日</div>
+          <div>2024年12月16日</div>
         </div>
       
       
@@ -429,18 +476,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2024/12/16/%E8%AE%BA%E6%96%87/" title="小论文">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">小论文</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2024/12/08/project20_split%E6%8E%A2%E7%B4%A2/" title="project20_split探索">
-                        <span class="hidden-mobile">project20_split探索</span>
+                      <a href="/2024/12/14/project21_split%E6%88%90%E5%8A%9Fall%E6%94%B9%E4%B8%BA%E6%A0%B8%E5%87%BD%E6%95%B0/" title="project21_split成功all改为核函数">
+                        <span class="hidden-mobile">project21_split成功all改为核函数</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
