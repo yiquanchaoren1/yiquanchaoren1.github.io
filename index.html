@@ -224,13 +224,74 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2024/12/08/project20/" target="_self">
+        <a href="/2024/12/14/project21_split%E6%88%90%E5%8A%9Fall%E6%94%B9%E4%B8%BA%E6%A0%B8%E5%87%BD%E6%95%B0/" target="_self">
+          project21_split成功all改为核函数
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2024/12/14/project21_split%E6%88%90%E5%8A%9Fall%E6%94%B9%E4%B8%BA%E6%A0%B8%E5%87%BD%E6%95%B0/" target="_self">
+        <div>
+          后续工作1.将all_con_2_prim.F90  all_prim_2_con.F90 两段代码放在GPU上计算 2.做一个函数input output 的表 3.搞明白US Flux_x_FVM依赖关系，才能分块。 4.fluid &#x3D; 1 算完后能不能传回数据。 5.写小论文 实验先将all_con_2_prim放在GPU上面并测试 函数中做的操作： all_con_2_prim将
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2024-12-14 20:00" pubdate>
+              2024-12-14
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E9%A1%B9%E7%9B%AE/" class="category-chain-item">项目</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E9%A1%B9%E7%9B%AE/">#项目</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2024/12/08/project20_split%E6%8E%A2%E7%B4%A2/" target="_self">
           project20_split探索
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2024/12/08/project20/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/2024/12/08/project20_split%E6%8E%A2%E7%B4%A2/" target="_self">
         <div>
           测试核函数的时间 分块策略挣扎摸索尝试 核函数计算和con传输重叠。 如何分块？。。。。。 xyz之间有顺序吗，改变顺序验证正确性。 zyx这个顺序有误差。所以不能调整顺序？ 还有顺序，分块后也要按照这个顺序。 先分块，再重叠。 分块是分成小的网格块，实现通信计算重叠是在分块的基础上将小的网格块放在不同的流中。 怎么识别每个块，halo区域处理，边界处理，一个线程算多少，一个线程块算多少， 分块后
         </div>
@@ -760,67 +821,6 @@
             <i class="iconfont icon-tags"></i>
             
               <a href="/tags/java/">#java</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2024/10/14/project14/" target="_self">
-          project14
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2024/10/14/project14/" target="_self">
-        <div>
-          测试的时间还是在project08 里面时间占用问题，用hipprof测的移植部分比重变小了,2025步是40% 可能还有其他的函数占比，hipprof没测出来。 重心1技术技术技术(important） 2.看论文 3.cfd的代码慢慢啃吧（参考） 改成传输一次（把equation合并在一起）us改了flux_US的值，flux_US在xyz和RK中都要用。 xyz 改了flux和Lcon的值。
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2024-10-14 20:00" pubdate>
-              2024-10-14
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E9%A1%B9%E7%9B%AE/" class="category-chain-item">项目</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E9%A1%B9%E7%9B%AE/">#项目</a>
             
           </div>
         

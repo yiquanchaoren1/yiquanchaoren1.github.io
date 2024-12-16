@@ -4,9 +4,34 @@
   
   
   <entry>
+    <title>project21_split成功all改为核函数</title>
+    <link href="/2024/12/14/project21_split%E6%88%90%E5%8A%9Fall%E6%94%B9%E4%B8%BA%E6%A0%B8%E5%87%BD%E6%95%B0/"/>
+    <url>/2024/12/14/project21_split%E6%88%90%E5%8A%9Fall%E6%94%B9%E4%B8%BA%E6%A0%B8%E5%87%BD%E6%95%B0/</url>
+    
+    <content type="html"><![CDATA[<h2 id="后续工作"><a href="#后续工作" class="headerlink" title="后续工作"></a>后续工作</h2><p>1.将all_con_2_prim.F90  all_prim_2_con.F90 两段代码放在GPU上计算</p><p>2.做一个函数input output 的表</p><p>3.搞明白US Flux_x_FVM依赖关系，才能分块。</p><p>4.fluid &#x3D; 1 算完后能不能传回数据。</p><p>5.写小论文</p><h2 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h2><h3 id="先将all-con-2-prim放在GPU上面并测试"><a href="#先将all-con-2-prim放在GPU上面并测试" class="headerlink" title="先将all_con_2_prim放在GPU上面并测试"></a>先将all_con_2_prim放在GPU上面并测试</h3><p><img src="/../images/1733724808481.png" alt="1733724808481"></p><p><strong>函数中做的操作：</strong></p><p>all_con_2_prim将con的值赋给pre，….</p><p>US_2_S中也将con的值赋给pre…</p><p>后面的函数没有能掩盖传输时间的了。</p><p><strong>目的</strong>：减少all_con_2_prim在cpu上的执行时间（453s），改为在GPU运算(测试时间: 8s )</p><p>增加了传回时间，con和pre（74s）都要传回。</p><p>在执行完eauqation后将con传回，因为all_con_2_prim中要用到con</p><p>执行完all_con_2_prim后将pre…传回,因为US_2_S中要给pre赋值</p><h4 id="1000步中等网格"><a href="#1000步中等网格" class="headerlink" title="1000步中等网格"></a>1000步中等网格</h4><p>之前4612s</p><p><img src="/../images/1733744265844.png" alt="1733744265844"></p><p><img src="/../images/1733744271811.png" alt="1733744271811"></p><h3 id="将all-prim-2-con移植到GPU"><a href="#将all-prim-2-con移植到GPU" class="headerlink" title="将all_prim_2_con移植到GPU"></a>将all_prim_2_con移植到GPU</h3><p>先异步传入pre…和con，con2，然后在gpu上面计算con</p><p>目的：减少all_prim_2_con在cpu上的计算时间(307s),增加了all_prim_2_con核函数的运行时间( 25s)</p><h4 id="1000步中等网格-1"><a href="#1000步中等网格-1" class="headerlink" title="1000步中等网格"></a>1000步中等网格</h4><p><img src="/../images/1733824701903.png" alt="1733824701903"></p><p><img src="/../images/1733824708148.png" alt="1733824708148"></p><h3 id="将Flux-xyz-FVM等分成两个核函数"><a href="#将Flux-xyz-FVM等分成两个核函数" class="headerlink" title="将Flux_xyz_FVM等分成两个核函数"></a>将Flux_xyz_FVM等分成两个核函数</h3><p><img src="/../images/1733824729800.png" alt="1733824729800"></p><p><img src="/../images/1733824737115.png" alt="1733824737115"></p><p>差不多没变化</p><h3 id="输出拆分后（拆分成两个）核函书的时间"><a href="#输出拆分后（拆分成两个）核函书的时间" class="headerlink" title="输出拆分后（拆分成两个）核函书的时间"></a>输出拆分后（拆分成两个）核函书的时间</h3><p><img src="/../images/1734004219791.png" alt="1734004219791"></p><p>二维kernel的时间占大部分。</p><h3 id="拆分成三个"><a href="#拆分成三个" class="headerlink" title="拆分成三个"></a>拆分成三个</h3><p>都是三维线程拓扑</p><p>正确性：正确</p><p>说明这两部分要按照顺序进行，不能分线程算每一个i,这样顺序就乱了。</p><p>即对一个下标的计算赋值顺序本来是123，分线程后变成了231，这样得出的flux值就有错误。</p><p>涉及到对同一个下标赋值，这里相当于和us一样的情况</p><p>把这两个部分分成两个核函数，执行完第一个核函数后进行同步，就没错误了。因为本来的顺序就是先执行条件1，再执行条件2 。</p><p>因为如果是一个核函数，其中对一个下标进行了两次操作，这样就可能产生由于线程执行顺序不同造成的错误</p><p>所以将操作flux的代码分为三个部分。</p><p><img src="/../images/1734007024726.png" alt="1734007024726"></p><h4 id="测试"><a href="#测试" class="headerlink" title="测试"></a><strong>测试</strong></h4><p><img src="/../images/1734072917325.png" alt="1734072917325"></p><h3 id="mark-mb掩盖部分传输时间"><a href="#mark-mb掩盖部分传输时间" class="headerlink" title="mark_mb掩盖部分传输时间"></a>mark_mb掩盖部分传输时间</h3><p>真没有能掩盖的代码了，都要用到con,pre…的值。</p><p>equation中异步传输数组pre…,equation后调用mark_mb，然后添加同步,再执行US_2_S函数</p><p>只有US_2_S函数用到了con,考虑只把用到了con的地方移植，就不用传con的值了。（要传入的数组太多，费力不讨好）。只做mark_mb吧。</p><p>把重点放在核函数的优化上面，分块，stencil ,shared memory.</p><h3 id="分块success"><a href="#分块success" class="headerlink" title="分块success"></a>分块success</h3><p>US算界面上切割网格的通量，物理意义。</p><p>Flux_FVM_US中这段代码是算什么的</p><p>已经在jk方向上是没有顺序的，但是算i的时候必须要按照顺序进行算，不能乱序。</p><p>这里如果两次循环算出来的side值相同的话，会对flux_US的同一个下标进行操作。这样就把前一个算出的flux_US的值覆盖掉。</p><p>我现在做分块，如果i之间有这种依赖的话，就没法分块。</p><p>单个if里面side不相同</p><p>和其他的if里面有相同的side</p><p>把US拆开，分几个if</p><p>顺序是怎样的。</p><p>两个if是有交集的，排斥的不可能</p><p>if ，i+1的和i如果if判断的条件相同，就有可能对一个值进行操作</p><p>分成两块，先算i，再算+1的部分。</p><p><strong>success</strong> ：将ijk 分为一块，将i+1 ,j+1 ,k+1 分为一块，再将之前将两个流体的分块合并起来。成功了，现在us被分成两块了。</p><h4 id="测试-1"><a href="#测试-1" class="headerlink" title="测试"></a>测试</h4><p><img src="/../images/1734150346109.png" alt="1734150346109"></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>项目</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>项目</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>project20_split探索</title>
-    <link href="/2024/12/08/project20/"/>
-    <url>/2024/12/08/project20/</url>
+    <link href="/2024/12/08/project20_split%E6%8E%A2%E7%B4%A2/"/>
+    <url>/2024/12/08/project20_split%E6%8E%A2%E7%B4%A2/</url>
     
     <content type="html"><![CDATA[<h2 id="测试核函数的时间"><a href="#测试核函数的时间" class="headerlink" title="测试核函数的时间"></a>测试核函数的时间</h2><p><img src="/../images/1732948842064.png" alt="1732948842064"></p><h2 id="分块策略"><a href="#分块策略" class="headerlink" title="分块策略"></a>分块策略</h2><p>挣扎摸索尝试</p><p>核函数计算和con传输重叠。</p><p>如何分块？。。。。。</p><p>xyz之间有顺序吗，改变顺序验证正确性。</p><p>zyx这个顺序有误差。所以不能调整顺序？</p><p>还有顺序，分块后也要按照这个顺序。</p><p>先分块，再重叠。</p><p>分块是分成小的网格块，实现通信计算重叠是在分块的基础上将小的网格块放在不同的流中。</p><p>怎么识别每个块，halo区域处理，边界处理，一个线程算多少，一个线程块算多少，</p><p>分块后：每个块为一个三维的小网格</p><p>对于RK来说，一个线程算一个点</p><p>对于US和Flux_xyz来说，一个线程算一长条</p><p>I can do it !</p><p>不一定有顺序，可能只是依赖</p><p>先看一个分块的例子，搞懂原理。</p><p><img src="/../images/1733292050947.png" alt="1733292050947"></p><p>网格大小为 222,172,172</p><p>数组是<code>[k][j][i]</code></p><p>没有想象的这么难，但是也不简单</p><p><img src="/../images/1733293284665.png" alt="1733293284665"></p><p>分块就是执行完一次核函数后，完成一个小网格通量的计算。</p><p>一个线程块对应一个小网格，多个线程块组成一个大的网格</p><p>每个线程块运行在不同的core上，每个线程块内有共享内存</p><p>一个网格点需要用到周围网格点的数据，7点stencil计算</p><p>一个小网格内，边界的点需要用到周围点的数据。</p><p>边界区域需要小网格之间进行交互。边界区域就是halo区</p><p>问题：这些小网格之间的计算有先后顺序吗？因为计算一个网格的时候需要用临近网格边界区的数据</p><p>那个US算的就是界面上切割网格的通量，它是要用到周围的点的值，感觉不好拆</p><p>Flux_xyz_FVM是求xyz方向数值通量</p><p>后续：</p><p>把Flux_x_FVM拆分，三维并行，二维并行。</p><p>看看halo区stencil的计算，顺序问题？</p><p>计算顺序无所谓，因为halo区中要存放其他线程块边缘的数据，这个数据是input数据，不是算完的数据</p><p>可以简单理解为用到的是输入数据input,算完的数据是output。有没有顺序无所谓。</p><h3 id="具体实现"><a href="#具体实现" class="headerlink" title="具体实现"></a>具体实现</h3><p>2024年12月6日14:01:30</p><p>策略，先把Flux_x_FVM拆分，三维并行，二维并行。</p><p>分块策略：分成小的网格块。单对着一个小网格块进行分析：对于us来说，二维拓扑，每个线程处理一长条。</p><p>对于Flux_xyz_FVM来说，三维的部分，每个线程处理一个网格点，二维的部分每个网格也是处理一长条。</p><p>对于RK来说，已经分块了。</p><p>计算顺序，加上同步，核函数之间是有顺序的。us计算完毕的flux_US数组要在xyz核函数中用到。</p><p>然后分块，没有halo区（肯定有错误），最后设置halo区</p><p>边界区域可以在cpu算 ,</p><p>us呢？时间占比很少，也可以在cpu算，但是us是stencil计算？</p><h2 id="各函数计算任务"><a href="#各函数计算任务" class="headerlink" title="各函数计算任务"></a>各函数计算任务</h2><p><img src="/../images/1733554549386.png" alt="1733554549386"></p><p><strong>Flux_FVM_US</strong>：用den,pre,vel_u,vel_v,vel_w数组算 flux_US（边界上切割网格的通量 ）</p><p><strong>Flux_x_FVM，Flux_y_FVM，Flux_z_FVM</strong>：先计算xyz方向数值通量flux,再用flux计算Lcon</p><p>1先用den,pre,vel_u,vel_v,vel_w计算<strong>内部</strong>对应网格的flux</p><p>2然后对<strong>边界</strong>两侧一层网格做特殊处理，用flux_US给flux赋值</p><p>3最后算完flux后，用flux计算Lcon（下一个时刻的信息）</p><p><strong>RK</strong>：用flux_US和Lcon计算con，con2</p><p>imark&#x3D;&#x3D;0是边界，＞1或＜-1是内部的网格；&#x3D;&#x3D;±1就是边界两侧一层网格</p><p>然后imark&#x3D;&#x3D;0或±1都要用flux_US来特殊计算</p><p>分块：</p><p>拆分Flux_x_FVM，核函数为2D,3D kernel </p><p>Flux_FVM_US也是2D kernel </p><p>2D kernel 中 i 要按照顺序计算，怎么分块。US和Flux_x_FVM</p><p>边界上的计算有顺序</p><p>RK是3D kernel</p><p>计算分块后的小网格，一个block算一个小网格，确保2D,3D kernel 对应线程号在同一个block中</p><p>halo区</p><p>all_con_2_prim计算位置</p><p>理解错了，分块并不是整体分块，而是在对一个核函数分块。</p>]]></content>
     

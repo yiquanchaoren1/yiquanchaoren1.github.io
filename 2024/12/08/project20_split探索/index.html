@@ -16,46 +16,27 @@
   <meta name="author" content="hzbing">
   <meta name="keywords" content="">
   
-    <meta name="description" content="提前传输数组，异步传输，单个默认流性能测试传cut_model(istep&#x3D;1和其他情况，在不同的函数中，再讨论) 提前传入了很多数组，并在equation代码前面添加了gpu同步 hipDeviceSynchronize()  都没问题，没有误差 测试1000轮中等网格 5078s(before)  4994s  流设置为几个比较好一个，减少cpu对流操作的开销，只使用默认流 con提">
+    <meta name="description" content="测试核函数的时间 分块策略挣扎摸索尝试 核函数计算和con传输重叠。 如何分块？。。。。。 xyz之间有顺序吗，改变顺序验证正确性。 zyx这个顺序有误差。所以不能调整顺序？ 还有顺序，分块后也要按照这个顺序。 先分块，再重叠。 分块是分成小的网格块，实现通信计算重叠是在分块的基础上将小的网格块放在不同的流中。 怎么识别每个块，halo区域处理，边界处理，一个线程算多少，一个线程块算多少， 分块后">
 <meta property="og:type" content="article">
-<meta property="og:title" content="project19_异步传输">
-<meta property="og:url" content="http://example.com/2024/11/26/project19_%E5%BC%82%E6%AD%A5%E4%BC%A0%E8%BE%93/index.html">
+<meta property="og:title" content="project20_split探索">
+<meta property="og:url" content="http://example.com/2024/12/08/project20_split%E6%8E%A2%E7%B4%A2/index.html">
 <meta property="og:site_name" content="一拳超人">
-<meta property="og:description" content="提前传输数组，异步传输，单个默认流性能测试传cut_model(istep&#x3D;1和其他情况，在不同的函数中，再讨论) 提前传入了很多数组，并在equation代码前面添加了gpu同步 hipDeviceSynchronize()  都没问题，没有误差 测试1000轮中等网格 5078s(before)  4994s  流设置为几个比较好一个，减少cpu对流操作的开销，只使用默认流 con提">
+<meta property="og:description" content="测试核函数的时间 分块策略挣扎摸索尝试 核函数计算和con传输重叠。 如何分块？。。。。。 xyz之间有顺序吗，改变顺序验证正确性。 zyx这个顺序有误差。所以不能调整顺序？ 还有顺序，分块后也要按照这个顺序。 先分块，再重叠。 分块是分成小的网格块，实现通信计算重叠是在分块的基础上将小的网格块放在不同的流中。 怎么识别每个块，halo区域处理，边界处理，一个线程算多少，一个线程块算多少， 分块后">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/images/1732272679268.png">
-<meta property="og:image" content="http://example.com/images/1732325894070.png">
-<meta property="og:image" content="http://example.com/images/1732325856126.png">
-<meta property="og:image" content="http://example.com/images/1732272950318.png">
-<meta property="og:image" content="http://example.com/images/1732325894070.png">
-<meta property="og:image" content="http://example.com/images/1732342303998.png">
-<meta property="og:image" content="http://example.com/images/1732342321256.png">
-<meta property="og:image" content="http://example.com/images/1732342334473.png">
-<meta property="og:image" content="http://example.com/images/1732353663748.png">
-<meta property="og:image" content="http://example.com/images/1732531567660.png">
-<meta property="og:image" content="http://example.com/images/1732531549518.png">
-<meta property="og:image" content="http://example.com/images/1732531575014.png">
-<meta property="og:image" content="http://example.com/images/1732531630278.png">
-<meta property="og:image" content="http://example.com/images/1732531641943.png">
-<meta property="og:image" content="http://example.com/images/1732531664246.png">
-<meta property="og:image" content="http://example.com/images/1732610574329.png">
-<meta property="og:image" content="http://example.com/images/1732610589067.png">
-<meta property="og:image" content="http://example.com/images/1732601611522.png">
-<meta property="og:image" content="http://example.com/images/1732601618708.png">
-<meta property="og:image" content="http://example.com/images/1732617101121.png">
-<meta property="og:image" content="http://example.com/images/1732617114718.png">
-<meta property="og:image" content="http://example.com/images/1732608015678.png">
-<meta property="og:image" content="http://example.com/images/1732608035878.png">
-<meta property="article:published_time" content="2024-11-26T12:00:00.000Z">
-<meta property="article:modified_time" content="2024-11-27T06:04:22.470Z">
+<meta property="og:image" content="http://example.com/images/1732948842064.png">
+<meta property="og:image" content="http://example.com/images/1733292050947.png">
+<meta property="og:image" content="http://example.com/images/1733293284665.png">
+<meta property="og:image" content="http://example.com/images/1733554549386.png">
+<meta property="article:published_time" content="2024-12-08T12:00:00.000Z">
+<meta property="article:modified_time" content="2024-12-09T02:58:22.786Z">
 <meta property="article:author" content="hzbing">
 <meta property="article:tag" content="项目">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://example.com/images/1732272679268.png">
+<meta name="twitter:image" content="http://example.com/images/1732948842064.png">
   
   
   
-  <title>project19_异步传输 - 一拳超人</title>
+  <title>project20_split探索 - 一拳超人</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -221,7 +202,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="project19_异步传输"></span>
+            <span id="subtitle" data-typed-text="project20_split探索"></span>
           
         </div>
 
@@ -232,8 +213,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2024-11-26 20:00" pubdate>
-          2024年11月26日 晚上
+        <time datetime="2024-12-08 20:00" pubdate>
+          2024年12月8日 晚上
         </time>
       </span>
     
@@ -244,7 +225,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          521 字
+          1k 字
         
       </span>
     
@@ -255,7 +236,7 @@
         
         
         
-          5 分钟
+          9 分钟
         
       </span>
     
@@ -292,85 +273,74 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">project19_异步传输</h1>
+            <h1 id="seo-header">project20_split探索</h1>
             
             
               <div class="markdown-body">
                 
-                <h1 id="提前传输数组，异步传输，单个默认流"><a href="#提前传输数组，异步传输，单个默认流" class="headerlink" title="提前传输数组，异步传输，单个默认流"></a>提前传输数组，异步传输，单个默认流</h1><h2 id="性能测试"><a href="#性能测试" class="headerlink" title="性能测试"></a>性能测试</h2><p>传cut_model(istep&#x3D;1和其他情况，在不同的函数中，再讨论)</p>
-<p>提前传入了很多数组，并在equation代码前面添加了gpu同步</p>
-<p>hipDeviceSynchronize()</p>
-<p><img src="/../images/1732272679268.png" srcset="/img/loading.gif" lazyload alt="1732272679268"></p>
-<p>都没问题，没有误差</p>
-<p>测试1000轮中等网格</p>
-<p>5078s(before)</p>
-<p><img src="/../images/1732325894070.png" srcset="/img/loading.gif" lazyload alt="1732325894070"></p>
-<p>4994s</p>
-<p><img src="/../images/1732325856126.png" srcset="/img/loading.gif" lazyload alt="1732325856126"></p>
-<h2 id="流设置为几个比较好"><a href="#流设置为几个比较好" class="headerlink" title="流设置为几个比较好"></a>流设置为几个比较好</h2><p>一个，减少cpu对流操作的开销，只使用默认流</p>
-<h2 id="con提前计算并传输"><a href="#con提前计算并传输" class="headerlink" title="con提前计算并传输"></a>con提前计算并传输</h2><p>(没在GPU中算，直接提前算(将all_prim_2_con提前)，然后传输)</p>
-<p>con来回传输占比3152</p>
-<p>总占比4,184</p>
-<p>其他数组 1032</p>
-<p>1032&#x2F;4184 &#x3D; 24%</p>
-<p><img src="/../images/1732272950318.png" srcset="/img/loading.gif" lazyload alt="1732272950318"></p>
-<p>如果能再gpu中算，就不用传输con的值了，数组大小和用到的范围是关键点。</p>
-<p>可以提前算，提前传，把con的计算传输提前</p>
-<p>改完没误差</p>
-<p>性能如下</p>
-<p>before:5078s</p>
-<p><img src="/../images/1732325894070.png" srcset="/img/loading.gif" lazyload alt="1732325894070"></p>
-<p>1个流（默认流）4550s </p>
-<p><img src="/../images/1732342303998.png" srcset="/img/loading.gif" lazyload alt="1732342303998"></p>
-<p>描述不一定对。</p>
-<p>memcpy少了400s,少了的时间就是这些数组（大部分数组）之前传入的时间、</p>
-<p>con，con2大约占220s，所以剩下的423秒里面传回cpu的con,con2占220s,还有200s是常量的时间。</p>
-<p>总时间少了500s，还有100s是cpu减少的时间</p>
-<p>2个流 4726s</p>
-<p><img src="/../images/1732342321256.png" srcset="/img/loading.gif" lazyload alt="1732342321256"></p>
-<p>4个流 4761s</p>
-<p><img src="/../images/1732342334473.png" srcset="/img/loading.gif" lazyload alt="1732342334473"></p>
-<p>将不变的常量和dx,dy,dz在循环前传入</p>
-<p>没误差</p>
-<p>测试</p>
-<p>19234（fortran）</p>
-<p>4538s</p>
-<p><img src="/../images/1732353663748.png" srcset="/img/loading.gif" lazyload alt="1732353663748"></p>
-<p>插桩，找到耗时的时间</p>
-<h2 id="插桩测试"><a href="#插桩测试" class="headerlink" title="插桩测试"></a>插桩测试</h2><p>1000步中等网格</p>
-<p><strong>fortran</strong></p>
-<p>总时间  18897s</p>
-<p>移植代码时间 14710s</p>
-<p>非移植代码时间 4187s</p>
-<p><strong>异步前：hip14</strong></p>
-<p><img src="/../images/1732531567660.png" srcset="/img/loading.gif" lazyload alt="1732531567660"></p>
-<p><img src="/../images/1732531549518.png" srcset="/img/loading.gif" lazyload alt="1732531549518"></p>
-<p><img src="/../images/1732531575014.png" srcset="/img/loading.gif" lazyload alt="1732531575014"></p>
-<p>总时间  ：5250s</p>
-<p>移植代码时间 806s</p>
-<p>非移植代码时间 4,444s</p>
-<p><strong>异步后（cpu计算和传输重叠）：hip17</strong></p>
-<p>总时间 4814s</p>
-<p>移植代码时间 404s</p>
-<p>非移植代码时间 4,410s(cpu计算时间完全覆盖掉了memcpy时间)</p>
-<p><img src="/../images/1732531630278.png" srcset="/img/loading.gif" lazyload alt="1732531630278"></p>
-<p><img src="/../images/1732531641943.png" srcset="/img/loading.gif" lazyload alt="1732531641943"></p>
-<p><img src="/../images/1732531664246.png" srcset="/img/loading.gif" lazyload alt="1732531664246"></p>
-<p>gettimeofday</p>
-<h3 id="再测试计算时间，添加同步（之前测的有误）"><a href="#再测试计算时间，添加同步（之前测的有误）" class="headerlink" title="再测试计算时间，添加同步（之前测的有误）"></a>再测试计算时间，添加同步（之前测的有误）</h3><h4 id="RK后面添加一个同步"><a href="#RK后面添加一个同步" class="headerlink" title="RK后面添加一个同步"></a>RK后面添加一个同步</h4><p>异步前</p>
-<p><img src="/../images/1732610574329.png" srcset="/img/loading.gif" lazyload alt="1732610574329"></p>
-<p><img src="/../images/1732610589067.png" srcset="/img/loading.gif" lazyload alt="1732610589067"></p>
-<p>异步后</p>
-<p><img src="/../images/1732601611522.png" srcset="/img/loading.gif" lazyload alt="1732601611522"></p>
-<p><img src="/../images/1732601618708.png" srcset="/img/loading.gif" lazyload alt="1732601618708"></p>
-<h4 id="在每个核函数后面都添加同步"><a href="#在每个核函数后面都添加同步" class="headerlink" title="在每个核函数后面都添加同步"></a>在每个核函数后面都添加同步</h4><p>异步前</p>
-<p><img src="/../images/1732617101121.png" srcset="/img/loading.gif" lazyload alt="1732617101121"></p>
-<p><img src="/../images/1732617114718.png" srcset="/img/loading.gif" lazyload alt="1732617114718"></p>
-<p>异步后</p>
-<p><img src="/../images/1732608015678.png" srcset="/img/loading.gif" lazyload alt="1732608015678"></p>
-<p><img src="/../images/1732608035878.png" srcset="/img/loading.gif" lazyload alt="1732608035878"></p>
-<p> 总结：有些传输时间没法和cpu计算掩盖，这一部分可以通过分块来实现掩盖</p>
-<p>下一步测试各个数组的传输时间，看一下哪部分数组能掩盖。</p>
+                <h2 id="测试核函数的时间"><a href="#测试核函数的时间" class="headerlink" title="测试核函数的时间"></a>测试核函数的时间</h2><p><img src="/../images/1732948842064.png" srcset="/img/loading.gif" lazyload alt="1732948842064"></p>
+<h2 id="分块策略"><a href="#分块策略" class="headerlink" title="分块策略"></a>分块策略</h2><p>挣扎摸索尝试</p>
+<p>核函数计算和con传输重叠。</p>
+<p>如何分块？。。。。。</p>
+<p>xyz之间有顺序吗，改变顺序验证正确性。</p>
+<p>zyx这个顺序有误差。所以不能调整顺序？</p>
+<p>还有顺序，分块后也要按照这个顺序。</p>
+<p>先分块，再重叠。</p>
+<p>分块是分成小的网格块，实现通信计算重叠是在分块的基础上将小的网格块放在不同的流中。</p>
+<p>怎么识别每个块，halo区域处理，边界处理，一个线程算多少，一个线程块算多少，</p>
+<p>分块后：每个块为一个三维的小网格</p>
+<p>对于RK来说，一个线程算一个点</p>
+<p>对于US和Flux_xyz来说，一个线程算一长条</p>
+<p>I can do it !</p>
+<p>不一定有顺序，可能只是依赖</p>
+<p>先看一个分块的例子，搞懂原理。</p>
+<p><img src="/../images/1733292050947.png" srcset="/img/loading.gif" lazyload alt="1733292050947"></p>
+<p>网格大小为 222,172,172</p>
+<p>数组是<code>[k][j][i]</code></p>
+<p>没有想象的这么难，但是也不简单</p>
+<p><img src="/../images/1733293284665.png" srcset="/img/loading.gif" lazyload alt="1733293284665"></p>
+<p>分块就是执行完一次核函数后，完成一个小网格通量的计算。</p>
+<p>一个线程块对应一个小网格，多个线程块组成一个大的网格</p>
+<p>每个线程块运行在不同的core上，每个线程块内有共享内存</p>
+<p>一个网格点需要用到周围网格点的数据，7点stencil计算</p>
+<p>一个小网格内，边界的点需要用到周围点的数据。</p>
+<p>边界区域需要小网格之间进行交互。边界区域就是halo区</p>
+<p>问题：这些小网格之间的计算有先后顺序吗？因为计算一个网格的时候需要用临近网格边界区的数据</p>
+<p>那个US算的就是界面上切割网格的通量，它是要用到周围的点的值，感觉不好拆</p>
+<p>Flux_xyz_FVM是求xyz方向数值通量</p>
+<p>后续：</p>
+<p>把Flux_x_FVM拆分，三维并行，二维并行。</p>
+<p>看看halo区stencil的计算，顺序问题？</p>
+<p>计算顺序无所谓，因为halo区中要存放其他线程块边缘的数据，这个数据是input数据，不是算完的数据</p>
+<p>可以简单理解为用到的是输入数据input,算完的数据是output。有没有顺序无所谓。</p>
+<h3 id="具体实现"><a href="#具体实现" class="headerlink" title="具体实现"></a>具体实现</h3><p>2024年12月6日14:01:30</p>
+<p>策略，先把Flux_x_FVM拆分，三维并行，二维并行。</p>
+<p>分块策略：分成小的网格块。单对着一个小网格块进行分析：对于us来说，二维拓扑，每个线程处理一长条。</p>
+<p>对于Flux_xyz_FVM来说，三维的部分，每个线程处理一个网格点，二维的部分每个网格也是处理一长条。</p>
+<p>对于RK来说，已经分块了。</p>
+<p>计算顺序，加上同步，核函数之间是有顺序的。us计算完毕的flux_US数组要在xyz核函数中用到。</p>
+<p>然后分块，没有halo区（肯定有错误），最后设置halo区</p>
+<p>边界区域可以在cpu算 ,</p>
+<p>us呢？时间占比很少，也可以在cpu算，但是us是stencil计算？</p>
+<h2 id="各函数计算任务"><a href="#各函数计算任务" class="headerlink" title="各函数计算任务"></a>各函数计算任务</h2><p><img src="/../images/1733554549386.png" srcset="/img/loading.gif" lazyload alt="1733554549386"></p>
+<p><strong>Flux_FVM_US</strong>：用den,pre,vel_u,vel_v,vel_w数组算 flux_US（边界上切割网格的通量 ）</p>
+<p><strong>Flux_x_FVM，Flux_y_FVM，Flux_z_FVM</strong>：先计算xyz方向数值通量flux,再用flux计算Lcon</p>
+<p>1先用den,pre,vel_u,vel_v,vel_w计算<strong>内部</strong>对应网格的flux</p>
+<p>2然后对<strong>边界</strong>两侧一层网格做特殊处理，用flux_US给flux赋值</p>
+<p>3最后算完flux后，用flux计算Lcon（下一个时刻的信息）</p>
+<p><strong>RK</strong>：用flux_US和Lcon计算con，con2</p>
+<p>imark&#x3D;&#x3D;0是边界，＞1或＜-1是内部的网格；&#x3D;&#x3D;±1就是边界两侧一层网格</p>
+<p>然后imark&#x3D;&#x3D;0或±1都要用flux_US来特殊计算</p>
+<p>分块：</p>
+<p>拆分Flux_x_FVM，核函数为2D,3D kernel </p>
+<p>Flux_FVM_US也是2D kernel </p>
+<p>2D kernel 中 i 要按照顺序计算，怎么分块。US和Flux_x_FVM</p>
+<p>边界上的计算有顺序</p>
+<p>RK是3D kernel</p>
+<p>计算分块后的小网格，一个block算一个小网格，确保2D,3D kernel 对应线程号在同一个block中</p>
+<p>halo区</p>
+<p>all_con_2_prim计算位置</p>
+<p>理解错了，分块并不是整体分块，而是在对一个核函数分块。</p>
 
                 
               </div>
@@ -416,8 +386,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>project19_异步传输</div>
-      <div>http://example.com/2024/11/26/project19_异步传输/</div>
+      <div>project20_split探索</div>
+      <div>http://example.com/2024/12/08/project20_split探索/</div>
     </div>
     <div class="license-meta">
       
@@ -429,7 +399,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2024年11月26日</div>
+          <div>2024年12月8日</div>
         </div>
       
       
@@ -461,9 +431,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2024/12/08/project20_split%E6%8E%A2%E7%B4%A2/" title="project20_split探索">
+                      <a href="/2024/12/14/project21_split%E6%88%90%E5%8A%9Fall%E6%94%B9%E4%B8%BA%E6%A0%B8%E5%87%BD%E6%95%B0/" title="project21_split成功all改为核函数">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">project20_split探索</span>
+                        <span class="hidden-mobile">project21_split成功all改为核函数</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -471,8 +441,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2024/11/18/project18(con%E5%BF%85%E9%A1%BB%E4%BC%A0%E5%85%A5%EF%BC%8C%E7%94%B3%E8%AF%B7%E9%87%8A%E6%94%BE%E4%B8%80%E6%AC%A1%EF%BC%8Cgpu%E6%95%B0%E7%BB%84%E7%9B%B4%E6%8E%A5%E8%B5%8B%E5%80%BC)/" title="project18(con必须传入，申请释放一次，gpu数组直接赋值)">
-                        <span class="hidden-mobile">project18(con必须传入，申请释放一次，gpu数组直接赋值)</span>
+                      <a href="/2024/11/26/project19_%E5%BC%82%E6%AD%A5%E4%BC%A0%E8%BE%93/" title="project19_异步传输">
+                        <span class="hidden-mobile">project19_异步传输</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
