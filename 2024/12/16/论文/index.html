@@ -23,11 +23,18 @@
 <meta property="og:site_name" content="一拳超人">
 <meta property="og:description" content="项目背景介绍和工作重点界面湍流模拟仿真软件（Cut-Cell） 可压缩多相流模拟仿真软件 软件功能：模拟三维液滴的变形、破碎 Fortran代码，目前是OpenMP版本，尚未有GPU&#x2F;DCU工作  功能简述：基于笛卡尔背景网格，使用三维切割网格重构-组装生成非结构界面网格，在  ALE框架下采用有限体积法离散和求解水&#x2F;气两相欧拉方程 核心算法：  •守恒性尖锐界面方法，切割网格">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/1734850563058.png">
+<meta property="og:image" content="http://example.com/images/1734852369209.png">
+<meta property="og:image" content="http://example.com/images/1736251870606.png">
+<meta property="og:image" content="http://example.com/images/1736251960406.png">
+<meta property="og:image" content="http://example.com/images/1736251981141.png">
+<meta property="og:image" content="http://example.com/images/1736252018929.png">
 <meta property="article:published_time" content="2024-12-16T12:00:00.000Z">
-<meta property="article:modified_time" content="2024-12-16T06:29:05.724Z">
+<meta property="article:modified_time" content="2025-01-12T12:13:58.775Z">
 <meta property="article:author" content="hzbing">
 <meta property="article:tag" content="项目">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/images/1734850563058.png">
   
   
   
@@ -220,7 +227,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.1k 字
+          2.9k 字
         
       </span>
     
@@ -231,7 +238,7 @@
         
         
         
-          10 分钟
+          25 分钟
         
       </span>
     
@@ -297,6 +304,11 @@
 <p>5.将all_prim_2_con和all_con_2_prim两段代码（原始变量con和守恒变量的相互转换）也放在移植到dcu上面。</p>
 <p>6.正确性验证</p>
 <p>7.后续工作。。。</p>
+<h2 id="论文写作重点"><a href="#论文写作重点" class="headerlink" title="论文写作重点"></a>论文写作重点</h2><p>1 引言：多相流研究背景，现状，瓶颈，提出本文异构移植计算思想<br>2 软件分析：算法框架（突出介绍stencil 和 RK 的并行优势），异构移植难点（算术强度低、分支判断多，数据传输开销大）<br>3 优化方法：测试找到程序热点模块，代码移植<br>异构计算设计（核函数设计，数据并行化与任务分配）<br>数据传输优化（锁页内存，异步传输）<br>分块（调整线程块的大小）<br>4 实验：实验环境设置，正确性验证，优化前后运行时间对比和加速比（移植部分，整体）<br>测试不同的网格优化前后时间对比。</p>
+<p>把软件改成对问题的研究，看看论文，加上核心算法的流程，公式，必要加上图</p>
+<p>算法流程图</p>
+<p><img src="/../images/1734850563058.png" srcset="/img/loading.gif" lazyload alt="1734850563058"></p>
+<p><img src="/../images/1734852369209.png" srcset="/img/loading.gif" lazyload alt="1734852369209"></p>
 <h2 id="论文结构"><a href="#论文结构" class="headerlink" title="论文结构"></a><strong>论文结构</strong></h2><p><strong>界面湍流模拟仿真软件的异构移植与性能优化</strong></p>
 <h3 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a><strong>摘要</strong></h3><p>概述研究背景、问题、优化方法及主要结果：</p>
 <ul>
@@ -386,6 +398,93 @@
 </ul>
 <hr>
 <h3 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a><strong>参考文献</strong></h3><p>按照目标期刊要求，列出所有相关文献，涵盖背景研究和优化技术。</p>
+<h2 id="项目推进"><a href="#项目推进" class="headerlink" title="项目推进"></a>项目推进</h2><p>加上openmp，利用4个DCU卡算数据，先全部传入，核函数中的循环分段，用多线程调用核函数，调用memcpy</p>
+<p>2024年12月19日20:24:27</p>
+<p>明天好好写论文。</p>
+<p>2025年1月4日17:06:41</p>
+<p>晚上写参考文献，改综述，优化实验部分。</p>
+<p>明后天做实验。openmp</p>
+<p>发现了代码命名错误，但不影响结果，irl 应该是ir1同理jrl,krl都有错误。</p>
+<p>2025年1月5日19:30:55</p>
+<p>数组怎么传入，怎么传回</p>
+<p>对于中间的一些数组来说，imark这种判断数组，每一块DCU中都传入，像中间有所改变但不用传回的数组如Flux_US，下标的取值是不确定的，所以计算Flux_US的代码US先不要用openmp计算，将US的代码在其中一个DCU中计算，计算完Flux_US后将其传入到剩下的三个块中，进行后续的计算。对于flux数组是四维数组，…。像需要传回的数组con,con2,pre等。</p>
+<p>先将all_con_2_prim(将con的值赋值给pre…) 加上openmp计算</p>
+<p>将con,con2,pre…分块传入，找准每个数组要传入的下标范围，每一个dcu中得到各个数组的一块，对这一块进行计算,然后传回。</p>
+<p>先这样，不弄这个了。</p>
+<p>先搞清总体要怎么弄。后期还要做什么优化，。。有个大局观。 烦人。。。</p>
+<p>2025年1月6日14:47:31</p>
+<p>把这一切当成一场历练，而不是gp的任务。</p>
+<p>对于Flux_US按照之前的算，因为传回的时候下标不好找，比较分散</p>
+<p>对于flux Lcon数组，核函数不变，在4张DCU中都传入数组flux Lcon全部的值，然后传回的时候，通过计算偏移量，只传回修改过的数组范围，比如说Flux_x_FVM2中修改了flux[index4Df_ir1 + m]这个范围的值，而Flux_x_FVM3中修改了flux[index4Df + m]这部分范围，相当于对4张卡的值进行合并然后传回。先试试。<br>对于con,con2,pre…等数组，一样<br>有个问题，核函数之间计算完的数据要不要传回cpu，传回的意思是每次执行核函数后都合并更新flux的值，合并完的flux值可能和计算完再合并的flux值不同。因为flux的计算是有顺序的，先按照传回计算。试试可行不。先这样加油！！！</p>
+<p>2025年1月7日16:14:12</p>
+<p>改公式和图，加实验。加点复杂牛逼的图。</p>
+<p>加图，锁页加不同数组的效率提升，数据掩盖不同数组的效率提升。这里就用柱状图和折线图的组合图，多个柱</p>
+<p>横轴：设置为锁页内存的总数据量（MB），纵轴：移植代码时间</p>
+<p>两个柱，分别表示锁页前和锁页后的时间对比，再加一个折线表示加速比。总时间的图保持不变。</p>
+<p>数组掩盖，横轴：传输中被掩盖的总数据量（MB），纵轴：移植代码时间</p>
+<p>同上。</p>
+<p>4个柱</p>
+<p>可视化部分，体现相同的时间迭代步的不同,可视化要体现出加速效果。相同的时间，模拟演化的速度不同。或者是相同的演化，耗费的时间不同。想想咋弄</p>
+<p>明天作图，直接写数据。</p>
+<p><img src="/../images/1736251870606.png" srcset="/img/loading.gif" lazyload alt="1736251870606"></p>
+<p><img src="/../images/1736251960406.png" srcset="/img/loading.gif" lazyload alt="1736251960406"></p>
+<p><img src="/../images/1736251981141.png" srcset="/img/loading.gif" lazyload alt="1736251981141"></p>
+<p><img src="/../images/1736252018929.png" srcset="/img/loading.gif" lazyload alt="1736252018929"></p>
+<p>2025年1月9日16:57:02</p>
+<p>今天做完ppt，改完论文除了可视化的其他部分，包括图。</p>
+<p>beyond ppt不还随便做嘛。</p>
+<p>论文：逻辑通顺点，双柱状图那里改改。让人看懂。抓紧做完投出去烦死了。。。这是一场历练</p>
+<p>问题：404s,在摘要里面写移植代码加速比，实验部分也要加个移植代码部分的时间和加速比</p>
+<p>all两个数组总共755s，总时间18897s，非移植代码时间4187</p>
+<p>占总时间的4%，占非移植代码时间的18%。这里写的时候写18%</p>
+<p>在算法介绍里面加上各个算法占比，算法各部分占比时间做个饼图，这里写4%，equation求解部分78%，剩下18%（程序初始化1%，推进符号距离方程3%，网格切割并组装11%，计算下一步的界面通量和时间步长3%）。</p>
+<p>双柱状图那里改改，加上一段话，说明加上锁页的内存是什么物理意义（守恒变量，原始变量，通量）。数据量不要这么整齐，用实际的大小，这里计算一下。</p>
+<h3 id="1-几何信息相关"><a href="#1-几何信息相关" class="headerlink" title="1. 几何信息相关"></a>1. <strong>几何信息相关</strong></h3><ul>
+<li><strong>imark</strong>: 26,270,592</li>
+<li><strong>cut_model</strong>: 26,270,592</li>
+<li><strong>cutface</strong>: 26,270,592</li>
+<li><strong>xyzside</strong>: 78,811,776</li>
+<li><strong>cutside</strong>: 72,000,000</li>
+</ul>
+<h3 id="2-网格属性相关"><a href="#2-网格属性相关" class="headerlink" title="2. 网格属性相关"></a>2. <strong>网格属性相关</strong></h3><ul>
+<li><strong>phimac</strong>: 52,541,184</li>
+<li><strong>VOL</strong>: 52,541,184</li>
+<li><strong>dx</strong>: 1,776</li>
+<li><strong>dy</strong>: 1,376</li>
+<li><strong>dz</strong>: 1,376</li>
+<li><strong>area_cutside</strong>: 48,000,000</li>
+</ul>
+<h3 id="3-流体动力学基本变量"><a href="#3-流体动力学基本变量" class="headerlink" title="3. 流体动力学基本变量"></a>3. <strong>流体动力学基本变量</strong></h3><ul>
+<li><strong>den (密度)</strong>: 105,082,368</li>
+<li><strong>pre (压力)</strong>: 105,082,368</li>
+<li><strong>vel_u (速度-x方向)</strong>: 105,082,368</li>
+<li><strong>vel_v (速度-y方向)</strong>: 105,082,368</li>
+<li><strong>vel_w (速度-z方向)</strong>: 105,082,368</li>
+</ul>
+<h3 id="4-流量相关"><a href="#4-流量相关" class="headerlink" title="4. 流量相关"></a>4. <strong>流量相关</strong></h3><ul>
+<li><strong>flux_US (全局通量)</strong>: 240,000,000</li>
+<li><strong>flux_cutface (局部通量)</strong>: 120,000,000</li>
+</ul>
+<h3 id="5-守恒变量"><a href="#5-守恒变量" class="headerlink" title="5. 守恒变量"></a>5. <strong>守恒变量</strong></h3><ul>
+<li><strong>Lcon</strong>: 262,705,920 </li>
+<li><strong>flux</strong>: 262,705,920 </li>
+<li><strong>con (守恒变量数组)</strong>: 788,117,760</li>
+<li><strong>con2 (备用守恒变量数组)</strong>: 788,117,760</li>
+</ul>
+<p><strong>几何信息相关</strong>：与网格切割、边界描述有关的数据。</p>
+<p><strong>网格属性相关</strong>：与网格点体积、面积等特性有关的属性。</p>
+<p><strong>流体动力学基本变量</strong>：描述流体状态的主要物理量，如密度、压力和速度。</p>
+<p><strong>流量相关</strong>：与流体流动量计算相关的数组。</p>
+<p><strong>守恒变量</strong>：主要用于数值求解的守恒量表达，如质量、动量和能量等</p>
+<p>各部分的字节总大小如下（单位：字节）：<br>几何信息（Geometry Information）: 229,623,552 ，218MB<br>网格属性（Grid Properties）: 153,086,896 ，146MB<br>流体动力学变量（Fluid Dynamics Variables）: 525,411,840，501MB<br>通量相关（Flux Related）: 360,000,000，343MB<br>守恒变量（Conserved Variables）: 2,101,647,360 ，2,004MB</p>
+<p>将这些字节大小转换为MB，共3200MB</p>
+<p>ppt没做，其他都做完了</p>
+<p>明天做ppt，然后研究可视化部分</p>
+<p>2025年1月10日19:29:14</p>
+<p>ppt做完了，只剩下可视化</p>
+<p>程序还在跑，看最后一次的结果，Animate看动画。</p>
+<p>2025年1月11日16:06:53</p>
+<p>可视化不行，不好做，不行就不加了。-.-</p>
 
                 
               </div>
@@ -475,6 +574,12 @@
                 <div class="post-prevnext my-3">
                   <article class="post-prev col-6">
                     
+                    
+                      <a href="/2025/02/22/past%20and%20future/" title="past and future">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">past and future</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
                     
                   </article>
                   <article class="post-next col-6">
