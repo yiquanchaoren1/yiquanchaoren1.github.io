@@ -16,20 +16,18 @@
   <meta name="author" content="hzbing">
   <meta name="keywords" content="">
   
-    <meta name="description" content="网格有多大呢，按照整个大网格进行划分，按照一个方向划分4块，然后每一块中设置halo区，进行不同卡间的数据交换。要处理的是7点stencil计算  设备间能进行点对点的通信吗？能，demo能通过 迭代是怎么迭代的 验证和什么验证的 拷贝回去的时候halo区的数据拷贝了吗 思路：在z方向上分4块，将要计算的数据分块传输到每一块中，每一块中设置halo区，用于边界点的计算。计算需要用到的一些数组，每一">
+    <meta name="description" content="网格有多大呢，按照整个大网格进行划分，按照一个方向划分4块，然后每一块中设置halo区，进行不同卡间的数据交换。要处理的是7点stencil计算 设备间能进行点对点的通信吗？能，demo能通过 迭代是怎么迭代的 验证和什么验证的 拷贝回去的时候halo区的数据拷贝了吗 思路：在z方向上分4块，将要计算的数据分块传输到每一块中，每一块中设置halo区，用于边界点的计算。计算需要用到的一些数组，每一次">
 <meta property="og:type" content="article">
 <meta property="og:title" content="project22_分块demo测试">
 <meta property="og:url" content="http://example.com/2025/03/07/project22/index.html">
 <meta property="og:site_name" content="一拳超人">
-<meta property="og:description" content="网格有多大呢，按照整个大网格进行划分，按照一个方向划分4块，然后每一块中设置halo区，进行不同卡间的数据交换。要处理的是7点stencil计算  设备间能进行点对点的通信吗？能，demo能通过 迭代是怎么迭代的 验证和什么验证的 拷贝回去的时候halo区的数据拷贝了吗 思路：在z方向上分4块，将要计算的数据分块传输到每一块中，每一块中设置halo区，用于边界点的计算。计算需要用到的一些数组，每一">
+<meta property="og:description" content="网格有多大呢，按照整个大网格进行划分，按照一个方向划分4块，然后每一块中设置halo区，进行不同卡间的数据交换。要处理的是7点stencil计算 设备间能进行点对点的通信吗？能，demo能通过 迭代是怎么迭代的 验证和什么验证的 拷贝回去的时候halo区的数据拷贝了吗 思路：在z方向上分4块，将要计算的数据分块传输到每一块中，每一块中设置halo区，用于边界点的计算。计算需要用到的一些数组，每一次">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="c:\Users\bing\AppData\Roaming\Typora\typora-user-images\1740295068447.png">
 <meta property="article:published_time" content="2025-03-07T03:00:00.000Z">
-<meta property="article:modified_time" content="2025-03-07T03:06:58.620Z">
+<meta property="article:modified_time" content="2025-03-08T09:01:11.154Z">
 <meta property="article:author" content="hzbing">
 <meta property="article:tag" content="项目">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="c:\Users\bing\AppData\Roaming\Typora\typora-user-images\1740295068447.png">
   
   
   
@@ -276,7 +274,6 @@
               <div class="markdown-body">
                 
                 <p>网格有多大呢，按照整个大网格进行划分，按照一个方向划分4块，然后每一块中设置halo区，进行不同卡间的数据交换。要处理的是7点stencil计算</p>
-<p><img src="C:\Users\bing\AppData\Roaming\Typora\typora-user-images\1740295068447.png" srcset="/img/loading.gif" lazyload alt="1740295068447"></p>
 <p>设备间能进行点对点的通信吗？能，demo能通过</p>
 <p>迭代是怎么迭代的</p>
 <p>验证和什么验证的</p>
@@ -395,6 +392,12 @@
                 <div class="post-prevnext my-3">
                   <article class="post-prev col-6">
                     
+                    
+                      <a href="/2025/04/04/%E5%8D%95%E5%8D%A1%E5%A4%9A%E5%8D%A1openmp%E9%94%81%E9%A1%B5%E9%94%81%E6%A0%B8%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/" title="单卡多卡openmp锁页锁核性能测试">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">单卡多卡openmp锁页锁核性能测试</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
                     
                   </article>
                   <article class="post-next col-6">

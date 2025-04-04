@@ -224,6 +224,128 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2024/11/05/project16(%E9%94%81%E9%A1%B5%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95)/" target="_self">
+          project16(锁页性能测试)
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2024/11/05/project16(%E9%94%81%E9%A1%B5%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95)/" target="_self">
+        <div>
+          为什么要测试找到具体哪个地方影响了性能 测试规格100步 网格大小  不同代码测试通过测试发现单步Memcpy的时间并没有提升多少。 不设置锁页内存 全部设置为锁页内存，gpu快了，影响了cpu的效率 只将con设置为锁页内存，gpu不变,cpu快了 再加上flux flux_US Lcon 没有影响 再加上 den pre vel_uvw 几乎没有影响 可能的原因直接分配锁页内存和分配完再注册的
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2024-11-05 20:00" pubdate>
+              2024-11-05
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E9%A1%B9%E7%9B%AE/" class="category-chain-item">项目</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E9%A1%B9%E7%9B%AE/">#项目</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2024/10/25/project15%EF%BC%88%E9%94%81%E9%A1%B5%E5%86%85%E5%AD%98%E5%88%9D%E5%B0%9D%E8%AF%95%EF%BC%89/" target="_self">
+          project15（锁页内存初尝试）
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2024/10/25/project15%EF%BC%88%E9%94%81%E9%A1%B5%E5%86%85%E5%AD%98%E5%88%9D%E5%B0%9D%E8%AF%95%EF%BC%89/" target="_self">
+        <div>
+          Equation’s time of all timefortran 最初的大网格 单线程，225步（没加输出.plt 的代码）    占比80% 锁页内存1直接分配锁内存有错误，显示分配失败 2采用第二种方法：将已有的内存注册为锁内存 之前：1437s  用了锁业内存后：1473s  还慢了。。。 Memcpy快了一点(10s)，但总体时间慢了（50s），cpu时间增多了(60s) 影响的是cp
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2024-10-25 20:00" pubdate>
+              2024-10-25
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E9%A1%B9%E7%9B%AE/" class="category-chain-item">项目</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E9%A1%B9%E7%9B%AE/">#项目</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2024/10/18/%E4%B8%80%E4%BA%9Bidea/" target="_self">
           一些idea
         </a>
@@ -699,128 +821,6 @@
             <i class="iconfont icon-tags"></i>
             
               <a href="/tags/%E9%A1%B9%E7%9B%AE/">#项目</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2024/09/18/project09/" target="_self">
-          project09
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2024/09/18/project09/" target="_self">
-        <div>
-          problem又跑不了了 没加–gres&#x3D;dcu:1 到底是怎么跑的？ 又要调程序了  32 ,20 ,28 和之前的错误一样，f,s数组的问题。 hip只输出了一次，c输出了两次？ 什么原因让它只循环了一次？ RK。。 跑了一次因为在第一次RK &#x3D; 1 的时候就中断了，没有执行到RK &#x3D; 2 的时候 所以要排查只需要在RK &#x3D; 1 时。 在all_con输
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2024-09-18 20:30" pubdate>
-              2024-09-18
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E9%A1%B9%E7%9B%AE/" class="category-chain-item">项目</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E9%A1%B9%E7%9B%AE/">#项目</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2024/09/16/java%E5%A4%9A%E7%BA%BF%E7%A8%8B02/" target="_self">
-          java多线程02
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2024/09/16/java%E5%A4%9A%E7%BA%BF%E7%A8%8B02/" target="_self">
-        <div>
-          通知线程退出在主线程中控制子线程的变量实现子线程退出 1234567891011121314151617181920212223242526272829303132333435363738package com.hzb.thread;public class threadExit &#123;    public static void main(String[] args) &#123;
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2024-09-16 20:30" pubdate>
-              2024-09-16
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/java/" class="category-chain-item">java</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/java/">#java</a>
             
           </div>
         

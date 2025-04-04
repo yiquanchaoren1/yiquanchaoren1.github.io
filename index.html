@@ -224,6 +224,128 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2025/04/04/project23/" target="_self">
+          单卡到多卡
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/04/04/project23/" target="_self">
+        <div>
+          数组改成宏的形式分块测试think:每个卡中传入哪些数据？ halo区在哪交换哪些数据？每次迭代前交换数据，保证每个卡中的数据准备完毕，然后计算。 数据分为传入数据，中间数据，传出数据。 分块：imark[k][j][i] cutface[k][j][i] 这种数组分块传入每一块卡中，属于传入数据，提前传入DCU卡。 cutside[][] 传入数据，每个卡中传入完整的数组 flux_US[][]
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2025-04-04 12:00" pubdate>
+              2025-04-04
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E9%A1%B9%E7%9B%AE/" class="category-chain-item">项目</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E9%A1%B9%E7%9B%AE/">#项目</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2025/04/04/%E5%8D%95%E5%8D%A1%E5%A4%9A%E5%8D%A1openmp%E9%94%81%E9%A1%B5%E9%94%81%E6%A0%B8%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/" target="_self">
+          单卡多卡openmp锁页锁核性能测试
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/04/04/%E5%8D%95%E5%8D%A1%E5%A4%9A%E5%8D%A1openmp%E9%94%81%E9%A1%B5%E9%94%81%E6%A0%B8%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/" target="_self">
+        <div>
+          单卡全部数据：6.4 s 加锁页：646ms 1&#x2F;4数据：1.6 s 加锁页：163ms 多卡多卡多线程不设置锁页 DCU 0: H2D 传输时间 &#x3D; 4293.507 ms (数据量: 2000.0 MB)DCU 3: H2D 传输时间 &#x3D; 4527.804 ms (数据量: 2000.0 MB)DCU 2: H2D 传输时间 &#x3D; 4644.843 ms
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2025-04-04 12:00" pubdate>
+              2025-04-04
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E9%A1%B9%E7%9B%AE/" class="category-chain-item">项目</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E9%A1%B9%E7%9B%AE/">#项目</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2025/03/07/project22/" target="_self">
           project22_分块demo测试
         </a>
@@ -232,7 +354,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2025/03/07/project22/" target="_self">
         <div>
-          网格有多大呢，按照整个大网格进行划分，按照一个方向划分4块，然后每一块中设置halo区，进行不同卡间的数据交换。要处理的是7点stencil计算  设备间能进行点对点的通信吗？能，demo能通过 迭代是怎么迭代的 验证和什么验证的 拷贝回去的时候halo区的数据拷贝了吗 思路：在z方向上分4块，将要计算的数据分块传输到每一块中，每一块中设置halo区，用于边界点的计算。计算需要用到的一些数组，每一
+          网格有多大呢，按照整个大网格进行划分，按照一个方向划分4块，然后每一块中设置halo区，进行不同卡间的数据交换。要处理的是7点stencil计算 设备间能进行点对点的通信吗？能，demo能通过 迭代是怎么迭代的 验证和什么验证的 拷贝回去的时候halo区的数据拷贝了吗 思路：在z方向上分4块，将要计算的数据分块传输到每一块中，每一块中设置halo区，用于边界点的计算。计算需要用到的一些数组，每一次
         </div>
       </a>
 
@@ -669,128 +791,6 @@
             <i class="iconfont icon-date"></i>
             <time datetime="2024-11-15 18:00" pubdate>
               2024-11-15
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E9%A1%B9%E7%9B%AE/" class="category-chain-item">项目</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E9%A1%B9%E7%9B%AE/">#项目</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2024/11/05/project16(%E9%94%81%E9%A1%B5%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95)/" target="_self">
-          project16(锁页性能测试)
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2024/11/05/project16(%E9%94%81%E9%A1%B5%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95)/" target="_self">
-        <div>
-          为什么要测试找到具体哪个地方影响了性能 测试规格100步 网格大小  不同代码测试通过测试发现单步Memcpy的时间并没有提升多少。 不设置锁页内存 全部设置为锁页内存，gpu快了，影响了cpu的效率 只将con设置为锁页内存，gpu不变,cpu快了 再加上flux flux_US Lcon 没有影响 再加上 den pre vel_uvw 几乎没有影响 可能的原因直接分配锁页内存和分配完再注册的
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2024-11-05 20:00" pubdate>
-              2024-11-05
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E9%A1%B9%E7%9B%AE/" class="category-chain-item">项目</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E9%A1%B9%E7%9B%AE/">#项目</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2024/10/25/project15%EF%BC%88%E9%94%81%E9%A1%B5%E5%86%85%E5%AD%98%E5%88%9D%E5%B0%9D%E8%AF%95%EF%BC%89/" target="_self">
-          project15（锁页内存初尝试）
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2024/10/25/project15%EF%BC%88%E9%94%81%E9%A1%B5%E5%86%85%E5%AD%98%E5%88%9D%E5%B0%9D%E8%AF%95%EF%BC%89/" target="_self">
-        <div>
-          Equation’s time of all timefortran 最初的大网格 单线程，225步（没加输出.plt 的代码）    占比80% 锁页内存1直接分配锁内存有错误，显示分配失败 2采用第二种方法：将已有的内存注册为锁内存 之前：1437s  用了锁业内存后：1473s  还慢了。。。 Memcpy快了一点(10s)，但总体时间慢了（50s），cpu时间增多了(60s) 影响的是cp
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2024-10-25 20:00" pubdate>
-              2024-10-25
             </time>
           </div>
         

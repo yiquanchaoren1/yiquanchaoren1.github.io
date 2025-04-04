@@ -16,34 +16,36 @@
   <meta name="author" content="hzbing">
   <meta name="keywords" content="">
   
-    <meta name="description" content="后续工作1.将all_con_2_prim.F90  all_prim_2_con.F90 两段代码放在GPU上计算 2.做一个函数input output 的表 3.搞明白US Flux_x_FVM依赖关系，才能分块。 4.fluid &#x3D; 1 算完后能不能传回数据。 5.写小论文 实验先将all_con_2_prim放在GPU上面并测试 函数中做的操作： all_con_2_prim将">
+    <meta name="description" content="数组改成宏的形式分块测试think:每个卡中传入哪些数据？ halo区在哪交换哪些数据？每次迭代前交换数据，保证每个卡中的数据准备完毕，然后计算。 数据分为传入数据，中间数据，传出数据。 分块：imark[k][j][i] cutface[k][j][i] 这种数组分块传入每一块卡中，属于传入数据，提前传入DCU卡。 cutside[][] 传入数据，每个卡中传入完整的数组 flux_US[][]">
 <meta property="og:type" content="article">
-<meta property="og:title" content="project21_split成功all改为核函数">
-<meta property="og:url" content="http://example.com/2024/12/14/project21_split%E6%88%90%E5%8A%9Fall%E6%94%B9%E4%B8%BA%E6%A0%B8%E5%87%BD%E6%95%B0/index.html">
+<meta property="og:title" content="单卡到多卡">
+<meta property="og:url" content="http://example.com/2025/04/04/project23/index.html">
 <meta property="og:site_name" content="一拳超人">
-<meta property="og:description" content="后续工作1.将all_con_2_prim.F90  all_prim_2_con.F90 两段代码放在GPU上计算 2.做一个函数input output 的表 3.搞明白US Flux_x_FVM依赖关系，才能分块。 4.fluid &#x3D; 1 算完后能不能传回数据。 5.写小论文 实验先将all_con_2_prim放在GPU上面并测试 函数中做的操作： all_con_2_prim将">
+<meta property="og:description" content="数组改成宏的形式分块测试think:每个卡中传入哪些数据？ halo区在哪交换哪些数据？每次迭代前交换数据，保证每个卡中的数据准备完毕，然后计算。 数据分为传入数据，中间数据，传出数据。 分块：imark[k][j][i] cutface[k][j][i] 这种数组分块传入每一块卡中，属于传入数据，提前传入DCU卡。 cutside[][] 传入数据，每个卡中传入完整的数组 flux_US[][]">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/images/1733724808481.png">
-<meta property="og:image" content="http://example.com/images/1733744265844.png">
-<meta property="og:image" content="http://example.com/images/1733744271811.png">
-<meta property="og:image" content="http://example.com/images/1733824701903.png">
-<meta property="og:image" content="http://example.com/images/1733824708148.png">
-<meta property="og:image" content="http://example.com/images/1733824729800.png">
-<meta property="og:image" content="http://example.com/images/1733824737115.png">
-<meta property="og:image" content="http://example.com/images/1734004219791.png">
-<meta property="og:image" content="http://example.com/images/1734007024726.png">
-<meta property="og:image" content="http://example.com/images/1734072917325.png">
-<meta property="og:image" content="http://example.com/images/1734150346109.png">
-<meta property="article:published_time" content="2024-12-14T12:00:00.000Z">
-<meta property="article:modified_time" content="2025-03-11T06:27:21.559Z">
+<meta property="og:image" content="http://example.com/images/1742631228160.png">
+<meta property="og:image" content="http://example.com/images/1742631240185.png">
+<meta property="og:image" content="http://example.com/images/1742631258207.png">
+<meta property="og:image" content="http://example.com/images/1742631266276.png">
+<meta property="og:image" content="http://example.com/images/1742650987577.png">
+<meta property="og:image" content="http://example.com/images/1742651011660.png">
+<meta property="og:image" content="http://example.com/images/1742647533917.png">
+<meta property="og:image" content="http://example.com/images/1742647570272.png">
+<meta property="og:image" content="http://example.com/images/1742651343803.png">
+<meta property="og:image" content="http://example.com/images/1742651355100.png">
+<meta property="og:image" content="http://example.com/images/1743232806384.png">
+<meta property="og:image" content="http://example.com/images/1743233454261.png">
+<meta property="og:image" content="http://example.com/images/1743233057214.png">
+<meta property="article:published_time" content="2025-04-04T04:00:00.000Z">
+<meta property="article:modified_time" content="2025-04-04T04:52:13.796Z">
 <meta property="article:author" content="hzbing">
 <meta property="article:tag" content="项目">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://example.com/images/1733724808481.png">
+<meta name="twitter:image" content="http://example.com/images/1742631228160.png">
   
   
   
-  <title>project21_split成功all改为核函数 - 一拳超人</title>
+  <title>单卡到多卡 - 一拳超人</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -209,7 +211,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="project21_split成功all改为核函数"></span>
+            <span id="subtitle" data-typed-text="单卡到多卡"></span>
           
         </div>
 
@@ -220,8 +222,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2024-12-14 20:00" pubdate>
-          2024年12月14日 晚上
+        <time datetime="2025-04-04 12:00" pubdate>
+          2025年4月4日 中午
         </time>
       </span>
     
@@ -232,7 +234,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          880 字
+          1.4k 字
         
       </span>
     
@@ -243,7 +245,7 @@
         
         
         
-          8 分钟
+          13 分钟
         
       </span>
     
@@ -280,67 +282,137 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">project21_split成功all改为核函数</h1>
+            <h1 id="seo-header">单卡到多卡</h1>
             
             
               <div class="markdown-body">
                 
-                <h2 id="后续工作"><a href="#后续工作" class="headerlink" title="后续工作"></a>后续工作</h2><p>1.将all_con_2_prim.F90  all_prim_2_con.F90 两段代码放在GPU上计算</p>
-<p>2.做一个函数input output 的表</p>
-<p>3.搞明白US Flux_x_FVM依赖关系，才能分块。</p>
-<p>4.fluid &#x3D; 1 算完后能不能传回数据。</p>
-<p>5.写小论文</p>
-<h2 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h2><h3 id="先将all-con-2-prim放在GPU上面并测试"><a href="#先将all-con-2-prim放在GPU上面并测试" class="headerlink" title="先将all_con_2_prim放在GPU上面并测试"></a>先将all_con_2_prim放在GPU上面并测试</h3><p><img src="/../images/1733724808481.png" srcset="/img/loading.gif" lazyload alt="1733724808481"></p>
-<p><strong>函数中做的操作：</strong></p>
-<p>all_con_2_prim将con的值赋给pre，….</p>
-<p>US_2_S中也将con的值赋给pre…</p>
-<p>后面的函数没有能掩盖传输时间的了。</p>
-<p><strong>目的</strong>：减少all_con_2_prim在cpu上的执行时间（453s），改为在GPU运算(测试时间: 8s )</p>
-<p>增加了传回时间，con和pre（74s）都要传回。</p>
-<p>在执行完eauqation后将con传回，因为all_con_2_prim中要用到con</p>
-<p>执行完all_con_2_prim后将pre…传回,因为US_2_S中要给pre赋值</p>
-<h4 id="1000步中等网格"><a href="#1000步中等网格" class="headerlink" title="1000步中等网格"></a>1000步中等网格</h4><p>之前4612s</p>
-<p><img src="/../images/1733744265844.png" srcset="/img/loading.gif" lazyload alt="1733744265844"></p>
-<p><img src="/../images/1733744271811.png" srcset="/img/loading.gif" lazyload alt="1733744271811"></p>
-<h3 id="将all-prim-2-con移植到GPU"><a href="#将all-prim-2-con移植到GPU" class="headerlink" title="将all_prim_2_con移植到GPU"></a>将all_prim_2_con移植到GPU</h3><p>先异步传入pre…和con，con2，然后在gpu上面计算con</p>
-<p>目的：减少all_prim_2_con在cpu上的计算时间(307s),增加了all_prim_2_con核函数的运行时间( 25s)</p>
-<h4 id="1000步中等网格-1"><a href="#1000步中等网格-1" class="headerlink" title="1000步中等网格"></a>1000步中等网格</h4><p><img src="/../images/1733824701903.png" srcset="/img/loading.gif" lazyload alt="1733824701903"></p>
-<p><img src="/../images/1733824708148.png" srcset="/img/loading.gif" lazyload alt="1733824708148"></p>
-<h3 id="将Flux-xyz-FVM等分成两个核函数"><a href="#将Flux-xyz-FVM等分成两个核函数" class="headerlink" title="将Flux_xyz_FVM等分成两个核函数"></a>将Flux_xyz_FVM等分成两个核函数</h3><p><img src="/../images/1733824729800.png" srcset="/img/loading.gif" lazyload alt="1733824729800"></p>
-<p><img src="/../images/1733824737115.png" srcset="/img/loading.gif" lazyload alt="1733824737115"></p>
-<p>差不多没变化</p>
-<h3 id="输出拆分后（拆分成两个）核函书的时间"><a href="#输出拆分后（拆分成两个）核函书的时间" class="headerlink" title="输出拆分后（拆分成两个）核函书的时间"></a>输出拆分后（拆分成两个）核函书的时间</h3><p><img src="/../images/1734004219791.png" srcset="/img/loading.gif" lazyload alt="1734004219791"></p>
-<p>二维kernel的时间占大部分。</p>
-<h3 id="拆分成三个"><a href="#拆分成三个" class="headerlink" title="拆分成三个"></a>拆分成三个</h3><p>都是三维线程拓扑</p>
-<p>正确性：正确</p>
-<p>说明这两部分要按照顺序进行，不能分线程算每一个i,这样顺序就乱了。</p>
-<p>即对一个下标的计算赋值顺序本来是123，分线程后变成了231，这样得出的flux值就有错误。</p>
-<p>涉及到对同一个下标赋值，这里相当于和us一样的情况</p>
-<p>把这两个部分分成两个核函数，执行完第一个核函数后进行同步，就没错误了。因为本来的顺序就是先执行条件1，再执行条件2 。</p>
-<p>因为如果是一个核函数，其中对一个下标进行了两次操作，这样就可能产生由于线程执行顺序不同造成的错误</p>
-<p>所以将操作flux的代码分为三个部分。</p>
-<p><img src="/../images/1734007024726.png" srcset="/img/loading.gif" lazyload alt="1734007024726"></p>
-<h4 id="测试"><a href="#测试" class="headerlink" title="测试"></a><strong>测试</strong></h4><p><img src="/../images/1734072917325.png" srcset="/img/loading.gif" lazyload alt="1734072917325"></p>
-<h3 id="mark-mb掩盖部分传输时间"><a href="#mark-mb掩盖部分传输时间" class="headerlink" title="mark_mb掩盖部分传输时间"></a>mark_mb掩盖部分传输时间</h3><p>真没有能掩盖的代码了，都要用到con,pre…的值。</p>
-<p>equation中异步传输数组pre…,equation后调用mark_mb，然后添加同步,再执行US_2_S函数</p>
-<p>只有US_2_S函数用到了con,考虑只把用到了con的地方移植，就不用传con的值了。（要传入的数组太多，费力不讨好）。只做mark_mb吧。</p>
-<p>把重点放在核函数的优化上面，分块，stencil ,shared memory.</p>
-<h3 id="分块success"><a href="#分块success" class="headerlink" title="分块success"></a>分块success</h3><p>US算界面上切割网格的通量，物理意义。</p>
-<p>Flux_FVM_US中这段代码是算什么的</p>
-<p>已经在jk方向上是没有顺序的，但是算i的时候必须要按照顺序进行算，不能乱序。</p>
-<p>这里如果两次循环算出来的side值相同的话，会对flux_US的同一个下标进行操作。这样就把前一个算出的flux_US的值覆盖掉。</p>
-<p>我现在做分块，如果i之间有这种依赖的话，就没法分块。</p>
-<p>单个if里面side不相同</p>
-<p>和其他的if里面有相同的side</p>
-<p>把US拆开，分几个if</p>
-<p>顺序是怎样的。</p>
-<p>两个if是有交集的，排斥的不可能</p>
-<p>if ，i+1的和i如果if判断的条件相同，就有可能对一个值进行操作</p>
-<p>分成两块，先算i，再算+1的部分。</p>
-<p><strong>success</strong> ：将ijk 分为一块，将i+1 ,j+1 ,k+1 分为一块，再将之前将两个流体的分块合并起来。成功了，现在us被分成两块了。</p>
-<h4 id="测试-1"><a href="#测试-1" class="headerlink" title="测试"></a>测试</h4><p><img src="/../images/1734150346109.png" srcset="/img/loading.gif" lazyload alt="1734150346109"></p>
-<p>核函数：226s</p>
-<p>memcpy ：300s</p>
+                <h2 id="数组改成宏的形式"><a href="#数组改成宏的形式" class="headerlink" title="数组改成宏的形式"></a>数组改成宏的形式</h2><h2 id="分块测试"><a href="#分块测试" class="headerlink" title="分块测试"></a>分块测试</h2><h3 id="think"><a href="#think" class="headerlink" title="think:"></a>think:</h3><p>每个卡中传入哪些数据？</p>
+<p>halo区在哪交换哪些数据？每次迭代前交换数据，保证每个卡中的数据准备完毕，然后计算。</p>
+<p>数据分为传入数据，中间数据，传出数据。</p>
+<p>分块：<code>imark[k][j][i]</code> <code>cutface[k][j][i]</code> 这种数组分块传入每一块卡中，属于传入数据，提前传入DCU卡。</p>
+<p><code>cutside[][]</code> 传入数据，每个卡中传入完整的数组</p>
+<p><code>flux_US[][] </code>      中间数据，通过计算的得到的数据，在每一个卡中都申请一个完整的数组，不用分块。</p>
+<p><code>flux[k][j][i]</code> <code>Lcon[k][j][i]</code> 也是中间数据，这种数组分块传入每一块卡中。</p>
+<p>这些数组取值的之后会用到其他卡中的值吗？用不到。在US中赋值的flux_US在RK中用到了，<br>这些数组需要halo交换吗？</p>
+<p><code>con[0][k][j][i][m]</code> 传出数据，这种数组分块传入每一块卡中。</p>
+<p>总结：三维及以上数组分块传入，二维及以下数组整个传入每一个卡中。传入后halo通信，确保一个卡中包含了需要用到的全部数据，然后执行核函数计算，算完后将con等数组整合传回cpu即可。</p>
+<p>二维数组也分为几种，一种是值没有改变，用于给其他数组赋值，所以可以将其完整传入四个卡中。</p>
+<p><code>cutside(6,Max_cutface_num),SG_PB(2),SG_G(2),dx(ibnd_R),dy(jbnd_R),dz(kbnd_R),area_cutside(Max_side_num),flux_cutface(5,Max_cutface_num),flux_cutface2(5,Max_cutface_num)</code></p>
+<p>一种是被赋值了。</p>
+<p><code>flux_US(5,Max_side_num)</code>在US中被赋值，在Flux_xyz RK 中被使用。不用传回，只作为中间值使用。</p>
+<p>赋值的下标和用到的下标是一个。应该不存在赋值的下标和使用的下标分散在多卡的情况。</p>
+<p>调试</p>
+<p>具体实现</p>
+<p>把#define定义的内容放在头文件里</p>
+<p>2025年3月17日16:54:16</p>
+<p>53个参数(29个常量，24个数组)</p>
+<p>三维以下：cutside,SG_PB,SG_G,dx,dy,dz,area_cutside,flux_US,flux_cutface 9个</p>
+<p>三维及三维以上：15个</p>
+<p>数组大小：ibnd_R,jbnd_R,kbnd_R</p>
+<p>按照k方向分块。</p>
+<p>个别数组的halo区域不是1，要设置为更多，分配显存的时候注意</p>
+<p>2025年3月19日14:10:34</p>
+<p>处理7个数组</p>
+<p>pre…，halo &#x3D; 2</p>
+<p>con，halo &#x3D; 0</p>
+<p>2025年3月20日14:02:42</p>
+<p>halo数据交换</p>
+<p><strong>local_host and recv_ptr ..在循环的时候设置第一个就行，改成openmp后设置别名比较好。</strong></p>
+<p>int or double 再检查一遍</p>
+<p>改了flux_US int &gt; double 源代码赋值的时候 Lcon flux 之前都为int写错了，但是结果对了</p>
+<p>2025年3月21日15:13:21</p>
+<p>改完了调用核函数部分，核函数里面还要改一下范围，k的范围通过参数传入核函数。</p>
+<p><strong>中等网格:ibnd_R 222,jbnd_R 172,kbnd_R 172</strong></p>
+<p>传入参数：3G （已经掩盖）</p>
+<p>传回:con:1.46G,pre… 400M ,共  1.85G</p>
+<p>大网格：ibnd_R 422 jbnd_R  322，kbnd_R  322</p>
+<p>24G</p>
+<p>测试大一点的网格传输时间能不能掩盖，如果不能，就用计算掩盖传输时间</p>
+<p>24G</p>
+<p>xpointsA &#x3D; 8<br>xpointsB &#x3D; 400<br>xpointsC &#x3D; 8</p>
+<p>ypointsA &#x3D; 8<br>ypointsB &#x3D; 300<br>ypointsC &#x3D; 8</p>
+<p>zpointsA &#x3D; 8<br> zpointsB &#x3D; 300<br>zpointsC &#x3D; 8</p>
+<p>3G</p>
+<p>xpointsA &#x3D; 8<br>xpointsB &#x3D; 200<br>xpointsC &#x3D; 8</p>
+<p>ypointsA &#x3D; 8<br>ypointsB &#x3D; 150<br>ypointsC &#x3D; 8</p>
+<p>zpointsA &#x3D; 8<br> zpointsB &#x3D; 150<br>zpointsC &#x3D; 8</p>
+<p>5G</p>
+<p>xpointsA &#x3D; 8<br>xpointsB &#x3D; 240<br>xpointsC &#x3D; 8</p>
+<p>ypointsA &#x3D; 8<br>ypointsB &#x3D; 180<br>ypointsC &#x3D; 8</p>
+<p>zpointsA &#x3D; 8<br> zpointsB &#x3D; 180<br>zpointsC &#x3D; 8</p>
+<p>9G</p>
+<p>xpointsA &#x3D; 8<br>xpointsB &#x3D; 300<br>xpointsC &#x3D; 8</p>
+<p>ypointsA &#x3D; 8<br>ypointsB &#x3D; 225<br>ypointsC &#x3D; 8</p>
+<p>zpointsA &#x3D; 8<br> zpointsB &#x3D; 225<br>zpointsC &#x3D; 8</p>
+<p>14G 用这个网格测试</p>
+<p>xpointsA &#x3D; 8<br>xpointsB &#x3D; 360<br>xpointsC &#x3D; 8</p>
+<p>ypointsA &#x3D; 8<br>ypointsB &#x3D; 270<br>ypointsC &#x3D; 8</p>
+<p>zpointsA &#x3D; 8<br> zpointsB &#x3D; 270<br>zpointsC &#x3D; 8</p>
+<p>明天在18 的版本上，不提前传输数据，看看掩盖情况。不在之前版本上改了。然后看看绑核。</p>
+<p>2025年3月22日10:56:22</p>
+<p>测一个异步前的传输时间，核函数时间，总时间，然后测异步后核函数时间，总时间</p>
+<p>18 异步 20 不异步</p>
+<h3 id="不同网格掩盖测试：1000步"><a href="#不同网格掩盖测试：1000步" class="headerlink" title="不同网格掩盖测试：1000步"></a><strong>不同网格掩盖测试</strong>：1000步</h3><h4 id="3G显存网格-220-170-170"><a href="#3G显存网格-220-170-170" class="headerlink" title="3G显存网格  220 * 170 * 170"></a>3G显存网格  220 * 170 * 170</h4><p>不掩盖</p>
+<p><img src="/../images/1742631228160.png" srcset="/img/loading.gif" lazyload alt="1742631228160"></p>
+<p><img src="/../images/1742631240185.png" srcset="/img/loading.gif" lazyload alt="1742631240185"></p>
+<p>掩盖</p>
+<p><img src="/../images/1742631258207.png" srcset="/img/loading.gif" lazyload alt="1742631258207"></p>
+<p><img src="/../images/1742631266276.png" srcset="/img/loading.gif" lazyload alt="1742631266276"></p>
+<p>完全掩盖了memcpy的时间</p>
+<h4 id="14G显存网格-400-300-300"><a href="#14G显存网格-400-300-300" class="headerlink" title="14G显存网格 400 * 300 * 300"></a>14G显存网格 400 * 300 * 300</h4><p>不掩盖</p>
+<p><img src="/../images/1742650987577.png" srcset="/img/loading.gif" lazyload alt="1742650987577"></p>
+<p><img src="/../images/1742651011660.png" srcset="/img/loading.gif" lazyload alt="1742651011660"></p>
+<p>掩盖</p>
+<p><img src="/../images/1742647533917.png" srcset="/img/loading.gif" lazyload alt="1742647533917"></p>
+<p><img src="/../images/1742647570272.png" srcset="/img/loading.gif" lazyload alt="1742647570272"></p>
+<p>显存掩盖了1840s，网格切割快了1350s（这个为什么会快）</p>
+<p><img src="/../images/1742651343803.png" srcset="/img/loading.gif" lazyload alt="1742651343803"></p>
+<p><img src="/../images/1742651355100.png" srcset="/img/loading.gif" lazyload alt="1742651355100"></p>
+<p>网格大小占满显存 传输时间也能掩盖</p>
+<p><del>经测试在单卡中，大点的网格的memcpy时间不能被完全掩盖。</del><br><del>使用分块计算的方式，传数据和计算同时进行。</del></p>
+<p><strong>什么情况下需要用到绑核：</strong></p>
+<p>多卡中起了多个线程或进程，一个线程对应一个DCU卡，需要绑核</p>
+<p><strong>如何绑核：</strong></p>
+<p>进程绑核：</p>
+<p>写一个rankfile.txt文件，文件中定义了各个进程绑定了哪个核心，在运行的时候链接上这个文件</p>
+<p>openmp线程绑核：修改脚本代码，指定线程用哪个核</p>
+<p>​                  绑核   不绑核<br>for循环  ： 25        32<br>openmp:    22       28</p>
+<p>for循环就一个线程，绑不绑核有意义吗？</p>
+<p>绑核确实能快一点，不管是for循环还是openmp</p>
+<p>2025年3月24日14:26:58</p>
+<p>编译完，运行有错误。范围！</p>
+<p>2025年3月26日13:33:24</p>
+<p>检查核函数的范围</p>
+<p>2025年3月27日16:32:01</p>
+<p>2025年3月29日14:39:22</p>
+<h2 id="扩展到多卡"><a href="#扩展到多卡" class="headerlink" title="扩展到多卡"></a>扩展到多卡</h2><p>数据分块，按照k方向进行分块，将原来一个数组按照k方向分成四块，每一个DCU卡中存放数组的一部分数据。设置halo区，在不同卡中通信边界数据，保证每一张卡中包含了需要计算的所有数据。</p>
+<h2 id="线程绑核的效果"><a href="#线程绑核的效果" class="headerlink" title="线程绑核的效果"></a>线程绑核的效果</h2><p>使用openmp起四个线程，测试绑核和不绑核的效果</p>
+<h3 id="绑核方式"><a href="#绑核方式" class="headerlink" title="绑核方式"></a>绑核方式</h3><p><img src="/../images/1743232806384.png" srcset="/img/loading.gif" lazyload alt="1743232806384"></p>
+<h3 id="demo设置"><a href="#demo设置" class="headerlink" title="demo设置"></a>demo设置</h3><p>对一个数组执行7点stencil计算，将计算任务分配到4张DCU卡中，每个卡中传入数组的一部分数据。</p>
+<p>数组大小</p>
+<p><img src="/../images/1743233454261.png" srcset="/img/loading.gif" lazyload alt="1743233454261"></p>
+<p><img src="/../images/1743233057214.png" srcset="/img/loading.gif" lazyload alt="1743233057214"></p>
+<h3 id="绑核效果"><a href="#绑核效果" class="headerlink" title="绑核效果"></a>绑核效果</h3><table>
+<thead>
+<tr>
+<th></th>
+<th>传入时间&#x2F;s</th>
+<th>总时间&#x2F;s</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>不绑核</td>
+<td>8.1</td>
+<td>34</td>
+</tr>
+<tr>
+<td>绑核</td>
+<td>5.6</td>
+<td>22</td>
+</tr>
+</tbody></table>
+<h2 id="较大网格的数据掩盖情况"><a href="#较大网格的数据掩盖情况" class="headerlink" title="较大网格的数据掩盖情况"></a>较大网格的数据掩盖情况</h2><p>扩大网格，使传入数据的总量基本占满单卡16G的显存，通过测试传入DCU的时间也能被完全掩盖</p>
 
                 
               </div>
@@ -386,8 +458,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>project21_split成功all改为核函数</div>
-      <div>http://example.com/2024/12/14/project21_split成功all改为核函数/</div>
+      <div>单卡到多卡</div>
+      <div>http://example.com/2025/04/04/project23/</div>
     </div>
     <div class="license-meta">
       
@@ -399,7 +471,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2024年12月14日</div>
+          <div>2025年4月4日</div>
         </div>
       
       
@@ -431,18 +503,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2024/12/16/%E8%AE%BA%E6%96%87/" title="小论文">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">小论文</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2024/12/08/project20_split%E6%8E%A2%E7%B4%A2/" title="project20_split探索">
-                        <span class="hidden-mobile">project20_split探索</span>
+                      <a href="/2025/04/04/%E5%8D%95%E5%8D%A1%E5%A4%9A%E5%8D%A1openmp%E9%94%81%E9%A1%B5%E9%94%81%E6%A0%B8%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/" title="单卡多卡openmp锁页锁核性能测试">
+                        <span class="hidden-mobile">单卡多卡openmp锁页锁核性能测试</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
