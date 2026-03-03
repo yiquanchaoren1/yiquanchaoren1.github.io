@@ -224,6 +224,433 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2024/11/05/project16(%E9%94%81%E9%A1%B5%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95)/" target="_self">
+          project16(锁页性能测试)
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2024/11/05/project16(%E9%94%81%E9%A1%B5%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95)/" target="_self">
+        <div>
+          为什么要测试找到具体哪个地方影响了性能 测试规格100步 网格大小  不同代码测试通过测试发现单步Memcpy的时间并没有提升多少。 不设置锁页内存 全部设置为锁页内存，gpu快了，影响了cpu的效率 只将con设置为锁页内存，gpu不变,cpu快了 再加上flux flux_US Lcon 没有影响 再加上 den pre vel_uvw 几乎没有影响 可能的原因直接分配锁页内存和分配完再注册的
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2024-11-05 20:00" pubdate>
+              2024-11-05
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E9%A1%B9%E7%9B%AE/" class="category-chain-item">项目</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E9%A1%B9%E7%9B%AE/">#项目</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2024/10/25/project15%EF%BC%88%E9%94%81%E9%A1%B5%E5%86%85%E5%AD%98%E5%88%9D%E5%B0%9D%E8%AF%95%EF%BC%89/" target="_self">
+          project15（锁页内存初尝试）
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2024/10/25/project15%EF%BC%88%E9%94%81%E9%A1%B5%E5%86%85%E5%AD%98%E5%88%9D%E5%B0%9D%E8%AF%95%EF%BC%89/" target="_self">
+        <div>
+          Equation’s time of all timefortran 最初的大网格 单线程，225步（没加输出.plt 的代码）    占比80% 锁页内存1直接分配锁内存有错误，显示分配失败 2采用第二种方法：将已有的内存注册为锁内存 之前：1437s  用了锁业内存后：1473s  还慢了。。。 Memcpy快了一点(10s)，但总体时间慢了（50s），cpu时间增多了(60s) 影响的是cp
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2024-10-25 20:00" pubdate>
+              2024-10-25
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E9%A1%B9%E7%9B%AE/" class="category-chain-item">项目</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E9%A1%B9%E7%9B%AE/">#项目</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2024/10/18/%E4%B8%80%E4%BA%9Bidea/" target="_self">
+          一些idea
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2024/10/18/%E4%B8%80%E4%BA%9Bidea/" target="_self">
+        <div>
+          一些idea，思考才会让人进步 理想中的博客超算也就这些东西，涉及的东西很多很深。 漫谈高性能计算与性能优化：访存 - 知乎 关于毕业和工作我不可能学完所有的东西，时间也不够 。如果超算真的是未来的趋势的话，这无非是最好的选择。 我真的喜欢这个领域吗？成年人还谈什么喜欢。挺喜欢的说实话，坚持下来吧，挺有趣的。 明年今日，静待花开。 1.不想成为什么样的人？ 堕落的人 2.想过什么样的生活？ 充满爱
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2024-10-18 19:30" pubdate>
+              2024-10-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E9%9A%8F%E7%AC%94/" class="category-chain-item">随笔</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E6%97%A5%E8%AE%B0/">#日记</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2024/10/16/java%E7%BA%BF%E7%A8%8B%E9%94%81/" target="_self">
+          java线程锁
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2024/10/16/java%E7%BA%BF%E7%A8%8B%E9%94%81/" target="_self">
+        <div>
+          互斥锁就是synchronized   123456789101112131415161718192021222324252627282930class SellTicket03 implements Runnable &#123;private int ticketNum = 100;//让多个线程共享 ticketNumprivate boolean loop = true;//控制 run
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2024-10-16 15:30" pubdate>
+              2024-10-16
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/java/" class="category-chain-item">java</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/java/">#java</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2024/10/15/java%E7%BA%BF%E7%A8%8B%E6%8F%92%E9%98%9F%E5%AE%88%E6%8A%A4%E7%8A%B6%E6%80%81%E5%90%8C%E6%AD%A5/" target="_self">
+          java线程插队守护状态同步
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2024/10/15/java%E7%BA%BF%E7%A8%8B%E6%8F%92%E9%98%9F%E5%AE%88%E6%8A%A4%E7%8A%B6%E6%80%81%E5%90%8C%E6%AD%A5/" target="_self">
+        <div>
+          不要让时间磨平了你的棱角 I enjoy it , so do it.  真不知道毕业后何去何从了，看了看嵌入式。 学无止境啊。先搞懂Java吧 线程插队 1234567891011121314151617181920212223242526272829303132333435package com.hzb.thread;//join线程插队public class threadJoin &#12
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2024-10-15 20:30" pubdate>
+              2024-10-15
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/java/" class="category-chain-item">java</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/java/">#java</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2024/10/14/project14/" target="_self">
+          project14
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2024/10/14/project14/" target="_self">
+        <div>
+          测试的时间还是在project08 里面时间占用问题，用hipprof测的移植部分比重变小了,2025步是40% 可能还有其他的函数占比，hipprof没测出来。 重心1技术技术技术(important） 2.看论文 3.cfd的代码慢慢啃吧（参考） 改成传输一次（把equation合并在一起）us改了flux_US的值，flux_US在xyz和RK中都要用。 xyz 改了flux和Lcon的值。
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2024-10-14 20:00" pubdate>
+              2024-10-14
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E9%A1%B9%E7%9B%AE/" class="category-chain-item">项目</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E9%A1%B9%E7%9B%AE/">#项目</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2024/10/11/project13/" target="_self">
+          project13
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2024/10/11/project13/" target="_self">
+        <div>
+          再测试单独用us一个核函数有没有错误。 夸张，到底是什么错误。 单独用一个us也有错误。 就是us的错误吗，为什么之前测试的时候没有错误。 懂了，之前测试的是us没有中断的错误，但是有误差的错误。 所以误差还是us产生的，我确定 ijk的范围有错误吗，没有 代码也一样，到底是哪的错误呢？ 把下标计算放到if里面呢？经验证，不是这的错误 计算flux_US的的时候，下标之间有联系，不能分开算？ 确实
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2024-10-11 17:00" pubdate>
+              2024-10-11
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E9%A1%B9%E7%9B%AE/" class="category-chain-item">项目</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E9%A1%B9%E7%9B%AE/">#项目</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2024/10/08/project12/" target="_self">
           project12
         </a>
@@ -401,438 +828,11 @@
     </article>
   </div>
 
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2024/09/18/project09/" target="_self">
-          project09
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2024/09/18/project09/" target="_self">
-        <div>
-          problem又跑不了了 没加–gres&#x3D;dcu:1 到底是怎么跑的？ 又要调程序了  32 ,20 ,28 和之前的错误一样，f,s数组的问题。 hip只输出了一次，c输出了两次？ 什么原因让它只循环了一次？ RK。。 跑了一次因为在第一次RK &#x3D; 1 的时候就中断了，没有执行到RK &#x3D; 2 的时候 所以要排查只需要在RK &#x3D; 1 时。 在all_con输
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2024-09-18 20:30" pubdate>
-              2024-09-18
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E9%A1%B9%E7%9B%AE/" class="category-chain-item">项目</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E9%A1%B9%E7%9B%AE/">#项目</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2024/09/16/java%E5%A4%9A%E7%BA%BF%E7%A8%8B02/" target="_self">
-          java多线程02
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2024/09/16/java%E5%A4%9A%E7%BA%BF%E7%A8%8B02/" target="_self">
-        <div>
-          通知线程退出在主线程中控制子线程的变量实现子线程退出 1234567891011121314151617181920212223242526272829303132333435363738package com.hzb.thread;public class threadExit &#123;    public static void main(String[] args) &#123;
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2024-09-16 20:30" pubdate>
-              2024-09-16
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/java/" class="category-chain-item">java</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/java/">#java</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2024/09/15/project08/" target="_self">
-          project08
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2024/09/15/project08/" target="_self">
-        <div>
-          逐个函数测试hipus没问题。 Flux_x  没问题 Flux_yz 没问题 RK 也没问题 成功了？ 跑5025步试试 真没问题了 具体问题不知道，改为fluidone 和 fluidtwo 分开释放gpu变量就可以了。 thread 和 block 数目 环境 5025轮后的误差测时间225轮fortran单线程：971 seconds fortran多线程（开了移植代码部分的openmp）
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2024-09-15 16:30" pubdate>
-              2024-09-15
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E9%A1%B9%E7%9B%AE/" class="category-chain-item">项目</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E9%A1%B9%E7%9B%AE/">#项目</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2024/09/14/project07/" target="_self">
-          project07
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2024/09/14/project07/" target="_self">
-        <div>
-          fortran跑的时间也和之前不一样了，好抽象。快了不少。时间为之前的40%。线程数的问题。  FORTRAN: max_tstep &#x3D; 101   pg 12 threads  15h  max_tstep &#x3D; 101   pg  1 threads    7h 单线程比多线程要快 max_tstep &#x3D; 101   pg  12 threads   15h正常了
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2024-09-14 20:30" pubdate>
-              2024-09-14
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E9%A1%B9%E7%9B%AE/" class="category-chain-item">项目</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E9%A1%B9%E7%9B%AE/">#项目</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2024/09/11/project06/" target="_self">
-          project06
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2024/09/11/project06/" target="_self">
-        <div>
-          设置合适的threadsPerBlock and blocksPerGriddim3 blockPerGrid(256,256,256)    dim3 blockPerGrid(32,32,32)比数组下标大啊，为什么有错误。 256 也有错误？慢了，改什么了吗？ 为什么之前没输出要打印的东西？ 512？更慢 用256，5025 跑一个小时看看，不可能啊，什么都没动啊。 重新开个窗口跑。没用还是
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2024-09-11 13:30" pubdate>
-              2024-09-11
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E9%A1%B9%E7%9B%AE/" class="category-chain-item">项目</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E9%A1%B9%E7%9B%AE/">#项目</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2024/09/10/java%E5%A4%9A%E7%BA%BF%E7%A8%8B01/" target="_self">
-          java多线程01
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2024/09/10/java%E5%A4%9A%E7%BA%BF%E7%A8%8B01/" target="_self">
-        <div>
-          java多线程创建线程的两种方式 继承Thread类主线程和子线程交替执行。  12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849package com.hzb.thread;//java thread//当一个类继承了 Thread 类， 该类就可以当做线程使用publ
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2024-09-10 20:30" pubdate>
-              2024-09-10
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/java/" class="category-chain-item">java</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/java/">#java</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2024/09/09/project05/" target="_self">
-          project05
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2024/09/09/project05/" target="_self">
-        <div>
-          find the error程序运行慢的原因：申请的block数太多了，可能线程等待什么的需要时间。 改完后要比c快很多。 计算误差 225轮测试基本没有误差。  时间：225 轮 hip : 16min      f 走了94轮 快一倍不止 时间：5025轮 差不多三倍 前期优化已经完成，后期优化方向设置合适的block和thread 合并内存访问 bank冲突 shared memory 寄存
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2024-09-09 14:30" pubdate>
-              2024-09-09
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E9%A1%B9%E7%9B%AE/" class="category-chain-item">项目</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E9%A1%B9%E7%9B%AE/">#项目</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
 
 
   <nav aria-label="navigation">
     <span class="pagination" id="pagination">
-      <a class="extend prev" rel="prev" href="/page/2/#board"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/#board">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/#board">4</a><a class="page-number" href="/page/5/#board">5</a><a class="extend next" rel="next" href="/page/4/#board"><i class="iconfont icon-arrowright"></i></a>
+      <a class="extend prev" rel="prev" href="/page/2/#board"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/#board">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/#board">4</a><a class="page-number" href="/page/5/#board">5</a><a class="page-number" href="/page/6/#board">6</a><a class="extend next" rel="next" href="/page/4/#board"><i class="iconfont icon-arrowright"></i></a>
     </span>
   </nav>
 

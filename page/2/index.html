@@ -224,6 +224,433 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2025/04/04/project23/" target="_self">
+          单卡到多卡1
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/04/04/project23/" target="_self">
+        <div>
+          数组改成宏的形式分块测试think:每个卡中传入哪些数据？ halo区在哪交换哪些数据？每次迭代前交换数据，保证每个卡中的数据准备完毕，然后计算。 数据分为传入数据，中间数据，传出数据。 分块：imark[k][j][i] cutface[k][j][i] 这种数组分块传入每一块卡中，属于传入数据，提前传入DCU卡。 cutside[][] 传入数据，每个卡中传入完整的数组 flux_US[][]
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2025-04-04 12:00" pubdate>
+              2025-04-04
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E9%A1%B9%E7%9B%AE/" class="category-chain-item">项目</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E9%A1%B9%E7%9B%AE/">#项目</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2025/04/04/%E5%8D%95%E5%8D%A1%E5%A4%9A%E5%8D%A1openmp%E9%94%81%E9%A1%B5%E9%94%81%E6%A0%B8%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/" target="_self">
+          单卡多卡openmp锁页锁核性能测试
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/04/04/%E5%8D%95%E5%8D%A1%E5%A4%9A%E5%8D%A1openmp%E9%94%81%E9%A1%B5%E9%94%81%E6%A0%B8%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/" target="_self">
+        <div>
+          单卡全部数据（640 * 2 * 640 * 2 * 640）：6.4 s 加锁页：646ms 1&#x2F;4数据：1.6 s 加锁页：163ms 多卡多卡多线程不设置锁页 DCU 0: H2D 传输时间 &#x3D; 4293.507 ms (数据量: 2000.0 MB)DCU 3: H2D 传输时间 &#x3D; 4527.804 ms (数据量: 2000.0 MB)DCU 2: H2D
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2025-04-04 12:00" pubdate>
+              2025-04-04
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E9%A1%B9%E7%9B%AE/" class="category-chain-item">项目</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E9%A1%B9%E7%9B%AE/">#项目</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2025/03/07/project22/" target="_self">
+          project22_分块demo测试
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/03/07/project22/" target="_self">
+        <div>
+          网格有多大呢，按照整个大网格进行划分，按照一个方向划分4块，然后每一块中设置halo区，进行不同卡间的数据交换。要处理的是7点stencil计算 设备间能进行点对点的通信吗？能，demo能通过 迭代是怎么迭代的 验证和什么验证的 拷贝回去的时候halo区的数据拷贝了吗 思路：在z方向上分4块，将要计算的数据分块传输到每一块中，每一块中设置halo区，用于边界点的计算。计算需要用到的一些数组，每一次
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2025-03-07 11:00" pubdate>
+              2025-03-07
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E9%A1%B9%E7%9B%AE/" class="category-chain-item">项目</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E9%A1%B9%E7%9B%AE/">#项目</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2025/02/22/past%20and%20future/" target="_self">
+          past and future
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/02/22/past%20and%20future/" target="_self">
+        <div>
+          past科研从2024年四月接触项目，到现在也快一年了，从最基础的linux使用命令，再到各种性能分析工具，解决了很多bug，有了明显的加速效果，并在此基础上完成了小论文初稿。接下来在此基础上进一步优化。 技术栈java mysql html css javascipt vue maven &gt;…  future合并访存，shared memory ,stencil 优化 ,opmpmp多线程
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2025-02-22 16:40" pubdate>
+              2025-02-22
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E9%9A%8F%E7%AC%94/" class="category-chain-item">随笔</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E9%9A%8F%E7%AC%94/">#随笔</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2024/12/16/%E8%AE%BA%E6%96%87/" target="_self">
+          小论文
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2024/12/16/%E8%AE%BA%E6%96%87/" target="_self">
+        <div>
+          项目背景介绍和工作重点界面湍流模拟仿真软件（Cut-Cell） 可压缩多相流模拟仿真软件 软件功能：模拟三维液滴的变形、破碎 Fortran代码，目前是OpenMP版本，尚未有GPU&#x2F;DCU工作  功能简述：基于笛卡尔背景网格，使用三维切割网格重构-组装生成非结构界面网格，在  ALE框架下采用有限体积法离散和求解水&#x2F;气两相欧拉方程 核心算法：  •守恒性尖锐界面方法，切割网格
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2024-12-16 20:00" pubdate>
+              2024-12-16
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E9%A1%B9%E7%9B%AE/" class="category-chain-item">项目</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E9%A1%B9%E7%9B%AE/">#项目</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2024/12/14/project21_split%E6%88%90%E5%8A%9Fall%E6%94%B9%E4%B8%BA%E6%A0%B8%E5%87%BD%E6%95%B0/" target="_self">
+          project21_split成功all改为核函数
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2024/12/14/project21_split%E6%88%90%E5%8A%9Fall%E6%94%B9%E4%B8%BA%E6%A0%B8%E5%87%BD%E6%95%B0/" target="_self">
+        <div>
+          后续工作1.将all_con_2_prim.F90  all_prim_2_con.F90 两段代码放在GPU上计算 2.做一个函数input output 的表 3.搞明白US Flux_x_FVM依赖关系，才能分块。 4.fluid &#x3D; 1 算完后能不能传回数据。 5.写小论文 实验先将all_con_2_prim放在GPU上面并测试 函数中做的操作： all_con_2_prim将
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2024-12-14 20:00" pubdate>
+              2024-12-14
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E9%A1%B9%E7%9B%AE/" class="category-chain-item">项目</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E9%A1%B9%E7%9B%AE/">#项目</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2024/12/08/project20_split%E6%8E%A2%E7%B4%A2/" target="_self">
+          project20_split探索
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2024/12/08/project20_split%E6%8E%A2%E7%B4%A2/" target="_self">
+        <div>
+          测试核函数的时间 分块策略挣扎摸索尝试 核函数计算和con传输重叠。 如何分块？。。。。。 xyz之间有顺序吗，改变顺序验证正确性。 zyx这个顺序有误差。所以不能调整顺序？ 还有顺序，分块后也要按照这个顺序。 先分块，再重叠。 分块是分成小的网格块，实现通信计算重叠是在分块的基础上将小的网格块放在不同的流中。 怎么识别每个块，halo区域处理，边界处理，一个线程算多少，一个线程块算多少， 分块后
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2024-12-08 20:00" pubdate>
+              2024-12-08
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E9%A1%B9%E7%9B%AE/" class="category-chain-item">项目</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E9%A1%B9%E7%9B%AE/">#项目</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2024/11/26/project19_%E5%BC%82%E6%AD%A5%E4%BC%A0%E8%BE%93/" target="_self">
           project19_异步传输
         </a>
@@ -401,438 +828,11 @@
     </article>
   </div>
 
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2024/11/05/project16(%E9%94%81%E9%A1%B5%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95)/" target="_self">
-          project16(锁页性能测试)
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2024/11/05/project16(%E9%94%81%E9%A1%B5%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95)/" target="_self">
-        <div>
-          为什么要测试找到具体哪个地方影响了性能 测试规格100步 网格大小  不同代码测试通过测试发现单步Memcpy的时间并没有提升多少。 不设置锁页内存 全部设置为锁页内存，gpu快了，影响了cpu的效率 只将con设置为锁页内存，gpu不变,cpu快了 再加上flux flux_US Lcon 没有影响 再加上 den pre vel_uvw 几乎没有影响 可能的原因直接分配锁页内存和分配完再注册的
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2024-11-05 20:00" pubdate>
-              2024-11-05
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E9%A1%B9%E7%9B%AE/" class="category-chain-item">项目</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E9%A1%B9%E7%9B%AE/">#项目</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2024/10/25/project15%EF%BC%88%E9%94%81%E9%A1%B5%E5%86%85%E5%AD%98%E5%88%9D%E5%B0%9D%E8%AF%95%EF%BC%89/" target="_self">
-          project15（锁页内存初尝试）
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2024/10/25/project15%EF%BC%88%E9%94%81%E9%A1%B5%E5%86%85%E5%AD%98%E5%88%9D%E5%B0%9D%E8%AF%95%EF%BC%89/" target="_self">
-        <div>
-          Equation’s time of all timefortran 最初的大网格 单线程，225步（没加输出.plt 的代码）    占比80% 锁页内存1直接分配锁内存有错误，显示分配失败 2采用第二种方法：将已有的内存注册为锁内存 之前：1437s  用了锁业内存后：1473s  还慢了。。。 Memcpy快了一点(10s)，但总体时间慢了（50s），cpu时间增多了(60s) 影响的是cp
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2024-10-25 20:00" pubdate>
-              2024-10-25
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E9%A1%B9%E7%9B%AE/" class="category-chain-item">项目</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E9%A1%B9%E7%9B%AE/">#项目</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2024/10/18/%E4%B8%80%E4%BA%9Bidea/" target="_self">
-          一些idea
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2024/10/18/%E4%B8%80%E4%BA%9Bidea/" target="_self">
-        <div>
-          一些idea，思考才会让人进步 理想中的博客超算也就这些东西，涉及的东西很多很深。 漫谈高性能计算与性能优化：访存 - 知乎 关于毕业和工作我不可能学完所有的东西，时间也不够 。如果超算真的是未来的趋势的话，这无非是最好的选择。 我真的喜欢这个领域吗？成年人还谈什么喜欢。挺喜欢的说实话，坚持下来吧，挺有趣的。 明年今日，静待花开。 1.不想成为什么样的人？ 堕落的人 2.想过什么样的生活？ 充满爱
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2024-10-18 19:30" pubdate>
-              2024-10-18
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E9%9A%8F%E7%AC%94/" class="category-chain-item">随笔</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E6%97%A5%E8%AE%B0/">#日记</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2024/10/16/java%E7%BA%BF%E7%A8%8B%E9%94%81/" target="_self">
-          java线程锁
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2024/10/16/java%E7%BA%BF%E7%A8%8B%E9%94%81/" target="_self">
-        <div>
-          互斥锁就是synchronized   123456789101112131415161718192021222324252627282930class SellTicket03 implements Runnable &#123;private int ticketNum = 100;//让多个线程共享 ticketNumprivate boolean loop = true;//控制 run
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2024-10-16 15:30" pubdate>
-              2024-10-16
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/java/" class="category-chain-item">java</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/java/">#java</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2024/10/15/java%E7%BA%BF%E7%A8%8B%E6%8F%92%E9%98%9F%E5%AE%88%E6%8A%A4%E7%8A%B6%E6%80%81%E5%90%8C%E6%AD%A5/" target="_self">
-          java线程插队守护状态同步
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2024/10/15/java%E7%BA%BF%E7%A8%8B%E6%8F%92%E9%98%9F%E5%AE%88%E6%8A%A4%E7%8A%B6%E6%80%81%E5%90%8C%E6%AD%A5/" target="_self">
-        <div>
-          不要让时间磨平了你的棱角 I enjoy it , so do it.  真不知道毕业后何去何从了，看了看嵌入式。 学无止境啊。先搞懂Java吧 线程插队 1234567891011121314151617181920212223242526272829303132333435package com.hzb.thread;//join线程插队public class threadJoin &#12
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2024-10-15 20:30" pubdate>
-              2024-10-15
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/java/" class="category-chain-item">java</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/java/">#java</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2024/10/14/project14/" target="_self">
-          project14
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2024/10/14/project14/" target="_self">
-        <div>
-          测试的时间还是在project08 里面时间占用问题，用hipprof测的移植部分比重变小了,2025步是40% 可能还有其他的函数占比，hipprof没测出来。 重心1技术技术技术(important） 2.看论文 3.cfd的代码慢慢啃吧（参考） 改成传输一次（把equation合并在一起）us改了flux_US的值，flux_US在xyz和RK中都要用。 xyz 改了flux和Lcon的值。
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2024-10-14 20:00" pubdate>
-              2024-10-14
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E9%A1%B9%E7%9B%AE/" class="category-chain-item">项目</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E9%A1%B9%E7%9B%AE/">#项目</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2024/10/11/project13/" target="_self">
-          project13
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2024/10/11/project13/" target="_self">
-        <div>
-          再测试单独用us一个核函数有没有错误。 夸张，到底是什么错误。 单独用一个us也有错误。 就是us的错误吗，为什么之前测试的时候没有错误。 懂了，之前测试的是us没有中断的错误，但是有误差的错误。 所以误差还是us产生的，我确定 ijk的范围有错误吗，没有 代码也一样，到底是哪的错误呢？ 把下标计算放到if里面呢？经验证，不是这的错误 计算flux_US的的时候，下标之间有联系，不能分开算？ 确实
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2024-10-11 17:00" pubdate>
-              2024-10-11
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E9%A1%B9%E7%9B%AE/" class="category-chain-item">项目</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E9%A1%B9%E7%9B%AE/">#项目</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
 
 
   <nav aria-label="navigation">
     <span class="pagination" id="pagination">
-      <a class="extend prev" rel="prev" href="/"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/#board">3</a><a class="page-number" href="/page/4/#board">4</a><a class="page-number" href="/page/5/#board">5</a><a class="extend next" rel="next" href="/page/3/#board"><i class="iconfont icon-arrowright"></i></a>
+      <a class="extend prev" rel="prev" href="/"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/#board">3</a><a class="page-number" href="/page/4/#board">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/#board">6</a><a class="extend next" rel="next" href="/page/3/#board"><i class="iconfont icon-arrowright"></i></a>
     </span>
   </nav>
 

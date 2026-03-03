@@ -1,0 +1,919 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="hzbing">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="cudaSM在一个 SM 中，多组 warp 看起来像是“同时执行”的，但实际上它们是通过硬件的多路快速切换（SIMT warp scheduler）实现的伪并行。一个 warp 的指令在某一周期被执行，下一周期可能换另一个 warp 执行。 例如，在Nvidia H100上，每个SM最多可以处理32个线程块、64个warp（即2048个线程）和每个块1024个线程。 这些都是上限，不能超过上限。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="cuda知识和GEMM等算子优化">
+<meta property="og:url" content="http://example.com/2026/03/03/cuda/index.html">
+<meta property="og:site_name" content="一拳超人">
+<meta property="og:description" content="cudaSM在一个 SM 中，多组 warp 看起来像是“同时执行”的，但实际上它们是通过硬件的多路快速切换（SIMT warp scheduler）实现的伪并行。一个 warp 的指令在某一周期被执行，下一周期可能换另一个 warp 执行。 例如，在Nvidia H100上，每个SM最多可以处理32个线程块、64个warp（即2048个线程）和每个块1024个线程。 这些都是上限，不能超过上限。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/img_convert/2570ac41726ec0a2a8e4ac564c551dd7.png">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/img_convert/300182780b31d156e3742af097916b90.png">
+<meta property="og:image" content="http://example.com/images/1764166901992.png">
+<meta property="og:image" content="http://example.com/images/1764166906876.png">
+<meta property="og:image" content="http://example.com/images/1764167028928.png">
+<meta property="og:image" content="http://example.com/images/1769762961297.png">
+<meta property="og:image" content="http://example.com/images/1769763278436.png">
+<meta property="og:image" content="http://example.com/images/1769763285094.png">
+<meta property="og:image" content="http://example.com/images/1769851797301.png">
+<meta property="og:image" content="http://example.com/images/1769851802429.png">
+<meta property="og:image" content="http://example.com/images/1769851992860.png">
+<meta property="og:image" content="http://example.com/images/1770965251587.png">
+<meta property="og:image" content="http://example.com/images/1770966938999.png">
+<meta property="og:image" content="http://example.com/images/1771048076151.png">
+<meta property="og:image" content="http://example.com/images/1771054974357.png">
+<meta property="og:image" content="http://example.com/images/1771055002027.png">
+<meta property="article:published_time" content="2026-03-03T09:20:00.000Z">
+<meta property="article:modified_time" content="2026-03-03T09:20:51.402Z">
+<meta property="article:author" content="hzbing">
+<meta property="article:tag" content="学习">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://i-blog.csdnimg.cn/img_convert/2570ac41726ec0a2a8e4ac564c551dd7.png">
+  
+  
+  
+  <title>cuda知识和GEMM等算子优化 - 一拳超人</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.2.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>一拳超人</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/cs.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="cuda知识和GEMM等算子优化"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-03-03 17:20" pubdate>
+          2026年3月3日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          7.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          61 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">cuda知识和GEMM等算子优化</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="cuda"><a href="#cuda" class="headerlink" title="cuda"></a>cuda</h1><h2 id="SM"><a href="#SM" class="headerlink" title="SM"></a>SM</h2><p>在一个 SM 中，多组 warp 看起来像是“同时执行”的，但实际上它们是通过硬件的多路快速切换（SIMT warp scheduler）实现的伪并行。一个 warp 的指令在某一周期被执行，下一周期可能换另一个 warp 执行。</p>
+<p>例如，在Nvidia H100上，每个SM最多可以处理<br>32个线程块、<br>64个warp（即2048个线程）和<br>每个块1024个线程。</p>
+<p>这些都是上限，不能超过上限。比如</p>
+<p>eg1.如果我们在申请资源时使用32作为线程块的大小，并总共需要申请使用2048个线程，那么需要64个这样的线程块。然而，每个SM一次只能处理32个块，即使一个SM完全可以运行2048个线程，但由于线程块的限制，每个SM只能运行32*32个线程，因此它需要两个SM来运行，且每个只能占用50%的GPU资源。</p>
+<p>eg2.同样，每个SM有65536个寄存器。要同时执行2048个线程，每个线程最多可以有32个寄存器（65536&#x2F;2048 &#x3D; 32）。如果在我们程序中一个内核中每个线程需要64个寄存器，那么每个SM上就只能运行1024个线程，同样会导致50%的占用率。</p>
+<p>SM的组成</p>
+<p><img src="https://i-blog.csdnimg.cn/img_convert/2570ac41726ec0a2a8e4ac564c551dd7.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>一个SM中可以并行多个线程。通过线程束调度器进行软件层面控制，通过分配单元将线程分配到具体的计算单元中。计算单元分为int、FP32、FP64以及Tensor Core。<br>对应的功能结构如下：</p>
+<p><img src="https://i-blog.csdnimg.cn/img_convert/300182780b31d156e3742af097916b90.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="cuda-core"><a href="#cuda-core" class="headerlink" title="cuda core"></a>cuda core</h2><p>warp 是 32 线程组成的执行单元<br>这些线程执行 <strong>同一条指令</strong><br>这条指令被送入 CUDA cores<br>多个 CUDA cores 并行执行这条指令的运算部分<br>SM 每周期调度几个 warp 取决于调度器数量，不是 core 数</p>
+<p>也就是说多个cuda core同时执行一个warp。</p>
+<h2 id="warp调度器"><a href="#warp调度器" class="headerlink" title="warp调度器"></a>warp调度器</h2><p>Warp 调度器负责在 SM 内决定“下一周期由哪个 warp 执行指令”。<br>它的作用类似 CPU 中的“线程调度器”，但快得多 —— 每个时钟周期都可能切换一次。</p>
+<p>主要功能：</p>
+<p>1.选择一个“就绪”的 warp 执行指令</p>
+<p>SM 中可能驻留几十个 warp（例如 H100 上最多 64 个 Warp）。<br> 但：</p>
+<ul>
+<li>有的 warp 在等待内存（可能需要几百周期）</li>
+<li>有的 warp 在等待 barrier</li>
+<li>有的 warp 等前一条指令完成</li>
+</ul>
+<p>调度器负责从 <strong>所有“就绪状态”的 warp</strong> 中挑一个来执行。</p>
+<p>2.隐藏内存&#x2F;指令延迟</p>
+<p>典型例子：</p>
+<p>warp A 访问全局内存 → 需要等待几百个周期<br> warp B 准备好了 → 调度器选择 warp B 执行<br> warp C 准备好了 → 下一周期执行 warp C</p>
+<p>这样 GPU <strong>永远不会闲着</strong>。</p>
+<p>这是 GPU 高吞吐的秘密。</p>
+<blockquote>
+<p>GPU 的上下文切换是硬件级别的，无任何开销，比 CPU 跨线程切换快 10^5 倍。</p>
+</blockquote>
+<p>3.分配执行单元（INT&#x2F;FP&#x2F;Tensor&#x2F;Load-Store等）</p>
+<p>调度器要分析 warp 的指令类型：</p>
+<ul>
+<li>FP32 指令 → FP32 ALU</li>
+<li>INT 指令 → INT ALU</li>
+<li>访存指令 → Load&#x2F;Store 单元</li>
+<li>Tensor Core 指令 → Tensor Core</li>
+</ul>
+<p>如果不同 warp 的指令使用不同执行单元，那么它们可以 <strong>同一周期内并行运行</strong>。</p>
+<p>例如（一个周期内多个 warp 并行）：</p>
+<ul>
+<li>warp #12 → FP32 单元</li>
+<li>warp #8 → INT 单元</li>
+<li>warp #3 → Load&#x2F;Store 单元</li>
+<li>warp #5 → Tensor Core</li>
+</ul>
+<h2 id="cuda矩阵乘法优化"><a href="#cuda矩阵乘法优化" class="headerlink" title="cuda矩阵乘法优化"></a>cuda矩阵乘法优化</h2><p>逐步优化</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> BLOCK_SIZE 16</span><br><span class="hljs-comment">// CUDA 核函数：执行矩阵乘法</span><br><span class="hljs-function">__global__ <span class="hljs-type">void</span> <span class="hljs-title">gpu_matrix_mult</span><span class="hljs-params">(<span class="hljs-type">int</span> *a, <span class="hljs-type">int</span> *b, <span class="hljs-type">int</span> *c, <span class="hljs-type">int</span> m, <span class="hljs-type">int</span> n, <span class="hljs-type">int</span> k)</span> </span>&#123;<br>   <span class="hljs-type">int</span> row = blockIdx.y * blockDim.y + threadIdx.y; <span class="hljs-comment">// 当前线程的行索引</span><br>   <span class="hljs-type">int</span> col = blockIdx.x * blockDim.x + threadIdx.x; <span class="hljs-comment">// 当前线程的列索引</span><br>   <span class="hljs-type">int</span> sum = <span class="hljs-number">0</span>;<br>   <span class="hljs-keyword">if</span> (row &lt; m &amp;&amp; col &lt; k) &#123;<br>       <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; n; i++) &#123;<br>           sum += a[row * n + i] * b[i * k + col];<br>       &#125;<br>       c[row * k + col] = sum;<br>   &#125;<br>&#125;<br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span> </span>&#123;<br>   <span class="hljs-type">int</span> m = <span class="hljs-number">4</span>, n = <span class="hljs-number">4</span>, k = <span class="hljs-number">4</span>;<br>   <span class="hljs-type">int</span> h_a[m * n], h_b[n * k], h_c[m * k];<br>   <span class="hljs-comment">// 初始化矩阵 A 和 B</span><br>   <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; m * n; i++) h_a[i] = <span class="hljs-number">1</span>;<br>   <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; n * k; i++) h_b[i] = <span class="hljs-number">2</span>;<br>   <span class="hljs-type">int</span> *d_a, *d_b, *d_c;<br>   <span class="hljs-built_in">cudaMalloc</span>((<span class="hljs-type">void</span> **)&amp;d_a, <span class="hljs-built_in">sizeof</span>(<span class="hljs-type">int</span>) * m * n);<br>   <span class="hljs-built_in">cudaMalloc</span>((<span class="hljs-type">void</span> **)&amp;d_b, <span class="hljs-built_in">sizeof</span>(<span class="hljs-type">int</span>) * n * k);<br>   <span class="hljs-built_in">cudaMalloc</span>((<span class="hljs-type">void</span> **)&amp;d_c, <span class="hljs-built_in">sizeof</span>(<span class="hljs-type">int</span>) * m * k);<br>   <span class="hljs-built_in">cudaMemcpy</span>(d_a, h_a, <span class="hljs-built_in">sizeof</span>(<span class="hljs-type">int</span>) * m * n, cudaMemcpyHostToDevice);<br>   <span class="hljs-built_in">cudaMemcpy</span>(d_b, h_b, <span class="hljs-built_in">sizeof</span>(<span class="hljs-type">int</span>) * n * k, cudaMemcpyHostToDevice);<br>   <span class="hljs-function">dim3 <span class="hljs-title">dimBlock</span><span class="hljs-params">(BLOCK_SIZE, BLOCK_SIZE)</span></span>;<br>   <span class="hljs-function">dim3 <span class="hljs-title">dimGrid</span><span class="hljs-params">((k + BLOCK_SIZE - <span class="hljs-number">1</span>) / BLOCK_SIZE, (m + BLOCK_SIZE - <span class="hljs-number">1</span>) / BLOCK_SIZE)</span></span>;<br>   gpu_matrix_mult&lt;&lt;&lt;dimGrid, dimBlock&gt;&gt;&gt;(d_a, d_b, d_c, m, n, k);<br>   <span class="hljs-built_in">cudaMemcpy</span>(h_c, d_c, <span class="hljs-built_in">sizeof</span>(<span class="hljs-type">int</span>) * m * k, cudaMemcpyDeviceToHost);<br><br>   <span class="hljs-built_in">cudaFree</span>(d_a);<br>   <span class="hljs-built_in">cudaFree</span>(d_b);<br>   <span class="hljs-built_in">cudaFree</span>(d_c);<br>   <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="SRAM-DRAM-GRAM-HBM"><a href="#SRAM-DRAM-GRAM-HBM" class="headerlink" title="SRAM DRAM GRAM HBM"></a>SRAM DRAM GRAM HBM</h2><p>缓存（Cache）使用的是SRAM（Static Random Access Memory，静态随机存储器）,使用原理晶体管，不需要充放电，所以是静态的。</p>
+<p>内存条，DRAM（Dynamic Random Access Memory，动态随机存储器），原理电容动态充放电，1 个晶体管 + 1 个电容 。</p>
+<p>GRAM（Graphics RAM，图形随机存储器），显存，原理是3D 堆叠型 DRAM，具体实现有GDDR5 &#x2F; GDDR6</p>
+<p>，HBM（High Bandwidth Memory）</p>
+<p>DDR（Double Data Rate，双倍数据速率），DDR 本身不是存储类型，而是 DRAM 的一种实现规范。DDR 是 DRAM 的传输协议和接口标准。</p>
+<p>固态磁盘(SSD)的介质：浮栅晶体管</p>
+<p>机械硬盘 (HDD)的介质：磁性材料			</p>
+<h2 id="算力的两个指标"><a href="#算力的两个指标" class="headerlink" title="算力的两个指标"></a>算力的两个指标</h2><p>算力衡量主要与<code>运算速度</code>和<code>精度</code>这两个指标有关。</p>
+<p><img src="/../images/1764166901992.png" srcset="/img/loading.gif" lazyload alt="1764166901992"></p>
+<p>运算速度体现“快不快”，关注时间维度。</p>
+<p><img src="/../images/1764166906876.png" srcset="/img/loading.gif" lazyload alt="1764166906876"></p>
+<ul>
+<li>高精度 → 结果更准确，但计算量更大</li>
+<li>低精度 → 速度更快，但误差增加</li>
+</ul>
+<p>在不同场景的选择：</p>
+<ul>
+<li>科学计算 → FP64</li>
+<li>深度学习训练 → FP32 &#x2F; BF16</li>
+<li>AI推理 → FP16 &#x2F; INT8</li>
+</ul>
+<h2 id="带宽，吞吐量，传输速率"><a href="#带宽，吞吐量，传输速率" class="headerlink" title="带宽，吞吐量，传输速率"></a>带宽，吞吐量，传输速率</h2><p><img src="/../images/1764167028928.png" srcset="/img/loading.gif" lazyload alt="1764167028928"></p>
+<p>带宽Bandwidth是链路或系统在理想状态下允许的最大数据传输能力</p>
+<p>吞吐量Throughput表示系统在一段时间内真正完成的数据量。</p>
+<p>传输速率是某一时刻真实的数据传输速度。</p>
+<p>Latency延时是发出请求到收到第一个数据所需的时间。</p>
+<h2 id="MPS"><a href="#MPS" class="headerlink" title="MPS"></a>MPS</h2><h3 id="1MPS相关背景"><a href="#1MPS相关背景" class="headerlink" title="1MPS相关背景"></a>1MPS相关背景</h3><h4 id="1-1CUDA计算流程"><a href="#1-1CUDA计算流程" class="headerlink" title="1.1CUDA计算流程"></a>1.1CUDA计算流程</h4><p>CUDA 是 NVIDIA 推出的通用并行计算平台与编程模型。它利用 GPU 中大量的并行计算核心，能够比 CPU 更高效地处理复杂的计算任务。一个 CUDA 程序执行时，首先会通过CUDA API或者运行时API来创建一个CUDA上下文，这个上下文包含了GPU内存、Kernel堆栈、执行状态等所有的硬件资源和软件状态。</p>
+<p>所有CUDA任务都必须在CUDA流中执行，流是一系列命令（如内核启动、内存拷贝）的顺序队列，不同流中的任务可以并发执行，从而实现粗粒度并行。</p>
+<p>在硬件层面，每个CUDA流会映射到GPU上的一个或多个硬件工作队列。支持Hyper-Q技术的GPU拥有多个硬件队列，允许来自<strong>同一CUDA上下文</strong>的多个流真正并行执行，提升了 GPU 资源利用率。</p>
+<p>然而，来自<strong>不同 CUDA 上下文</strong>的任务只能通过GPU的时间切片调度器轮流执行，无法真正并发。当一个上下文的任务无法占满 GPU 时，就会导致计算资源闲置。这样就引出了MPS。</p>
+<p>此外，CUDA 驱动会在后台创建内部线程，用于处理来自操作系统的异步通知，并执行用户定义的回调函数，确保 CPU 与 GPU 之间的协作能高效、异步地进行。</p>
+<h4 id="1-2-GPU计算模式（Compute-Modes）"><a href="#1-2-GPU计算模式（Compute-Modes）" class="headerlink" title="1.2 GPU计算模式（Compute Modes）"></a>1.2 GPU计算模式（Compute Modes）</h4><p>可通过nvidia-smi命令设置三种GPU计算模式：</p>
+<ul>
+<li><strong>DEFAULT：</strong>多个进程可以同时使用GPU，每个进程的单独线程可以同时向GPU提交任务。</li>
+<li><strong>EXCLUSIVE_PROCESS：</strong>GPU一次只分配给一个进程，单个进程线程可以并发地向GPU提交工作。</li>
+<li><strong>PROHIBITED：</strong>计算类型的应用无法使用GPU。</li>
+</ul>
+<p>当使用MPS时，需要将计算模式修改为EXCLUSIVE_PROCESS，这样保证同一时间只有一个MPS server正在使用该GPU，多个client端连接到这一个server端来使用该GPU，提高了可靠性。</p>
+<h4 id="1-3-CUDA-context"><a href="#1-3-CUDA-context" class="headerlink" title="1.3 CUDA context"></a>1.3 CUDA context</h4><p>类似于CPU进程上下文，表示进程在GPU上执行操作所需要和关联的<strong>软件状态、资源和环境</strong>。每个CUDA上下文包含：</p>
+<ul>
+<li>从CPU上统一分配的GPU上的内存空间，即Global Memory（cudaMalloc&#x2F;cudaMallocManaged）</li>
+<li>kernel函数中定义和分配的堆栈空间，即GPU Local memory</li>
+<li>CUDA streams和events对象等</li>
+<li>文件句柄和代码</li>
+</ul>
+<p>不同进程有自己的CUDA上下文，每个CUDA上下文有自己的地址空间，相互直接不能直接访问。</p>
+<h4 id="1-4-GPU-Hyper-Q特性"><a href="#1-4-GPU-Hyper-Q特性" class="headerlink" title="1.4 GPU Hyper-Q特性"></a>1.4 GPU Hyper-Q特性</h4><p>Hyper-Q（Hyper-Queue）是NVIDIA在 Kepler架构（如 Tesla K80）中引入的GPU硬件特性，主要用于解决早期GPU单硬件任务队列的瓶颈问题。在Hyper-Q之前，CPU和GPU之间只有一个硬件任务队列，多个CPU线程或MPI进程向同一个GPU提交任务时会相互阻塞。</p>
+<p>Hyper-Q提供32个独立的硬件工作队列，让多个CPU线程或者进程同时向一个GPU提交任务，实现CUDA kernels的并行执行，从而大幅提升GPU利用率和并发性能。可通过环境变量CUDA_DEVICE_MAX_CONNECTIONS&#x3D;32（默认8）来设置。</p>
+<p><img src="/images/1769762961297.png" srcset="/img/loading.gif" lazyload alt="1769762961297"></p>
+<p><strong>Hyper-Q的核心价值：</strong></p>
+<ul>
+<li>减少CPU的闲置：多个CPU核心可同时提交任务至GPU。</li>
+<li>提升GPU利用率：GPU同时运行多个进程，提高利用率。</li>
+<li>MPS的基础：Hyper-Q为多进程共享GPU提供了硬件支持</li>
+</ul>
+<h3 id="2-Multi-Process-Service详细介绍"><a href="#2-Multi-Process-Service详细介绍" class="headerlink" title="2 Multi-Process Service详细介绍"></a>2 Multi-Process Service详细介绍</h3><p>简单来说就是把多个进程当成一个进程来处理，多个进程退化为线程共享这个大进程的资源，避免cuda 上下文切换。同时利用Hyper-Q实现线程的并行。</p>
+<h4 id="2-1-什么是MPS"><a href="#2-1-什么是MPS" class="headerlink" title="2.1 什么是MPS"></a>2.1 什么是MPS</h4><p>MPS即Multi-Process Service是一组可替换的、二进制兼容的CUDA API实现。MPS利用GPU上的Hyper-Q功能将多进程CUDA程序协调以透明并行运行。</p>
+<p>Hyper-Q是GPU的一个硬件特性，允许多个CPU线程或者进程<strong>同时</strong>加载任务到一个GPU上，实现CUDA kernel在同一个GPU上并行处理。当单个应用程序进程未充分利用GPU的计算能力时，MPS将能有效提高GPU利用率。</p>
+<p><strong>MPS有以下几个组件：</strong></p>
+<ul>
+<li><strong>Control Daemon Process：</strong>控制守护进程负责启动和停止server，以及协调client和server间的连接。</li>
+<li><strong>Client Runtime：</strong>MPS客户端运行时内置于CUDA驱动程序库中，可以由任何CUDA应用程序透明地使用。</li>
+<li><strong>Server Process：</strong>Server端是客户端与GPU的共享连接，提供客户端之间的并行性。</li>
+</ul>
+<h4 id="2-2-MPS的三大核心优势"><a href="#2-2-MPS的三大核心优势" class="headerlink" title="2.2 MPS的三大核心优势"></a><strong>2.2 MPS的三大核心优势</strong></h4><p><strong>1）提高GPU利用率</strong></p>
+<p>如果没有MPS的场景下，运行在GPU上的单个进程并不能充分利用这个GPU的所有计算单元SM，所以导致资源的闲置和利用率不高的问题，而MPS允许来自不同进程的kerne在同一个GPU上重叠运行，所以实现更好的资源利用率并缩短了任务执行的时间，大大提高了计算效率。</p>
+<p><strong>2）减少GPU上下文切换</strong></p>
+<p>类似于CPU上下文切换的概念，GPU也有上下文的概念，GPU上运行进程的切换，也伴随着进程在GPU上的上下文切换，引入MPS情况下，连接到同一个MPS server的client<strong>共享</strong>一组调度资源，从而消除了GPU在这些client之间调度时的GPU上下文切换开销。</p>
+<p><strong>3）减少GPU上下文存储空间</strong></p>
+<p>没有MPS的情况下，GPU上的每个CUDA应用进程都会在GPU上分配单独的存储和调度资源，而使用MPS之后，只需要为MPS server分配一份存储和调度资源，其他所有连接到MPS server的client共享这个一份资源，所以大大减少了进程在GPU上的上下文资源占用。</p>
+<h4 id="2-3-MPS架构"><a href="#2-3-MPS架构" class="headerlink" title="2.3 MPS架构"></a>2.3 MPS架构</h4><p>通常情况下，不同CUDA上下文进程或者任务只能通过GPU时间片调度器轮流执行，无法真正并行，当一个任务无法占满GPU的SM时，就会导致资源的闲置，而GPU整体的使用率很高但是真正计算核心的使用率却不高。</p>
+<p>如下图，使用MPI在OS内启动了两个进程A（蓝色）和进程B（暗红色），每个进程都有自己的CUDA 上下文，虽然两个进程同时并发调度到一个GPU，但是每个MPI进程在整个GPU上被分配了一个串行调度的时间片，即实际两个进程没有真正的并行。</p>
+<p><img src="/images/1769763278436.png" srcset="/img/loading.gif" lazyload alt="1769763278436"></p>
+<p>当使用MPS时，MPS server将会创建一个CUDA上下文，其他MPS client端的上下文将映射到server的Context，这样client切换不再需要GPU上 CUDA 上下文的切换，大大减少了上下文切换开销。各个客户端client提交的任务将由Server Process协调以确保同时调度，MPS client和MPS server之间的通信完全封装在CUDA API背后的CUDA驱动程序中，因此，MPS对MPI程序是透明的。</p>
+<p>MPS控制守护进程负责MPS服务器的启动和关闭，控制守护进程最多只允许一个MPS服务器处于活动状态。</p>
+<p>如下图，GPU开启MPS，系统启动了两个进程A（蓝色）和B（暗红色），MPS server进程会将两个进程的CUDA上下文映射到server的CUDA上下文中，两个进程并行执行，GPU上不存在上下文的切换，且从时间片调度上看，两个进程真正实现了并行执行。</p>
+<p><img src="/../images/1769763285094.png" srcset="/img/loading.gif" lazyload alt="1769763285094"></p>
+<h2 id="Warp-divergence"><a href="#Warp-divergence" class="headerlink" title="Warp divergence"></a>Warp divergence</h2><p><img src="/../images/1769851797301.png" srcset="/img/loading.gif" lazyload alt="1769851797301"></p>
+<p><img src="/../images/1769851802429.png" srcset="/img/loading.gif" lazyload alt="1769851802429"></p>
+<p><img src="/../images/1769851992860.png" srcset="/img/loading.gif" lazyload alt="1769851992860"></p>
+<p>volta之后，每一个thread有自己的程序计数器PC和S（Stack）</p>
+<h2 id="Shuffle"><a href="#Shuffle" class="headerlink" title="Shuffle"></a>Shuffle</h2><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/669957986">(9 封私信 &#x2F; 80 条消息) 【CUDA编程】束内洗牌函数（Warp Shuffle Functions） - 知乎</a></p>
+<p>允许warp内线程寄存器之间进行数据交换。</p>
+<h2 id="NUMA"><a href="#NUMA" class="headerlink" title="NUMA"></a>NUMA</h2><p>NUMA（Non-Uniform Memory Access，非一致性内存访问） </p>
+<p>NUMA是多核&#x2F;多CPU系统中的一种内存架构。 它将系统的内存划分为多个节点（NUMA Node），每 </p>
+<p>个节点绑定一部分 <strong>CPU 和本地内存</strong>。 </p>
+<p>特点是：CPU 访问本地内存速度快，而访问其他节点的远程内存会更慢。 因此，<strong>线程与数据的本地性</strong> 对性能非常关键。</p>
+<h3 id="1-NUMA-绑定-numactl-：粗粒度的资源控制"><a href="#1-NUMA-绑定-numactl-：粗粒度的资源控制" class="headerlink" title="1. NUMA 绑定 (numactl)：粗粒度的资源控制"></a>1. NUMA 绑定 (<code>numactl</code>)：粗粒度的资源控制</h3><p><code>numactl</code> 是一个 Linux 命令行工具，用于在<strong>进程启动时</strong>强制指定它能使用的硬件资源范围。</p>
+<ul>
+<li><strong>工作原理</strong>：<ul>
+<li><strong>绑定 CPU</strong>：你可以指定程序只能在某个 NUMA 节点的特定核心上运行。</li>
+<li><strong>绑定内存</strong>：你可以指定程序只能在某个 NUMA 节点的本地内存中申请空间。</li>
+</ul>
+</li>
+<li><strong>策略示例</strong>：<ul>
+<li><code>--cpunodebind=0</code>：强制程序在节点 0 的 CPU 上运行。</li>
+<li><code>--membind=0</code>：强制程序只从节点 0 分配内存。</li>
+<li><code>--interleave=all</code>：将内存交叉分配到所有节点上，适合那些访存极其巨大、单个节点内存带宽不足的程序。</li>
+</ul>
+</li>
+<li><strong>HPC 意义</strong>：在你的集群环境中，如果一个 MPI 进程被分配到了节点 1，但它却跑去读节点 0 的内存，性能会因为跨节点通信而大幅下降。使用 <code>numactl</code> 可以从外部强制实现“本地化”。</li>
+</ul>
+<hr>
+<h3 id="2-线程亲和性-Thread-Affinity-：防止核心“漂移”"><a href="#2-线程亲和性-Thread-Affinity-：防止核心“漂移”" class="headerlink" title="2. 线程亲和性 (Thread Affinity)：防止核心“漂移”"></a>2. 线程亲和性 (Thread Affinity)：防止核心“漂移”</h3><p>线程亲和性（又称 CPU 绑定）是在<strong>线程级别</strong>进行的细粒度控制，通常由操作系统调度器或 OpenMP 库管理。</p>
+<ul>
+<li><strong>工作原理</strong>：将特定的线程（Thread）锁定在特定的逻辑核心（Core）上，禁止操作系统为了“负载均衡”将线程从一个核心移动到另一个核心。</li>
+<li><strong>为什么要绑定</strong>：<ul>
+<li><strong>保护缓存（Cache）</strong>：如果线程 A 在核心 1 运行，它的数据会填满核心 1 的 L1&#x2F;L2 缓存。如果它被移动到核心 2，这些缓存就全失效了（Cache Miss），必须重新从内存读取。</li>
+<li><strong>保持 NUMA 本地性</strong>：防止线程“漂移”到远离其数据所在内存节点的 CPU 上。</li>
+</ul>
+</li>
+<li><strong>实现方式</strong>：在 OpenMP 中，你可能常用环境变量 <code>OMP_PROC_BIND=true</code> 和 <code>OMP_PLACES=cores</code> 来实现这一点。</li>
+</ul>
+<hr>
+<h3 id="3-First-touch-策略：内存页的延迟分配机制"><a href="#3-First-touch-策略：内存页的延迟分配机制" class="headerlink" title="3. First-touch 策略：内存页的延迟分配机制"></a>3. First-touch 策略：内存页的延迟分配机制</h3><p>这是面试中最常考、也最容易在实际编程中掉坑的物理特性。</p>
+<ul>
+<li><strong>工作原理</strong>：在 Linux 系统中，当你调用 <code>malloc()</code> 申请 10GB 内存时，系统并没有真正分配物理内存页。真正的物理内存是在 CPU <strong>第一次访问（通常是写入）</strong>该内存地址时，才会被分配到该 <strong>CPU 所在的 NUMA 节点</strong>上。</li>
+<li><strong>典型的“陷阱”</strong>：<ul>
+<li><strong>错误做法</strong>：在主线程（Rank 0）里用一个单线程循环初始化所有网格数据，然后开启多线程进行并行计算。结果：所有数据都会被挤在主线程所在的那个 NUMA 节点内存里，导致其他节点的线程在计算时全都在进行远程访问，造成严重的带宽瓶颈。</li>
+<li><strong>优化做法</strong>：使用<strong>并行初始化</strong>。在计算开始前，先开多线程对数据进行初值化。这样，每个线程负责的那部分数据就会根据“First-touch”原则，自动分配到该线程运行的本地 NUMA 节点上。</li>
+</ul>
+</li>
+</ul>
+<h2 id="GEMM"><a href="#GEMM" class="headerlink" title="GEMM"></a>GEMM</h2><p><a target="_blank" rel="noopener" href="https://linn-ylz.com/Computer-Science/CUDA/CUDA-SGEMM-optimization-notes/">（●´3｀●）やれやれだぜ</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/YangLinzhuo/cuda-sgemm-optimization/tree/main">https://github.com/YangLinzhuo/cuda-sgemm-optimization/tree/main</a></p>
+<h3 id="1-CPU"><a href="#1-CPU" class="headerlink" title="1.CPU"></a>1.CPU</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> OFFSET(row, col, stride) ((row) * (stride) + (col))</span><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">cpu_naive_matmul</span><span class="hljs-params">(<span class="hljs-type">int</span> M, <span class="hljs-type">int</span> N, <span class="hljs-type">int</span> K, <span class="hljs-type">float</span> alpha, <span class="hljs-type">float</span> *A, <span class="hljs-type">float</span> *B, <span class="hljs-type">float</span> beta, <span class="hljs-type">float</span> *C)</span> </span>&#123;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> m = <span class="hljs-number">0</span>; m &lt; M; ++m) &#123;<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> n = <span class="hljs-number">0</span>; n &lt; N; ++n) &#123;<br>            <span class="hljs-type">float</span> val = <span class="hljs-number">0.</span>;<br>            <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> k = <span class="hljs-number">0</span>; k &lt; K; ++k) &#123;<br>                val += A[<span class="hljs-built_in">OFFSET</span>(m, k, K)] * B[<span class="hljs-built_in">OFFSET</span>(k, n, N)];<br>            &#125;<br>            C[<span class="hljs-built_in">OFFSET</span>(m, n, N)] = alpha * val + beta * C[<span class="hljs-built_in">OFFSET</span>(m, n, N)];<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-NAIVE"><a href="#2-NAIVE" class="headerlink" title="2.NAIVE"></a>2.NAIVE</h3><p>在数学和图形学中，我们习惯于这样定义：</p>
+<ul>
+<li><strong>X 轴</strong>：水平方向（左右），对应宽度（Width）。</li>
+<li><strong>Y 轴</strong>：垂直方向（上下），对应高度（Height）。</li>
+</ul>
+<p>对于一个矩阵 $M \times N$（$M$ 行，$N$ 列）：</p>
+<ul>
+<li><strong>列（Column）</strong> 是在水平方向分布的 $\rightarrow$ 对应 <strong>X</strong>。</li>
+<li><strong>行（Row）</strong> 是在垂直方向分布的 $\rightarrow$ 对应 <strong>Y</strong>。</li>
+</ul>
+<p>所以：</p>
+<ul>
+<li><code>blockIdx.x * blockDim.x + threadIdx.x</code> 计算的是水平位移，即第几<strong>列</strong>。</li>
+<li><code>blockIdx.y * blockDim.y + threadIdx.y</code> 计算的是垂直位移，即第几<strong>行</strong>。</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-function">__global__ <span class="hljs-type">void</span> <span class="hljs-title">sgemm_naive_kernel</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">float</span> *__restrict__ A,</span></span><br><span class="hljs-params"><span class="hljs-function">                                   <span class="hljs-type">const</span> <span class="hljs-type">float</span> *__restrict__ B,</span></span><br><span class="hljs-params"><span class="hljs-function">                                   <span class="hljs-type">float</span> *__restrict__ C,</span></span><br><span class="hljs-params"><span class="hljs-function">                                   <span class="hljs-type">int</span> M, <span class="hljs-type">int</span> N, <span class="hljs-type">int</span> K,</span></span><br><span class="hljs-params"><span class="hljs-function">                                   <span class="hljs-type">float</span> alpha, <span class="hljs-type">float</span> beta)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-type">int</span> col = blockIdx.x * blockDim.x + threadIdx.x;<br>    <span class="hljs-type">int</span> row = blockIdx.y * blockDim.y + threadIdx.y;<br><br>    <span class="hljs-keyword">if</span> (row &lt; M &amp;&amp; col &lt; N)<br>    &#123;<br>        <span class="hljs-type">float</span> val = <span class="hljs-number">0.0f</span>;<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> k = <span class="hljs-number">0</span>; k &lt; K; ++k)<br>        &#123;<br>            val += A[<span class="hljs-built_in">OFFSET</span>(row, k, K)] * B[<span class="hljs-built_in">OFFSET</span>(k, col, N)];<br>        &#125;<br>        C[<span class="hljs-built_in">OFFSET</span>(row, col, N)] = alpha * val + beta * C[<span class="hljs-built_in">OFFSET</span>(row, col, N)];<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-Shared-Memory"><a href="#3-Shared-Memory" class="headerlink" title="3.Shared Memory"></a>3.Shared Memory</h3><p><img src="/images/1770965251587.png" srcset="/img/loading.gif" lazyload alt="1770965251587"></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-keyword">template</span> &lt;<span class="hljs-type">const</span> <span class="hljs-type">int</span> BM, <span class="hljs-type">const</span> <span class="hljs-type">int</span> BN, <span class="hljs-type">const</span> <span class="hljs-type">int</span> BK&gt;<br><span class="hljs-function">__global__ <span class="hljs-type">void</span> <span class="hljs-title">shared_memory</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">float</span> *__restrict__ A,</span></span><br><span class="hljs-params"><span class="hljs-function">                              <span class="hljs-type">const</span> <span class="hljs-type">float</span> *__restrict__ B,</span></span><br><span class="hljs-params"><span class="hljs-function">                              <span class="hljs-type">float</span> *__restrict__ C,</span></span><br><span class="hljs-params"><span class="hljs-function">                              <span class="hljs-type">int</span> M, <span class="hljs-type">int</span> N, <span class="hljs-type">int</span> K,</span></span><br><span class="hljs-params"><span class="hljs-function">                              <span class="hljs-type">float</span> alpha, <span class="hljs-type">float</span> beta)</span></span><br><span class="hljs-function"></span>&#123;<br>    __shared__ <span class="hljs-type">float</span> As[BM][BK];<br>    __shared__ <span class="hljs-type">float</span> Bs[BK][BN];<br>    <span class="hljs-type">float</span> val = <span class="hljs-number">0.0</span>;<br>    <span class="hljs-comment">//一个block里面，一块shared memory，循环累加这些计算结果。</span><br>    <span class="hljs-comment">//一次计算的网格规模是 BM*BN，但是只是计算的一小部分，需要循环累加才是最终的结果。</span><br>    <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i&lt;<span class="hljs-built_in">CEIL_DIV</span>(N,BK);i++)&#123;<br>        <span class="hljs-comment">//1.copy data from global mem to shared mem</span><br>        <span class="hljs-type">int</span> A_row = blockIdx.y * BM + threadIdx.y;<br>        <span class="hljs-type">int</span> A_col = i * BK + threadIdx.x;<br>        <span class="hljs-keyword">if</span>(A_row &lt; M &amp;&amp; A_col &lt; K)&#123;<br>            As[threadIdx.y][threadIdx.x] = A[<span class="hljs-built_in">OFFSET</span>(A_row,A_col,K)];<br>        &#125;<span class="hljs-keyword">else</span>&#123;<br>            As[threadIdx.y][threadIdx.x] = <span class="hljs-number">0.0</span>;<br>        &#125;<br>        <span class="hljs-type">int</span> B_row = i * BK + threadIdx.y;<br>        <span class="hljs-type">int</span> B_col = blockIdx.x * BN + threadIdx.x;<br>        <span class="hljs-keyword">if</span>(B_row &lt; K &amp;&amp; B_col &lt; N)&#123;<br>            Bs[threadIdx.y][threadIdx.x] = B[<span class="hljs-built_in">OFFSET</span>(B_row,B_col,N)];<br>        &#125;<span class="hljs-keyword">else</span>&#123;<br>            Bs[threadIdx.y][threadIdx.x] = <span class="hljs-number">0.0</span>;<br>        &#125;<br>        __syncthreads();<br>        <span class="hljs-comment">//2.compute</span><br>        <span class="hljs-meta">#<span class="hljs-keyword">pragma</span> unroll</span><br>        <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> k = <span class="hljs-number">0</span>;k &lt; BK;k++)&#123;<br>            val += As[threadIdx.y][k] * Bs[k][threadIdx.x];<br>        &#125;<br>        __syncthreads();<br>    &#125;<br>    <span class="hljs-comment">//将数据传回global memory</span><br>    <span class="hljs-type">int</span> C_col = blockIdx.y * BN + threadIdx.x;<br>    <span class="hljs-type">int</span> C_row = blockIdx.x * BM + threadIdx.y;<br>    <span class="hljs-keyword">if</span>(C_row &lt; K &amp;&amp; C_col &lt; N)&#123;<br>        C[<span class="hljs-built_in">OFFSET</span>(C_row,C_col,N)] = alpha * val + beta * C[<span class="hljs-built_in">OFFSET</span>(C_row,C_col,N)];<br>    &#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="4-tile-1d"><a href="#4-tile-1d" class="headerlink" title="4.tile_1d"></a>4.tile_1d</h3><p><img src="/images/1770966938999.png" srcset="/img/loading.gif" lazyload alt="1770966938999"></p>
+<p>这里我们先尝试提高每个线程的负载， 让每个线程多计算一些元素的输出。这里我们让每个线程计算矩阵 C 一列中连续几个元素的值。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-keyword">template</span> &lt;<span class="hljs-type">const</span> <span class="hljs-type">int</span> BM, <span class="hljs-type">const</span> <span class="hljs-type">int</span> BN, <span class="hljs-type">const</span> <span class="hljs-type">int</span> BK, <span class="hljs-type">const</span> <span class="hljs-type">int</span> TM&gt;<br><span class="hljs-function">__global__ <span class="hljs-type">void</span> <span class="hljs-title">tile_1d</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">float</span> *__restrict__ A,</span></span><br><span class="hljs-params"><span class="hljs-function">                        <span class="hljs-type">const</span> <span class="hljs-type">float</span> *__restrict__ B,</span></span><br><span class="hljs-params"><span class="hljs-function">                        <span class="hljs-type">float</span> *__restrict__ C,</span></span><br><span class="hljs-params"><span class="hljs-function">                        <span class="hljs-type">int</span> M, <span class="hljs-type">int</span> N, <span class="hljs-type">int</span> K,</span></span><br><span class="hljs-params"><span class="hljs-function">                        <span class="hljs-type">float</span> alpha, <span class="hljs-type">float</span> beta)</span></span><br><span class="hljs-function"></span>&#123;<br>    __shared__ <span class="hljs-type">float</span> As[BM][BK];<br>    __shared__ <span class="hljs-type">float</span> Bs[BK][BN];<br>    <span class="hljs-type">float</span> val[TM] = &#123;<span class="hljs-number">0.0</span>&#125;;<br>    <span class="hljs-type">int</span> num_shared_block = <span class="hljs-built_in">CEIL_DIV</span>(K, BK);<br>    A = &amp;A[<span class="hljs-built_in">OFFSET</span>(blockIdx.y * BM, <span class="hljs-number">0</span>, K)];<br>    B = &amp;B[<span class="hljs-built_in">OFFSET</span>(<span class="hljs-number">0</span>, blockIdx.x * BN, N)];<br>    C = &amp;C[<span class="hljs-built_in">OFFSET</span>(blockIdx.y * BM, blockIdx.x * BN, K)];<br><br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; num_shared_block; i++)<br>    &#123;<br>        <span class="hljs-comment">// copy data from global mem to shared mem</span><br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> m = <span class="hljs-number">0</span>; m &lt; TM; ++m)<br>        &#123;<br>            <span class="hljs-type">int</span> A_row = threadIdx.y * TM + m;<br>            <span class="hljs-type">int</span> A_col = threadIdx.x;<br>            <span class="hljs-keyword">if</span> ((blockIdx.y * BM + A_row) &lt; M &amp;&amp; (i * BK + A_col) &lt; K)<br>            &#123;<br><br>                As[A_row][A_col] = A[<span class="hljs-built_in">OFFSET</span>(A_row, A_col, K)];<br>            &#125;<br>            <span class="hljs-keyword">else</span><br>            &#123;<br>                As[A_row][A_col] = <span class="hljs-number">0.0</span>;<br>            &#125;<br>        &#125;<br><br>        <span class="hljs-type">int</span> B_row = threadIdx.y;<br>        <span class="hljs-type">int</span> B_col = threadIdx.x;<br>        <span class="hljs-keyword">if</span> ((i * BK + B_row) &lt; K &amp;&amp; (blockIdx.x * BN + B_col) &lt; N)<br>        &#123;<br>            Bs[B_row][B_col] = B[<span class="hljs-built_in">OFFSET</span>(B_row, B_col, N)];<br>        &#125;<br>        <span class="hljs-keyword">else</span><br>        &#123;<br>            Bs[B_row][B_col] = <span class="hljs-number">0.0</span>;<br>        &#125;<br>        __syncthreads();<br>        <span class="hljs-comment">// compute</span><br>        A += BK;<br>        B += BK * N;<br>        <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> k = <span class="hljs-number">0</span>;k&lt;BK;k++)&#123;<br>            <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> m = <span class="hljs-number">0</span>;m&lt;TM;m++)&#123;<br>                <span class="hljs-type">int</span> A_row = threadIdx.y * TM + m;<br>                <span class="hljs-type">int</span> B_col = threadIdx.x;<br>                val[m] += As[A_row][k] * Bs[k][B_col];<br>            &#125;<br>        &#125;<br>        __syncthreads();<br>    &#125;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> m = <span class="hljs-number">0</span>; m &lt; TM; m++)<br>    &#123;<br>        <span class="hljs-type">int</span> C_row = threadIdx.y * TM + m;<br>        <span class="hljs-type">int</span> C_col = threadIdx.x;<br>        <span class="hljs-keyword">if</span> ((blockIdx.y * BM + C_row) &lt; M &amp;&amp; (blockIdx.x * BN + C_col) &lt; N)<br>        &#123;<br>            C[<span class="hljs-built_in">OFFSET</span>(C_row, C_col, N)] = alpha * val[m] + beta * C[<span class="hljs-built_in">OFFSET</span>(C_row, C_col, N)];<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="5-tile-2d"><a href="#5-tile-2d" class="headerlink" title="5.tile_2d"></a>5.tile_2d</h3><p>扩展：一个线程去算一小块数据，B也要读取一行数据。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-keyword">template</span> &lt;<span class="hljs-type">const</span> <span class="hljs-type">int</span> BM, <span class="hljs-type">const</span> <span class="hljs-type">int</span> BN, <span class="hljs-type">const</span> <span class="hljs-type">int</span> BK, <span class="hljs-type">const</span> <span class="hljs-type">int</span> TM, <span class="hljs-type">const</span> <span class="hljs-type">int</span> TN&gt;<br><span class="hljs-function">__global__ <span class="hljs-type">void</span> <span class="hljs-title">tile_2d</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">float</span> *__restrict__ A,</span></span><br><span class="hljs-params"><span class="hljs-function">                        <span class="hljs-type">const</span> <span class="hljs-type">float</span> *__restrict__ B,</span></span><br><span class="hljs-params"><span class="hljs-function">                        <span class="hljs-type">float</span> *__restrict__ C,</span></span><br><span class="hljs-params"><span class="hljs-function">                        <span class="hljs-type">int</span> M, <span class="hljs-type">int</span> N, <span class="hljs-type">int</span> K,</span></span><br><span class="hljs-params"><span class="hljs-function">                        <span class="hljs-type">float</span> alpha, <span class="hljs-type">float</span> beta)</span></span><br><span class="hljs-function"></span>&#123;<br>    __shared__ <span class="hljs-type">float</span> As[BM][BK];<br>    __shared__ <span class="hljs-type">float</span> Bs[BK][BN];<br>    <span class="hljs-type">float</span> val[TM][TN] = &#123;<span class="hljs-number">0.</span>&#125;;<br>    <span class="hljs-type">int</span> num_shared_block = <span class="hljs-built_in">CEIL_DIV</span>(K, BK); <span class="hljs-comment">// or CEIL_DIV(K, BN);</span><br>    A = &amp;A[<span class="hljs-built_in">OFFSET</span>(blockIdx.y * BM, <span class="hljs-number">0</span>, K)];<br>    B = &amp;B[<span class="hljs-built_in">OFFSET</span>(<span class="hljs-number">0</span>, blockIdx.x * BN, N)];<br>    C = &amp;C[<span class="hljs-built_in">OFFSET</span>(blockIdx.y * BM, blockIdx.x * BN, N)];<br><br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; num_shared_block; ++i)<br>    &#123;<br>        <span class="hljs-comment">// Copy data from global memory to shared memory</span><br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> m = <span class="hljs-number">0</span>; m &lt; TM; ++m)<br>        &#123;<br>            <span class="hljs-type">int</span> A_row = threadIdx.y * TM + m;<br>            <span class="hljs-type">int</span> A_col = threadIdx.x;<br>            <span class="hljs-keyword">if</span> ((blockIdx.y * BM + A_row) &lt; M &amp;&amp; (i * BK + A_col) &lt; K)<br>            &#123;<br>                As[A_row][A_col] = A[<span class="hljs-built_in">OFFSET</span>(A_row, A_col, K)];<br>            &#125;<br>            <span class="hljs-keyword">else</span><br>            &#123;<br>                As[A_row][A_col] = <span class="hljs-number">0.</span>;<br>            &#125;<br>        &#125;<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> n = <span class="hljs-number">0</span>; n &lt; TN; ++n)<br>        &#123;<br>            <span class="hljs-type">int</span> B_row = threadIdx.y;<br>            <span class="hljs-type">int</span> B_col = threadIdx.x * TN + n;<br>            <span class="hljs-keyword">if</span> ((i * BK + B_row) &lt; K &amp;&amp; (blockIdx.x * BN + B_col) &lt; N)<br>            &#123;<br>                Bs[B_row][B_col] = B[<span class="hljs-built_in">OFFSET</span>(B_row, B_col, N)];<br>            &#125;<br>            <span class="hljs-keyword">else</span><br>            &#123;<br>                Bs[B_row][B_col] = <span class="hljs-number">0.</span>;<br>            &#125;<br>        &#125;<br>        __syncthreads();<br>        A += BK;<br>        B += BK * N;<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> k = <span class="hljs-number">0</span>; k &lt; BK; ++k)<br>        &#123;<br>            <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> m = <span class="hljs-number">0</span>; m &lt; TM; ++m)<br>            &#123;<br>                <span class="hljs-type">int</span> A_row = threadIdx.y * TM + m;<br>                <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> n = <span class="hljs-number">0</span>; n &lt; TN; ++n)<br>                &#123;<br>                    <span class="hljs-type">int</span> B_col = threadIdx.x * TN + n;<br>                    val[m][n] += As[A_row][k] * Bs[k][B_col];<br>                &#125;<br>            &#125;<br>        &#125;<br>        __syncthreads();<br>    &#125;<br><br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> m = <span class="hljs-number">0</span>; m &lt; TM; ++m)<br>    &#123;<br>        <span class="hljs-type">int</span> C_row = threadIdx.y * TM + m;<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> n = <span class="hljs-number">0</span>; n &lt; TN; ++n)<br>        &#123;<br>            <span class="hljs-type">int</span> C_col = threadIdx.x * TN + n;<br>            <span class="hljs-keyword">if</span> ((blockIdx.y * BM + C_row) &lt; M &amp;&amp; (blockIdx.x * BN + C_col) &lt; N)<br>            &#123;<br>                C[<span class="hljs-built_in">OFFSET</span>(C_row, C_col, N)] = alpha * val[m][n] + beta * C[<span class="hljs-built_in">OFFSET</span>(C_row, C_col, N)];<br>            &#125;<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="6-To-Register"><a href="#6-To-Register" class="headerlink" title="6.To Register"></a>6.To Register</h3><p>可以看到，对于  <code>As</code>  中的内容重复访问了 TN 次；对于  <code>Bs</code>  中的内容，在外层的  <code>m</code>  迭代中，也会重复访问 TM 次。因此，我们可以使用寄存器将这部分内容缓存下来，进一步提升访存。</p>
+<p><code>A_row</code> 取决于 <code>threadIdx.y</code> 和 <code>m</code>。</p>
+<p><code>k</code> 取决于最外层循环。</p>
+<p><strong>在 n 从 0 到 TN-1 的整个过程中，A_row 和 k 都没有变！</strong></p>
+<p>所以有复用的数据，Bs同理。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> k = <span class="hljs-number">0</span>; k &lt; BK; ++k)<br>        &#123;<br>            <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> m = <span class="hljs-number">0</span>; m &lt; TM; ++m)<br>            &#123;<br>                <span class="hljs-type">int</span> A_row = threadIdx.y * TM + m;<br>                <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> n = <span class="hljs-number">0</span>; n &lt; TN; ++n)<br>                &#123;<br>                    <span class="hljs-type">int</span> B_col = threadIdx.x * TN + n;<br>                    val[m][n] += As[A_row][k] * Bs[k][B_col];<br>                &#125;<br>            &#125;<br>        &#125;<br><span class="hljs-comment">//--------------&gt;</span><br><span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> k = <span class="hljs-number">0</span>; k &lt; BK; ++k) &#123;<br>            <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> m = <span class="hljs-number">0</span>; m &lt; TM; ++m) &#123;<br>                <span class="hljs-type">int</span> A_row = threadIdx.y * TM + m;<br>                As_cache[m] = As[A_row][k];<br>            &#125;<br>            <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> n = <span class="hljs-number">0</span>; n &lt; TN; ++n) &#123;<br>                <span class="hljs-type">int</span> B_col = threadIdx.x * TN + n;<br>                Bs_cache[n] = Bs[k][B_col];<br>            &#125;<br>            <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> m = <span class="hljs-number">0</span>; m &lt; TM; ++m) &#123;<br>                <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> n = <span class="hljs-number">0</span>; n &lt; TN; ++n) &#123;<br>                    val[m][n] += As_cache[m] * Bs_cache[n];<br>                &#125;<br>            &#125;<br>        &#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="7-float4"><a href="#7-float4" class="headerlink" title="7.float4"></a>7.float4</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> FETCH_FLOAT4(pointer) (*((float4*)&amp;(pointer)))</span><br><span class="hljs-comment">//这些索引是为了计算线程id在As和Bs中对应的行数和列数。</span><br><span class="hljs-type">const</span> <span class="hljs-type">int</span> block_row_thread = BN/TN;<span class="hljs-comment">//一个block中行的线程数</span><br>   <span class="hljs-type">const</span> <span class="hljs-type">int</span> block_col_thread = BM/TM;<span class="hljs-comment">//一个block中列的线程数</span><br>   <span class="hljs-type">const</span> <span class="hljs-type">int</span> thread_num = block_row_thread * block_col_thread;<span class="hljs-comment">//一个block总的线程数</span><br>   <span class="hljs-type">const</span> <span class="hljs-type">int</span> load_a_cache_time = (BK*BM) / thread_num /<span class="hljs-number">4</span>;<span class="hljs-comment">//所有的线程加载As数据所需要的次数</span><br>   <span class="hljs-type">const</span> <span class="hljs-type">int</span> load_b_cache_time = (BK*BN) / thread_num /<span class="hljs-number">4</span>;<span class="hljs-comment">//所有的线程加载Bs数据所需要的次数</span><br>   <span class="hljs-comment">//其实，我们不妨把  As  看成一个矩阵元素是  float4  的矩阵，</span><br>   <span class="hljs-comment">//那么原来的  As  就相当于一个大小为 BM * (BK/4) 大小的新矩阵  As_new 。</span><br>   <span class="hljs-comment">//那么，我们可以根据线程的  id  来计算其对应放置的地址偏移，我们不妨把线程看成一维的，这样更方便计算。</span><br>   <span class="hljs-type">const</span> <span class="hljs-type">int</span> thread_id = threadIdx.y * blockDim.x + threadIdx.x;<span class="hljs-comment">//一维线程id</span><br>   <span class="hljs-type">int</span> a_tile_row = thread_id / (BK/<span class="hljs-number">4</span>);<span class="hljs-comment">//线程id对应的行数</span><br>   <span class="hljs-type">int</span> a_tile_col = thread_id % (BK/<span class="hljs-number">4</span>) * <span class="hljs-number">4</span>;<span class="hljs-comment">//线程id对应的列数</span><br>   <span class="hljs-type">int</span> b_tile_row = thread_id / (BN/<span class="hljs-number">4</span>);<br>   <span class="hljs-type">int</span> b_tile_col = thread_id % (BN/<span class="hljs-number">4</span>) * <span class="hljs-number">4</span>;<br>   <span class="hljs-type">int</span> a_tile_stride = BM / load_a_cache_time; <span class="hljs-comment">//每次行的偏移，每次指的是每全部线程读取一次As中的数据。每一个线程在完成一次 float4 搬运后，垂直向下“跳跃”的距离。</span><br>   <span class="hljs-type">int</span> b_tile_stride = BK / load_b_cache_time; <br><br></code></pre></td></tr></table></figure>
+
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-comment">//golbal&gt;shared mem</span><br><span class="hljs-comment">//As</span><br>        <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> m = <span class="hljs-number">0</span>;m&lt;BM;m+=a_tile_stride)&#123;<br>            <span class="hljs-built_in">FETCH_FLOAT4</span>(As[a_tile_row + m][a_tile_col])=<span class="hljs-built_in">FETCH_FLOAT4</span>(A[<span class="hljs-built_in">OFFSET</span>(a_tile_row+m,a_tile_col,K)]);<br>        &#125;<br>        <span class="hljs-comment">//Bs</span><br>        <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> k = <span class="hljs-number">0</span>;k&lt;BK;k += b_tile_stride)&#123;<br>            <span class="hljs-built_in">FETCH_FLOAT4</span>(Bs[b_tile_row + k][b_tile_col]) =<span class="hljs-built_in">FETCH_FLOAT4</span>(B[<span class="hljs-built_in">OFFSET</span>(b_tile_row + k,b_tile_col,N)]);<br>        &#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-comment">//计算逻辑,使用float4，目前只有Bs float4，因为As需要的数据是列的数据，是不连续的，需要转置。</span><br><span class="hljs-meta">#<span class="hljs-keyword">pragma</span> unroll</span><br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> k = <span class="hljs-number">0</span>; k &lt; BK; ++k) &#123;<br>            <span class="hljs-meta">#<span class="hljs-keyword">pragma</span> unroll</span><br>            <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> m = <span class="hljs-number">0</span>; m &lt; TM; m+=<span class="hljs-number">1</span>) &#123;<br>                <span class="hljs-type">int</span> A_row = threadIdx.y * TM + m;<br>                <span class="hljs-comment">//FETCH_FLOAT4(As_cache[m]) = FETCH_FLOAT4(As[A_row][k]);</span><br>                As_cache[m] = As[A_row][k];<br>            &#125;<br>            <span class="hljs-meta">#<span class="hljs-keyword">pragma</span> unroll</span><br>            <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> n = <span class="hljs-number">0</span>; n &lt; TN; n+=<span class="hljs-number">4</span>) &#123;<br>                <span class="hljs-type">int</span> B_col = threadIdx.x * TN + n;<br>                <span class="hljs-built_in">FETCH_FLOAT4</span>(Bs_cache[n]) = <span class="hljs-built_in">FETCH_FLOAT4</span>(Bs[k][B_col]);<br>                <span class="hljs-comment">//Bs_cache[n] = Bs[k][B_col];</span><br>            &#125;<br>            <span class="hljs-meta">#<span class="hljs-keyword">pragma</span> unroll</span><br>            <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> m = <span class="hljs-number">0</span>; m &lt; TM; ++m) &#123;<br>                <span class="hljs-meta">#<span class="hljs-keyword">pragma</span> unroll</span><br>                <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> n = <span class="hljs-number">0</span>; n &lt; TN; ++n) &#123;<br>                    val[m][n] += As_cache[m] * Bs_cache[n];<br>                &#125;<br>            &#125;<br>        &#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-comment">//传回也使用float4</span><br><span class="hljs-type">float</span> tmp[<span class="hljs-number">4</span>] = &#123;<span class="hljs-number">0.0</span>&#125;;<br>    <span class="hljs-meta">#<span class="hljs-keyword">pragma</span> unroll</span><br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> m = <span class="hljs-number">0</span>; m &lt; TM; ++m)<br>    &#123;<br>        <span class="hljs-type">int</span> C_row = threadIdx.y * TM + m;<br>        <span class="hljs-meta">#<span class="hljs-keyword">pragma</span> unroll</span><br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> n = <span class="hljs-number">0</span>; n &lt; TN; n+=<span class="hljs-number">4</span>)<br>        &#123;<br>            <span class="hljs-type">int</span> C_col = threadIdx.x * TN + n;<br>            <span class="hljs-built_in">FETCH_FLOAT4</span>(tmp) = <span class="hljs-built_in">FETCH_FLOAT4</span>(C[<span class="hljs-built_in">OFFSET</span>(C_row, C_col, N)]);<br>            tmp[<span class="hljs-number">0</span>] = alpha * val[m][n] + beta * tmp[<span class="hljs-number">0</span>];<br>            tmp[<span class="hljs-number">1</span>] = alpha * val[m][n+<span class="hljs-number">1</span>] + beta * tmp[<span class="hljs-number">1</span>];<br>            tmp[<span class="hljs-number">2</span>] = alpha * val[m][n+<span class="hljs-number">2</span>] + beta * tmp[<span class="hljs-number">2</span>];<br>            tmp[<span class="hljs-number">3</span>] = alpha * val[m][n+<span class="hljs-number">3</span>] + beta * tmp[<span class="hljs-number">3</span>];<br>            <span class="hljs-built_in">FETCH_FLOAT4</span>(C[<span class="hljs-built_in">OFFSET</span>(C_row, C_col, N)]) = <span class="hljs-built_in">FETCH_FLOAT4</span>(tmp);<br>        &#125;<br>    &#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="8-float4-transpose"><a href="#8-float4-transpose" class="headerlink" title="8.float4_transpose"></a>8.float4_transpose</h3><p><img src="/images/1771048076151.png" srcset="/img/loading.gif" lazyload alt="1771048076151"></p>
+<p>As需要转置，要不然没有办法读取连续的4个float。源As如上。</p>
+<p>这个过程想象成：<strong>“横着拿，竖着放</strong></p>
+<p>从global中拿数据横着放入寄存器中，然后竖着放入shared memory中</p>
+<p>这样从shared mem中竖着取数据的时候也是连续的，相当于给As做了转置。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-comment">//As转置</span><br><span class="hljs-type">float</span> load_a_cache[<span class="hljs-number">4</span> * load_a_cache_time];<br><span class="hljs-meta">#<span class="hljs-keyword">pragma</span> unroll</span><br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; num_shared_block; ++i) &#123;<br>		<span class="hljs-meta">#<span class="hljs-keyword">pragma</span> unroll</span><br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> m = <span class="hljs-number">0</span>; m &lt; BM; m += a_tile_stride) &#123;<br>            <span class="hljs-type">int</span> cache_idx = m / a_tile_stride * <span class="hljs-number">4</span>;<br>            <span class="hljs-built_in">FETCH_FLOAT4</span>(load_a_cache[cache_idx]) =<br>                    <span class="hljs-built_in">FETCH_FLOAT4</span>(A[<span class="hljs-built_in">OFFSET</span>(a_tile_row + m, a_tile_col, K)]);<br>            <span class="hljs-comment">// Use load_a_cache for load 4 float at a time</span><br>            <span class="hljs-comment">// As is saved as transpose matrix</span><br>            As[a_tile_col][a_tile_row + m] = load_a_cache[cache_idx];<br>            As[a_tile_col + <span class="hljs-number">1</span>][a_tile_row + m] = load_a_cache[cache_idx + <span class="hljs-number">1</span>];<br>            As[a_tile_col + <span class="hljs-number">2</span>][a_tile_row + m] = load_a_cache[cache_idx + <span class="hljs-number">2</span>];<br>            As[a_tile_col + <span class="hljs-number">3</span>][a_tile_row + m] = load_a_cache[cache_idx + <span class="hljs-number">3</span>];<br>        &#125;<br>        <br>        <span class="hljs-meta">#<span class="hljs-keyword">pragma</span> unroll</span><br>            <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> m = <span class="hljs-number">0</span>; m &lt; TM; m += <span class="hljs-number">4</span>) &#123;<br>                <span class="hljs-type">int</span> A_row = threadIdx.y * TM + m;<br>                <span class="hljs-built_in">FETCH_FLOAT4</span>(As_cache[m]) = <span class="hljs-built_in">FETCH_FLOAT4</span>(As[k][A_row]);<br>            &#125;<br>    &#125;<br></code></pre></td></tr></table></figure>
+
+<p>这里开辟了一个寄存器缓存 load_a_cache ，作为转置时的临时存放空间，其大小为 load_a_cache_time * 4 。</p>
+<p>不要忘了，核函数是针对单个线程编写的逻辑。</p>
+<p> load_a_cache_time为所有的线程加载As数据所需要的次数，也就是一个线程需要读取的次数， load_a_cache_time * 4则表示一个线程读取的数据。</p>
+<p>注意下面为每次读取单独开辟了空间存储，而不是复用之前的空间。我在测试的时候发现，如果复用之前的空间，会因为数据写入地址的依赖导致计算结果出错。  </p>
+<p><strong>1.cache_idx (寄存器缓存索引)：</strong></p>
+<p><strong>意义</strong>：由于一个线程可能要跑好几趟，它需要一个局部数组（寄存器）来存放每一趟搬回来的 <code>float4</code> 数据。</p>
+<p><strong>计算逻辑</strong>：<code>m / a_tile_stride</code> 计算出这是该线程跑的<strong>第几趟</strong>（0, 1, 2…）。因为每趟搬 4 个 <code>float</code>，所以乘以 4 得到在 <code>load_a_cache</code> 数组中的起始位置。</p>
+<p><strong>2.这个循环在做什么？</strong></p>
+<p>这个循环实现的是 <strong>“网格跨步循环” (Grid-stride Loop)</strong> 的变体，专门用于数据搬运。</p>
+<p>逻辑流程：</p>
+<ol>
+<li>**第一趟 (m &#x3D; 0)**：<ul>
+<li>线程根据自己的 <code>threadIdx</code> 找到初始行。</li>
+<li><code>cache_idx = 0</code>。</li>
+<li>执行 <code>FETCH_FLOAT4</code>，把 4 个数存进 <code>load_a_cache[0, 1, 2, 3]</code>。</li>
+</ul>
+</li>
+<li>**第二趟 (m &#x3D; a_tile_stride)**：<ul>
+<li>线程向下跳跃 <code>a_tile_stride</code> 行。</li>
+<li><code>cache_idx = 4</code> (1 * 4)。</li>
+<li>执行 <code>FETCH_FLOAT4</code>，把下 4 个数存进 <code>load_a_cache[4, 5, 6, 7]</code>。</li>
+</ul>
+</li>
+<li><strong>依此类推</strong>：直到把分配给该线程的所有行搬完。</li>
+</ol>
+<h3 id="9-double-buffer"><a href="#9-double-buffer" class="headerlink" title="9.double buffer"></a>9.double buffer</h3><p>在上文的代码中，我们在循环中使用了两次 __syncthreads() 来做线程同步，以防止不同线程之间的数据不一致。其中第一个 __syncthreads() 是为了保证写后读（Read-After-Write）的顺序性，这个是无法避免的。  关键在于后一个同步，它是为了防止部分线程还未读取 As 或者 Bs 中的内容，保证读后写（Write-After-Read）的顺序性。它本质上是因为我们在不同迭代中使用了同一块空间来保存我们所需的数据，这两次迭代中的数据之间并不存在真正的依赖关系。如果我们将其写入到其他地址上，那么就不需要使用同步了。  这种方式称为数据预取，又可以称为双缓存（Double Buffering）。我们可以申请两倍所需的空间，用于在迭代中交替使用，从而省去后一次线程同步的操作。  </p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c++">__shared__ <span class="hljs-type">float</span> As[<span class="hljs-number">2</span>][BK][BM];    <span class="hljs-comment">// transpose shared A for avoid bank conflict, for double buffering  </span><br>__shared__ <span class="hljs-type">float</span> Bs[<span class="hljs-number">2</span>][BK][BN];    <span class="hljs-comment">// for double buffering</span><br><br><span class="hljs-type">float</span> As_cache[<span class="hljs-number">2</span>][TM] = &#123;<span class="hljs-number">0.</span>&#125;;  <span class="hljs-comment">// double buffering  </span><br><span class="hljs-type">float</span> Bs_cache[<span class="hljs-number">2</span>][TN] = &#123;<span class="hljs-number">0.</span>&#125;;  <span class="hljs-comment">// double buffering</span><br></code></pre></td></tr></table></figure>
+
+<p>在迭代中，我们可以使用一个变量来控制写入的地址：</p>
+<figure class="highlight prolog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><code class="hljs prolog">int write_idx = <span class="hljs-number">0</span>;<br><br>for (int k = <span class="hljs-number">0</span>; k &lt; <span class="hljs-symbol">K</span>; k += <span class="hljs-symbol">BK</span>) &#123;  <br>    for (int i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-symbol">BM</span>; i += a_tile_stride) &#123;  <br>        int cache_idx = i / a_tile_stride * <span class="hljs-number">4</span>;  <br>        <span class="hljs-symbol">FETCH_FLOAT4</span>(load_a_cache[cache_idx]) =  <br>                <span class="hljs-symbol">FETCH_FLOAT4</span>(<span class="hljs-symbol">A</span>[<span class="hljs-symbol">OFFSET</span>(a_tile_row + i, a_tile_col, <span class="hljs-symbol">K</span>)]);  <br>        // <span class="hljs-symbol">Use</span> load_a_cache for load <span class="hljs-number">4</span> float at a time  <br>        // <span class="hljs-symbol">As</span> is saved as transpose matrix  <br>        <span class="hljs-symbol">As</span>[write_idx][a_tile_col][a_tile_row + i] = load_a_cache[cache_idx];  <br>        <span class="hljs-symbol">As</span>[write_idx][a_tile_col + <span class="hljs-number">1</span>][a_tile_row + i] = load_a_cache[cache_idx + <span class="hljs-number">1</span>];  <br>        <span class="hljs-symbol">As</span>[write_idx][a_tile_col + <span class="hljs-number">2</span>][a_tile_row + i] = load_a_cache[cache_idx + <span class="hljs-number">2</span>];  <br>        <span class="hljs-symbol">As</span>[write_idx][a_tile_col + <span class="hljs-number">3</span>][a_tile_row + i] = load_a_cache[cache_idx + <span class="hljs-number">3</span>];  <br>    &#125;<br>    ...<br>    <br>    for (int i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-symbol">BK</span>; i += b_tile_stride) &#123;  <br>    <span class="hljs-symbol">FETCH_FLOAT4</span>(<span class="hljs-symbol">Bs</span>[write_idx][b_tile_row + i][b_tile_col]) =  <br>            <span class="hljs-symbol">FETCH_FLOAT4</span>(<span class="hljs-symbol">B</span>[<span class="hljs-symbol">OFFSET</span>(b_tile_row + i, b_tile_col, <span class="hljs-symbol">N</span>)]);  <br>    &#125;  <br>    <span class="hljs-symbol">__syncthreads</span>();<br>    <br>    ...<br>    <br>    for (int i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-symbol">BK</span>; ++i) &#123;  <br>        for (int m = <span class="hljs-number">0</span>; m &lt; <span class="hljs-symbol">TM</span>; m += <span class="hljs-number">4</span>) &#123;  <br>            <span class="hljs-symbol">FETCH_FLOAT4</span>(<span class="hljs-symbol">As_cache</span>[write_idx][m]) = <span class="hljs-symbol">FETCH_FLOAT4</span>(<span class="hljs-symbol">As</span>[write_idx][i][ty + m]);  <br>        &#125;  <br>        for (int n = <span class="hljs-number">0</span>; n &lt; <span class="hljs-symbol">TN</span>; n += <span class="hljs-number">4</span>) &#123;  <br>            <span class="hljs-symbol">FETCH_FLOAT4</span>(<span class="hljs-symbol">Bs_cache</span>[write_idx][n]) = <span class="hljs-symbol">FETCH_FLOAT4</span>(<span class="hljs-symbol">Bs</span>[write_idx][i][tx + n]);  <br>        &#125;  <br>        for (int m = <span class="hljs-number">0</span>; m &lt; <span class="hljs-symbol">TM</span>; ++m) &#123;  <br>            for (int n = <span class="hljs-number">0</span>; n &lt; <span class="hljs-symbol">TN</span>; ++n) &#123;  <br>                accum[m][n] += <span class="hljs-symbol">As_cache</span>[write_idx][m] * <span class="hljs-symbol">Bs_cache</span>[write_idx][n];  <br>            &#125;  <br>        &#125;  <br>    &#125;  <br>    <br>    ...<br>    <br>    write_idx ^= <span class="hljs-number">1</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>这里并没有真正并行同时计算和读取下一块的数据，没有并行起来。现在还是串行的。</p>
+<p><strong>这里还不明确，后续再看吧。</strong></p>
+<h3 id="10-solve-bank-conflict"><a href="#10-solve-bank-conflict" class="headerlink" title="10.solve bank conflict"></a>10.solve bank conflict</h3><p>们在通过 Tile 计算的过程中，计算的都是矩阵 CCC 中的连续区域的值，我们可以通过 interleaved 的方式，进一步对其分块：</p>
+<p><img src="/../images/1771054974357.png" srcset="/img/loading.gif" lazyload alt="1771054974357"></p>
+<p><img src="/../images/1771055002027.png" srcset="/img/loading.gif" lazyload alt="1771055002027"></p>
+<h2 id="reduce"><a href="#reduce" class="headerlink" title="reduce"></a>reduce</h2><p>逐步优化ing</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%AD%A6%E4%B9%A0/" class="category-chain-item">学习</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%AD%A6%E4%B9%A0/" class="print-no-link">#学习</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>cuda知识和GEMM等算子优化</div>
+      <div>http://example.com/2026/03/03/cuda/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>hzbing</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年3月3日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/03/03/%E5%BC%80%E6%94%BE%E9%97%AE%E9%A2%98_%E9%AB%98%E6%80%A7%E8%83%BD%E8%AE%A1%E7%AE%97/" title="hr问题和简历项目以及常问问题">
+                        <span class="hidden-mobile">hr问题和简历项目以及常问问题</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

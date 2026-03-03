@@ -1,0 +1,641 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="hzbing">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="论文思路，概念，细节怎么把故事讲好 10.16-10.19做完这一块的实验，写完论文 10.18-10.19写论文 实验单卡完进行优化 锁页，多流水线之后进行细粒度的优化 1.合并访存：√数据重排+合并访存：对主机端向设备端传输的数据结构进行了内存对齐优化。通过确保数据传输的首地址与线程束的访问首地址一致，使得设备端同一线程束内的线程能够连续访问同一内存事务中的数据，实现了物理内存层面的访存合并（">
+<meta property="og:type" content="article">
+<meta property="og:title" content="一拳超人">
+<meta property="og:url" content="http://example.com/2025/10/17/%E5%8A%A0%E5%AE%9E%E9%AA%8C/index.html">
+<meta property="og:site_name" content="一拳超人">
+<meta property="og:description" content="论文思路，概念，细节怎么把故事讲好 10.16-10.19做完这一块的实验，写完论文 10.18-10.19写论文 实验单卡完进行优化 锁页，多流水线之后进行细粒度的优化 1.合并访存：√数据重排+合并访存：对主机端向设备端传输的数据结构进行了内存对齐优化。通过确保数据传输的首地址与线程束的访问首地址一致，使得设备端同一线程束内的线程能够连续访问同一内存事务中的数据，实现了物理内存层面的访存合并（">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/1760851361619.png">
+<meta property="og:image" content="http://example.com/images/1760852462052.png">
+<meta property="og:image" content="http://example.com/images/1760851580351.png">
+<meta property="og:image" content="http://example.com/images/1760851588744.png">
+<meta property="article:published_time" content="2025-10-17T10:10:22.786Z">
+<meta property="article:modified_time" content="2025-10-19T11:19:35.415Z">
+<meta property="article:author" content="hzbing">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/images/1760851361619.png">
+  
+  
+  
+  <title>一拳超人</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.2.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>一拳超人</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/cs.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text=""></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-10-17 18:10" pubdate>
+          2025年10月17日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          791 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          7 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header"></h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>论文<br>思路，概念，细节<br>怎么把故事讲好</p>
+<p>10.16-10.19做完这一块的实验，写完论文</p>
+<p>10.18-10.19写论文</p>
+<h2 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h2><p>单卡完进行优化</p>
+<p>锁页，多流水线之后进行细粒度的优化</p>
+<h3 id="1-合并访存：√"><a href="#1-合并访存：√" class="headerlink" title="1.合并访存：√"></a>1.合并访存：√</h3><p>数据重排+合并访存：对主机端向设备端传输的数据结构进行了内存对齐优化。<br>通过确保数据传输的首地址与线程束的访问首地址一致，使得设备端同一线程束内的线程能够连续访问同一内存事务中的数据，实现了物理内存层面的访存合并（coalesced memory access）。<br>该优化有效减少了非对齐访存带来的额外内存事务，提高了设备内存带宽的利用效率。<br>warp 内的线程访问的内存地址连续，且首地址对齐到 128 字节边界。<br>将多相流密度、压力等数组由 den(phase,i,j,k) 拆分为独立的三维数组 den1(i,j,k) 与 den2(i,j,k)，实现了沿空间维度的内存连续存储，使 GPU 线程访问满足合并访存（memory coalescing）特性，从而显著提升全局内存带宽利用率与访存效率。</p>
+<h3 id="2-shared-memory。√"><a href="#2-shared-memory。√" class="headerlink" title="2.shared memory。√"></a>2.shared memory。√</h3><h3 id="3-核函数的合并与分解-√"><a href="#3-核函数的合并与分解-√" class="headerlink" title="3.核函数的合并与分解 √"></a>3.核函数的合并与分解 √</h3><p>可以充分利用寄存器资源和实现最大限度的block块并行处理。<br>因为寄存器的数量是一定的，如果核函数中的局部变量太多的话，即每一个线程占用的寄存器数量就会增大，每一个block占用的寄存器就会增多，但是SM中寄存器中的数量是一定的，所以同一时刻并行的block块就会变少。</p>
+<h3 id="4-调整线程块的大小，测试。√"><a href="#4-调整线程块的大小，测试。√" class="headerlink" title="4.调整线程块的大小，测试。√"></a>4.调整线程块的大小，测试。√</h3><h2 id="论文："><a href="#论文：" class="headerlink" title="论文："></a>论文：</h2><p>画图软件用上</p>
+<p>1.算法的路程图可以改一下，参考陈毅的论文，画一个高级的图√<br>2.多卡halo区那一块重新设计√<br>3.计算掩盖传输时间，那里改成多流水线并发，多流水线和单流的对比√</p>
+<h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><h3 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h3><h3 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h3><h3 id="1-三维可压缩两相流数值方法介绍"><a href="#1-三维可压缩两相流数值方法介绍" class="headerlink" title="1.三维可压缩两相流数值方法介绍"></a>1.三维可压缩两相流数值方法介绍</h3><h4 id="1-1-数值计算流程"><a href="#1-1-数值计算流程" class="headerlink" title="1.1 数值计算流程"></a>1.1 数值计算流程</h4><h4 id="1-2-核心算法"><a href="#1-2-核心算法" class="headerlink" title="1.2 核心算法"></a>1.2 核心算法</h4><h3 id="2-单卡并行算法设计与优化策略"><a href="#2-单卡并行算法设计与优化策略" class="headerlink" title="2.单卡并行算法设计与优化策略"></a>2.单卡并行算法设计与优化策略</h3><p>移植时间：2709 &#x3D; 411 + 2298</p>
+<h4 id="2-1-核函数合并与分解"><a href="#2-1-核函数合并与分解" class="headerlink" title="2.1 核函数合并与分解"></a>2.1 核函数合并与分解</h4><p><img src="/../images/1760851361619.png" srcset="/img/loading.gif" lazyload alt="1760851361619"></p>
+<h4 id="2-2-锁页内存优化"><a href="#2-2-锁页内存优化" class="headerlink" title="2.2 锁页内存优化"></a>2.2 锁页内存优化</h4><p>2298&gt;1224s</p>
+<h4 id="2-3-异步传输与多流水线优化"><a href="#2-3-异步传输与多流水线优化" class="headerlink" title="2.3 异步传输与多流水线优化"></a>2.3 异步传输与多流水线优化</h4><p>1224s&gt;394</p>
+<h4 id="2-4-合并访存与数据结构重排"><a href="#2-4-合并访存与数据结构重排" class="headerlink" title="2.4 合并访存与数据结构重排"></a>2.4 合并访存与数据结构重排</h4><p><img src="/../images/1760852462052.png" srcset="/img/loading.gif" lazyload alt="1760852462052"></p>
+<h4 id="2-5-Shared-Memory优化"><a href="#2-5-Shared-Memory优化" class="headerlink" title="2.5 Shared Memory优化"></a>2.5 Shared Memory优化</h4><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs stylus">do k=kbnd_L1,kbnd_R1<br>        do j=jbnd_L1,jbnd_R1<br>            do i=ibnd_L1,ibnd_R1<br>                <span class="hljs-built_in">con</span>(<span class="hljs-number">1</span>,<span class="hljs-selector-tag">i</span>,j,k,RK) = <span class="hljs-built_in">den</span>(<span class="hljs-selector-tag">i</span>,j,k)<br>                <span class="hljs-built_in">con</span>(<span class="hljs-number">2</span>,<span class="hljs-selector-tag">i</span>,j,k,RK) = <span class="hljs-built_in">den</span>(<span class="hljs-selector-tag">i</span>,j,k)*<span class="hljs-built_in">vel_u</span>(<span class="hljs-selector-tag">i</span>,j,k)<br>                <span class="hljs-built_in">con</span>(<span class="hljs-number">3</span>,<span class="hljs-selector-tag">i</span>,j,k,RK) = <span class="hljs-built_in">den</span>(<span class="hljs-selector-tag">i</span>,j,k)*<span class="hljs-built_in">vel_v</span>(<span class="hljs-selector-tag">i</span>,j,k)<br>                <span class="hljs-built_in">con</span>(<span class="hljs-number">4</span>,<span class="hljs-selector-tag">i</span>,j,k,RK) = <span class="hljs-built_in">den</span>(<span class="hljs-selector-tag">i</span>,j,k)*<span class="hljs-built_in">vel_w</span>(<span class="hljs-selector-tag">i</span>,j,k)<br>                dyna = <span class="hljs-built_in">vel_u</span>(<span class="hljs-selector-tag">i</span>,j,k)**<span class="hljs-number">2</span> + <span class="hljs-built_in">vel_v</span>(<span class="hljs-selector-tag">i</span>,j,k)**<span class="hljs-number">2</span> + <span class="hljs-built_in">vel_w</span>(<span class="hljs-selector-tag">i</span>,j,k)**<span class="hljs-number">2</span><br>                energy = ( <span class="hljs-built_in">pre</span>(<span class="hljs-selector-tag">i</span>,j,k) + <span class="hljs-built_in">SG_G</span>(<span class="hljs-number">1</span>)*<span class="hljs-built_in">SG_PB</span>(<span class="hljs-number">1</span>) )/&amp;<br>                &amp;       ( <span class="hljs-built_in">SG_G</span>(<span class="hljs-number">1</span>) - <span class="hljs-number">1</span><span class="hljs-selector-class">.d0</span> )<br>                <span class="hljs-built_in">con</span>(<span class="hljs-number">5</span>,<span class="hljs-selector-tag">i</span>,j,k,RK) = <span class="hljs-number">0.5</span>d0*<span class="hljs-built_in">den</span>(<span class="hljs-selector-tag">i</span>,j,k)*dyna + energy<br>            enddo<br>        enddo<br>    enddo<br><br></code></pre></td></tr></table></figure>
+
+<p>331&gt; 250</p>
+<h4 id="2-6-线程块大小调整与性能测试"><a href="#2-6-线程块大小调整与性能测试" class="headerlink" title="2.6 线程块大小调整与性能测试"></a>2.6 线程块大小调整与性能测试</h4><p>250&gt;229</p>
+<h3 id="3-多卡并行算法设计"><a href="#3-多卡并行算法设计" class="headerlink" title="3.多卡并行算法设计"></a>3.多卡并行算法设计</h3><p><img src="/../images/1760851580351.png" srcset="/img/loading.gif" lazyload alt="1760851580351"></p>
+<h3 id="4-CPU端OpenMP多线程优化"><a href="#4-CPU端OpenMP多线程优化" class="headerlink" title="4.CPU端OpenMP多线程优化"></a>4.CPU端OpenMP多线程优化</h3><p><img src="/../images/1760851588744.png" srcset="/img/loading.gif" lazyload alt="1760851588744"></p>
+<h3 id="5-实验结果与分析"><a href="#5-实验结果与分析" class="headerlink" title="5.实验结果与分析"></a>5.实验结果与分析</h3><h4 id="5-1实验平台"><a href="#5-1实验平台" class="headerlink" title="5.1实验平台"></a>5.1实验平台</h4><h4 id="5-2实验结果"><a href="#5-2实验结果" class="headerlink" title="5.2实验结果"></a>5.2实验结果</h4><h4 id="5-3正确性验证"><a href="#5-3正确性验证" class="headerlink" title="5.3正确性验证"></a>5.3正确性验证</h4><h3 id="6结论"><a href="#6结论" class="headerlink" title="6结论"></a>6结论</h3>
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div></div>
+      <div>http://example.com/2025/10/17/加实验/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>hzbing</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年10月17日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2026/03/03/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" title="操作系统">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">操作系统</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/09/16/2025_9/" title="">
+                        <span class="hidden-mobile"></span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
