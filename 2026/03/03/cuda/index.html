@@ -23,8 +23,8 @@
 <meta property="og:site_name" content="一拳超人">
 <meta property="og:description" content="cudaSM在一个 SM 中，多组 warp 看起来像是“同时执行”的，但实际上它们是通过硬件的多路快速切换（SIMT warp scheduler）实现的伪并行。一个 warp 的指令在某一周期被执行，下一周期可能换另一个 warp 执行。 例如，在Nvidia H100上，每个SM最多可以处理32个线程块、64个warp（即2048个线程）和每个块1024个线程。 这些都是上限，不能超过上限。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://i-blog.csdnimg.cn/img_convert/2570ac41726ec0a2a8e4ac564c551dd7.png">
-<meta property="og:image" content="https://i-blog.csdnimg.cn/img_convert/300182780b31d156e3742af097916b90.png">
+<meta property="og:image" content="http://example.com/images/1772530123185.png">
+<meta property="og:image" content="http://example.com/images/1772530134253.png">
 <meta property="og:image" content="http://example.com/images/1764166901992.png">
 <meta property="og:image" content="http://example.com/images/1764166906876.png">
 <meta property="og:image" content="http://example.com/images/1764167028928.png">
@@ -40,11 +40,11 @@
 <meta property="og:image" content="http://example.com/images/1771054974357.png">
 <meta property="og:image" content="http://example.com/images/1771055002027.png">
 <meta property="article:published_time" content="2026-03-03T09:20:00.000Z">
-<meta property="article:modified_time" content="2026-03-03T09:20:51.402Z">
+<meta property="article:modified_time" content="2026-03-03T09:28:56.857Z">
 <meta property="article:author" content="hzbing">
 <meta property="article:tag" content="学习">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://i-blog.csdnimg.cn/img_convert/2570ac41726ec0a2a8e4ac564c551dd7.png">
+<meta name="twitter:image" content="http://example.com/images/1772530123185.png">
   
   
   
@@ -296,9 +296,9 @@
 <p>eg1.如果我们在申请资源时使用32作为线程块的大小，并总共需要申请使用2048个线程，那么需要64个这样的线程块。然而，每个SM一次只能处理32个块，即使一个SM完全可以运行2048个线程，但由于线程块的限制，每个SM只能运行32*32个线程，因此它需要两个SM来运行，且每个只能占用50%的GPU资源。</p>
 <p>eg2.同样，每个SM有65536个寄存器。要同时执行2048个线程，每个线程最多可以有32个寄存器（65536&#x2F;2048 &#x3D; 32）。如果在我们程序中一个内核中每个线程需要64个寄存器，那么每个SM上就只能运行1024个线程，同样会导致50%的占用率。</p>
 <p>SM的组成</p>
-<p><img src="https://i-blog.csdnimg.cn/img_convert/2570ac41726ec0a2a8e4ac564c551dd7.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="/../images/1772530123185.png" srcset="/img/loading.gif" lazyload alt="1772530123185"></p>
 <p>一个SM中可以并行多个线程。通过线程束调度器进行软件层面控制，通过分配单元将线程分配到具体的计算单元中。计算单元分为int、FP32、FP64以及Tensor Core。<br>对应的功能结构如下：</p>
-<p><img src="https://i-blog.csdnimg.cn/img_convert/300182780b31d156e3742af097916b90.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="/../images/1772530134253.png" srcset="/img/loading.gif" lazyload alt="1772530134253"></p>
 <h2 id="cuda-core"><a href="#cuda-core" class="headerlink" title="cuda core"></a>cuda core</h2><p>warp 是 32 线程组成的执行单元<br>这些线程执行 <strong>同一条指令</strong><br>这条指令被送入 CUDA cores<br>多个 CUDA cores 并行执行这条指令的运算部分<br>SM 每周期调度几个 warp 取决于调度器数量，不是 core 数</p>
 <p>也就是说多个cuda core同时执行一个warp。</p>
 <h2 id="warp调度器"><a href="#warp调度器" class="headerlink" title="warp调度器"></a>warp调度器</h2><p>Warp 调度器负责在 SM 内决定“下一周期由哪个 warp 执行指令”。<br>它的作用类似 CPU 中的“线程调度器”，但快得多 —— 每个时钟周期都可能切换一次。</p>
